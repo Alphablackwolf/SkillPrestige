@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D444AC8A-8D4C-4256-94BB-B075B717FEFF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SkillPrestige</RootNamespace>
+    <AssemblyName>SkillPrestige</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Stardew Valley">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Stardew Valley.exe</HintPath>
+    </Reference>
+    <Reference Include="StardewModdingAPI">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\StardewModdingAPI.exe</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\AddProfessionCommand.cs" />
+    <Compile Include="Commands\ClearAllProfessionsCommand.cs" />
+    <Compile Include="Commands\GetAllProfessionsCommand.cs" />
+    <Compile Include="Commands\ResetPrestigeCommand.cs" />
+    <Compile Include="Commands\ResetAllPrestigeCommand.cs" />
+    <Compile Include="Commands\ResetAllProfessionsCommand.cs" />
+    <Compile Include="Commands\SetExperienceCommand.cs" />
+    <Compile Include="Commands\SkillPrestigeCommand.cs" />
+    <Compile Include="JsonNet.PrivateSettersContractResolvers\MemberInfoExtensions.cs" />
+    <Compile Include="JsonNet.PrivateSettersContractResolvers\PrivateSetterContractResolver.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
+    <Compile Include="Menus\Buttons\TextureButton.cs" />
+    <Compile Include="Menus\LevelUpMenuDecorator.cs" />
+    <Compile Include="Menus\Dialogs\LevelUpMessageDialogWithProfession.cs" />
+    <Compile Include="Menus\Dialogs\LevelUpMessageDialog.cs" />
+    <Compile Include="Menus\Dialogs\MessageDialog.cs" />
+    <Compile Include="Menus\Dialogs\WarningDialog.cs" />
+    <Compile Include="Mods\LuckSkill\LuckSkillTypeRegistration.cs" />
+    <Compile Include="Mods\LuckSkill\LuckRegistration.cs" />
+    <Compile Include="Mods\LuckSkill\LuckProfessions.cs" />
+    <Compile Include="Menus\Buttons\ProfessionButton.cs" />
+    <Compile Include="Professions\CombatProfessions.cs" />
+    <Compile Include="Professions\MiningProfessions.cs" />
+    <Compile Include="Professions\ForagingProfessions.cs" />
+    <Compile Include="Professions\FishingProfessions.cs" />
+    <Compile Include="Menus\Buttons\PrestigeButton.cs" />
+    <Compile Include="Professions\FarmingProfessions.cs" />
+    <Compile Include="Professions\Registration\FarmingRegistration.cs" />
+    <Compile Include="Professions\Registration\CombatRegistration.cs" />
+    <Compile Include="Professions\Registration\IProfessionRegistration.cs" />
+    <Compile Include="Professions\Registration\MiningRegistration.cs" />
+    <Compile Include="Professions\Registration\ForagingRegistration.cs" />
+    <Compile Include="Professions\Registration\FishingRegistration.cs" />
+    <Compile Include="Professions\Registration\ProfessionRegistration.cs" />
+    <Compile Include="Professions\TierTwoProfession.cs" />
+    <Compile Include="Professions\TierOneProfession.cs" />
+    <Compile Include="Professions\Profession.cs" />
+    <Compile Include="Menus\Buttons\SkillsMenuPrestigeButton.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Professions\DefenderSpecialHandling.cs" />
+    <Compile Include="Professions\FighterSpecialHandling.cs" />
+    <Compile Include="InputHandling\MouseMoveEventArguments.cs" />
+    <Compile Include="Mods\ISkillMod.cs" />
+    <Compile Include="Mods\LuckSkill\SpecialCharmSpecialHandling.cs" />
+    <Compile Include="Mods\LuckSkill\LuckSkillMod.cs" />
+    <Compile Include="Mods\SkillMod.cs" />
+    <Compile Include="InputHandling\MouseClickEventArguments.cs" />
+    <Compile Include="InputHandling\Mouse.cs" />
+    <Compile Include="Professions\IProfessionSpecialHandling.cs" />
+    <Compile Include="Menus\SkillsMenuExtension.cs" />
+    <Compile Include="Menus\Buttons\Button.cs" />
+    <Compile Include="PrestigeSaveData.cs" />
+    <Compile Include="PrestigeSet.cs" />
+    <Compile Include="Mods\ModHandler.cs" />
+    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Skill.cs" />
+    <Compile Include="Options.cs" />
+    <Compile Include="SkillPrestigeMod.cs" />
+    <Compile Include="Mods\LuckSkill\LuckSkillType.cs" />
+    <Compile Include="SkillTypes\DefaultSkillTypeRegistration.cs" />
+    <Compile Include="SkillTypes\DefaultSkillTypes.cs" />
+    <Compile Include="SkillTypes\ISkillTypeRegistration.cs" />
+    <Compile Include="SkillTypes\SkillType.cs" />
+    <Compile Include="Menus\PrestigeMenu.cs" />
+    <Compile Include="Prestige.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /y /d "$(ProjectDir)$(OutDir)SkillPrestige.dll" "C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Mods\SkillPrestige"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
