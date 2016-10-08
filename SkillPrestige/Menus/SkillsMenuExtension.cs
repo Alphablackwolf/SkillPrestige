@@ -17,13 +17,14 @@ namespace SkillPrestige.Menus
     internal static class SkillsMenuExtension
     {
         private static bool _skillsMenuInitialized;
-        private static readonly IDictionary<Skill, SkillsMenuPrestigeButton> PrestigeButtons = new Dictionary<Skill, SkillsMenuPrestigeButton>();
+        private static readonly IList<SkillsMenuPrestigeButton> PrestigeButtons = new List<SkillsMenuPrestigeButton>();
 
         // ReSharper disable once SuggestBaseTypeForParameter - we specifically want the skills page here, even if our usage could work against IClickableMenu.
         private static void IntializeSkillsMenu(SkillsPage skillsPage)
         {
             Logger.LogVerbose("Initializing Skills Menu...");
             _skillsMenuInitialized = true;
+            PrestigeButtons.Clear();
             foreach (var skill in Skill.AllSkills)
             {
                 var width = 45 * Game1.pixelZoom;
@@ -37,11 +38,12 @@ namespace SkillPrestige.Menus
                     Skill = skill,
                     Bounds = bounds
                 };
-                PrestigeButtons.Add(skill, prestigeButton);
+                PrestigeButtons.Add(prestigeButton);
+                Logger.LogVerbose($"{skill.Type.Name} skill prestige button initiated at {bounds.X}, {bounds.Y}. Width: {bounds.Width}, Height: {bounds.Height}");
                 Mouse.MouseMoved += prestigeButton.CheckForMouseHover;
                 Mouse.MouseClicked += prestigeButton.CheckForMouseClick;
-                Logger.LogVerbose("Skills Menu initialized.");
             }
+            Logger.LogVerbose("Skills Menu initialized.");
         }
 
         private static void UnloadSkillsPageAdditions()
@@ -50,8 +52,8 @@ namespace SkillPrestige.Menus
             _skillsMenuInitialized = false;
             foreach (var button in PrestigeButtons)
             {
-                Mouse.MouseMoved -= button.Value.CheckForMouseHover;
-                Mouse.MouseClicked -= button.Value.CheckForMouseClick;
+                Mouse.MouseMoved -= button.CheckForMouseHover;
+                Mouse.MouseClicked -= button.CheckForMouseClick;
             }
             PrestigeButtons.Clear();
             Logger.LogVerbose("Skills Menu unloaded.");
@@ -79,7 +81,7 @@ namespace SkillPrestige.Menus
         {
             foreach (var prestigeButton in PrestigeButtons)
             {
-                prestigeButton.Value.Draw(spriteBatch);
+                prestigeButton.Draw(spriteBatch);
             }
         }
 
@@ -87,7 +89,7 @@ namespace SkillPrestige.Menus
         {
             foreach (var prestigeButton in PrestigeButtons)
             {
-                prestigeButton.Value.DrawHoverText(spriteBatch);
+                prestigeButton.DrawHoverText(spriteBatch);
             }
         }
 

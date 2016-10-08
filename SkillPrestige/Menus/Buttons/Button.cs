@@ -29,7 +29,7 @@ namespace SkillPrestige.Menus.Buttons
         /// <summary>
         /// The default texture to use for a button background if none is provided.
         /// </summary>
-        public static Texture2D DefaultButtonTexture { get; set; }
+        public static Texture2D DefaultButtonTexture { private get; set; }
 
         public Rectangle Bounds
         {
@@ -98,7 +98,7 @@ namespace SkillPrestige.Menus.Buttons
                 textLocation += new Vector2(Bounds.X, Bounds.Y);
             }
 
-            Game1.spriteBatch.DrawString(TitleTextFont, Text, textLocation.Value, Game1.textColor);
+            Game1.spriteBatch.DrawString(TitleTextFont, Text ?? string.Empty, textLocation.Value, Game1.textColor);
         }
 
         internal void CheckForMouseHover(MouseMoveEventArguments arguments)

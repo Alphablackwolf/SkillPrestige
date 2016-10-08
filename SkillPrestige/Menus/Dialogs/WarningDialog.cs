@@ -71,8 +71,8 @@ namespace SkillPrestige.Menus.Dialogs
             if (_buttonsInstantiated) return;
             _buttonsInstantiated = true;
             Logger.LogVerbose("Warning Dialog - Instantiating Okay/Cancel buttons...");
-            var buttonSize = Game1.tileSize * 4;
-            var buttonPadding = Game1.tileSize;
+            var buttonSize = Game1.tileSize;
+            var buttonPadding = Game1.tileSize * 4;
             var okayButtonBounds = new Rectangle(xPositionOnScreen + width - buttonSize - spaceToClearSideBorder * 2, yPositionOnScreen + height - buttonSize / 2, buttonSize, buttonSize);
             _okayButton = new TextureButton(okayButtonBounds, Game1.mouseCursors, new Rectangle(128, 256, 64, 64), Okay, "Prestige Skill");
             Logger.LogVerbose("Warning Dialog - Okay button instantiated.");

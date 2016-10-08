@@ -24,23 +24,31 @@ namespace SkillPrestige.Professions
             Logger.LogInformation("Registering professions...");
             //gets all non abstract classes that implement IProfessionRegistration.
             var concreteProfessionRegistrations = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypesSafely())
-                .Where(x => typeof(IProfessionRegistration).IsAssignableFrom(x) && x.IsClass && !x.IsAbstract);
+                .Where(x => typeof(IProfessionRegistration).IsAssignableFrom(x) && x.IsClass && !x.IsAbstract).ToList();
+            Logger.LogVerbose($"{concreteProfessionRegistrations.Count} concrete profession registrations found.");
             foreach (var registration in concreteProfessionRegistrations)
             {
                 ((IProfessionRegistration) Activator.CreateInstance(registration)).RegisterProfessions();
             }
-            foreach (var profession in Skill.AllSkills.Where(x => Skill.DefaultSkills.Contains(x)).SelectMany(x => x.Professions).Where(x => x.DisplayName == string.Empty || !x.EffectText.Any()))
+
+            foreach (var profession in Skill.AllSkills.Where(x => Skill.DefaultSkills.Select(y => y.Type).Contains(x.Type)).SelectMany(x => x.Professions).Where(x => string.IsNullOrWhiteSpace(x.DisplayName) || x.EffectText == null || !x.EffectText.Any()))
             {
-                if (profession.DisplayName == string.Empty)
+                Logger.LogVerbose($"getting display text from the game for profession id {profession.Id}");
+                if (string.IsNullOrWhiteSpace(profession.DisplayName))
                 {
                     profession.DisplayName = typeof(LevelUpMenu).InvokeStaticFunction<string>("getProfessionName", profession.Id);
                 }
-                if (!profession.EffectText.Any())
+                if (profession.EffectText == null || !profession.EffectText.Any())
                 {
                     profession.EffectText = Game1.content.LoadString($@"Strings\UI:LevelUp_ProfessionDescription_{profession.DisplayName}").Split('\n');
                 }
             }
             Logger.LogInformation("Professions registered.");
+        }
+
+        protected Profession()
+        {
+            EffectText = new List<string>();
         }
 
         /// <summary>
@@ -74,7 +82,8 @@ namespace SkillPrestige.Professions
         /// <summary>
         /// The texture that contains the profession's icon.
         /// </summary>
-        /// // ReSharper disable once VirtualMemberNeverOverridden.Global - expected to be overridden in externally inherited class.
+        // ReSharper disable once VirtualMemberNeverOverridden.Global - expected to be overridden in externally inherited class.
+        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - expected to be set in external project.
         public virtual Texture2D Texture { get; set; } = Game1.mouseCursors;
 
 
