@@ -28,7 +28,7 @@ namespace SkillPrestige
         /// The total available prestige points, one is gained per skill reset.
         /// </summary>
         public int PrestigePoints { get; set; }
-        
+
         /// <summary>
         /// Professions that have been chosen to be permanent using skill points.
         /// </summary>
@@ -76,16 +76,23 @@ namespace SkillPrestige
         /// <param name="skill">the skill you wish to prestige.</param>
         public static void PrestigeSkill(Skill skill)
         {
-            Logger.LogInformation($"Prestiging skill {skill.Type.Name}.");
-            skill.SetSkillExperience(0);
-            skill.SetSkillLevel(0);
-            Logger.LogInformation($"Skill {skill.Type.Name} experience and level reset.");
-            RemovePlayerCraftingRecipesForSkill(skill.Type);
-            RemovePlayerCookingRecipesForSkill(skill.Type);
-            Profession.RemoveProfessions(skill);
-            Profession.AddMissingProfessions();
-            PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == skill.Type).PrestigePoints++;
-            Logger.LogInformation($"Prestige point added to {skill.Type.Name} skill.");
+            try
+            {
+                Logger.LogInformation($"Prestiging skill {skill.Type.Name}.");
+                skill.SetSkillExperience(0);
+                skill.SetSkillLevel(0);
+                Logger.LogInformation($"Skill {skill.Type.Name} experience and level reset.");
+                RemovePlayerCraftingRecipesForSkill(skill.Type);
+                RemovePlayerCookingRecipesForSkill(skill.Type);
+                Profession.RemoveProfessions(skill);
+                Profession.AddMissingProfessions();
+                PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == skill.Type).PrestigePoints++;
+                Logger.LogInformation($"Prestige point added to {skill.Type.Name} skill.");
+            }
+            catch (Exception exception)
+            {
+                Logger.LogError(exception.Message + Environment.NewLine + exception.StackTrace);
+            }
         }
 
         /// <summary>
@@ -94,13 +101,20 @@ namespace SkillPrestige
         /// <param name="skillType">the skill type to remove all crafting recipes from.</param>
         private static void RemovePlayerCraftingRecipesForSkill(SkillType skillType)
         {
+
             Logger.LogInformation($"Removing {skillType.Name} crafting recipes");
-            foreach (var recipe in CraftingRecipe.craftingRecipes.Where(x => x.Value.Split('/')[4].Contains(Farmer.getSkillNameFromIndex(skillType.Ordinal)) && Game1.player.craftingRecipes.ContainsKey(x.Key)))
+            foreach (
+                var recipe in
+                CraftingRecipe.craftingRecipes.Where(
+                    x =>
+                        x.Value.Split('/')[4].Contains(Farmer.getSkillNameFromIndex(skillType.Ordinal)) &&
+                        Game1.player.craftingRecipes.ContainsKey(x.Key)))
             {
                 Logger.LogVerbose($"Removing {skillType.Name} crafting recipe {recipe.Value}");
                 Game1.player.craftingRecipes.Remove(recipe.Key);
             }
             Logger.LogInformation($"{skillType.Name} crafting recipes removed.");
+
         }
 
         /// <summary>
@@ -110,7 +124,12 @@ namespace SkillPrestige
         private static void RemovePlayerCookingRecipesForSkill(SkillType skillType)
         {
             Logger.LogInformation($"Removing {skillType.Name} cooking recipes");
-            foreach (var recipe in CraftingRecipe.cookingRecipes.Where(x => x.Value.Split('/')[3].Contains(Farmer.getSkillNameFromIndex(skillType.Ordinal)) && Game1.player.cookingRecipes.ContainsKey(x.Key)))
+            foreach (
+                var recipe in
+                CraftingRecipe.cookingRecipes.Where(
+                    x =>
+                        x.Value.Split('/')[3].Contains(Farmer.getSkillNameFromIndex(skillType.Ordinal)) &&
+                        Game1.player.cookingRecipes.ContainsKey(x.Key)))
             {
                 Logger.LogVerbose($"Removing {skillType.Name} cooking recipe {recipe.Value}");
                 Game1.player.cookingRecipes.Remove(recipe.Key);

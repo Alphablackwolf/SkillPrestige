@@ -98,7 +98,7 @@ namespace SkillPrestige.Professions
             {
                 Logger.LogVerbose($"Removing {profession.DisplayName} profession from player.");
                 Game1.player.professions.Remove(profession.Id);
-                profession.SpecialHandling.RemoveEffect();
+                profession.SpecialHandling?.RemoveEffect();
             }
             Logger.LogInformation($"All professions for {skill.Type.Name} skill removed from player.");
         }
