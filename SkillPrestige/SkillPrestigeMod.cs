@@ -33,17 +33,27 @@ namespace SkillPrestige
 
         public static string Guid => "6b843e60-c8fc-4a25-a67b-4a38ac8dcf9b";
 
+        public static string ModPath { get; private set; }
+
+        public static string OptionsPath { get; private set; }
+
+        public static string CurrentSaveOptionsPath { get; private set; }
+
+        
+
         #endregion
 
         public override void Entry(params object[] objects)
         {
+            ModPath = PathOnDisk;
+            OptionsPath = BaseConfigPath;
             Logger.LogInformation("Detected game entry.");
             PrestigeSaveData.Instance.Read();
             RegisterGameEvents();
             Logger.LogDisplay($"{Name} version {Version} by {Author} Initialized.");
         }
 
-        private static void GameLoaded(object sender, EventArgs args)
+        private void GameLoaded(object sender, EventArgs args)
         {
             Logger.LogInformation("Detected game load.");
             if (Type.GetType("AllProfessions.AllProfessions, AllProfessions") != null)
@@ -61,7 +71,7 @@ namespace SkillPrestige
             RegisterCommands();
         }
 
-        private static void RegisterGameEvents()
+        private void RegisterGameEvents()
         {
             Logger.LogInformation("Registering game events...");
             GameEvents.GameLoaded += GameLoaded;
@@ -73,7 +83,7 @@ namespace SkillPrestige
             Logger.LogInformation("Game events registered.");
         }
 
-        private static void DeregisterGameEvents()
+        private void DeregisterGameEvents()
         {
             Logger.LogInformation("Deregistering game events...");
             GameEvents.GameLoaded -= GameLoaded;
@@ -90,10 +100,12 @@ namespace SkillPrestige
             HandleState(args);
         }
 
-        private static void LocationChanged(object sender, EventArgs args)
+        private void LocationChanged(object sender, EventArgs args)
         {
             Logger.LogVerbose("Location change detected.");
+            CurrentSaveOptionsPath = PerSaveConfigPath;
             PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
+            PerSaveOptions.LoadPerSaveOptions();
             Profession.AddMissingProfessions();
         }
 

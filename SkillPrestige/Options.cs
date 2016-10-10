@@ -23,8 +23,6 @@ namespace SkillPrestige
         public bool TestingMode { get; set; }
 
         private Options() { }
-
-        private const string OptionsFilePath = @"Mods\SkillPrestige\Options.json";
         private static Options _instance;
         public static Options Instance 
         {
@@ -35,15 +33,15 @@ namespace SkillPrestige
                 LoadOptions();
                 return _instance;
             }
-            
         }
 
        private static void LoadOptions()
         {
-            if (!File.Exists(OptionsFilePath)) SetupOptionsFile();
+            Logger.LogPriorToOptionsLoaded($"options file path: {SkillPrestigeMod.OptionsPath}");
+            if (!File.Exists(SkillPrestigeMod.OptionsPath)) SetupOptionsFile();
             var settings = new JsonSerializerSettings { ContractResolver = new PrivateSetterContractResolver() };
             Logger.LogPriorToOptionsLoaded("Deserializing options file...");
-            _instance = JsonConvert.DeserializeObject<Options>(File.ReadAllText(OptionsFilePath), settings);
+            _instance = JsonConvert.DeserializeObject<Options>(File.ReadAllText(SkillPrestigeMod.OptionsPath), settings);
             Logger.LogInformation("Options loaded.");
         }
 
@@ -65,7 +63,7 @@ namespace SkillPrestige
 
         private static void Save()
         {
-            File.WriteAllLines(OptionsFilePath, new[] { JsonConvert.SerializeObject(_instance) });
+            File.WriteAllLines(SkillPrestigeMod.OptionsPath, new[] { JsonConvert.SerializeObject(_instance) });
             Logger.LogInformation("Options file saved.");
         }
 

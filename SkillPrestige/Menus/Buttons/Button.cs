@@ -33,7 +33,7 @@ namespace SkillPrestige.Menus.Buttons
 
         public Rectangle Bounds
         {
-            protected get
+            get
             {
                 return _bounds;
             }

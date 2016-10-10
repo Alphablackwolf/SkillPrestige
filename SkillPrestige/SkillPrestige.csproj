@@ -76,6 +76,7 @@
     <Compile Include="Mods\LuckSkill\LuckRegistration.cs" />
     <Compile Include="Mods\LuckSkill\LuckProfessions.cs" />
     <Compile Include="Menus\Buttons\ProfessionButton.cs" />
+    <Compile Include="PerSaveOptions.cs" />
     <Compile Include="Professions\CombatProfessions.cs" />
     <Compile Include="Professions\MiningProfessions.cs" />
     <Compile Include="Professions\ForagingProfessions.cs" />

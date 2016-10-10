@@ -35,7 +35,7 @@ namespace SkillPrestige.Menus
 
         public PrestigeMenu(Rectangle bounds, Skill skill, Prestige prestige) : base(bounds.X, bounds.Y, bounds.Width, bounds.Height, true)
         {
-            Logger.LogVerbose("New Prestige Menu created.");
+            Logger.LogVerbose($"New {skill.Type.Name} Prestige Menu created.");
             _skill = skill;
             _prestige = prestige;
             InitiatePrestigeButton();

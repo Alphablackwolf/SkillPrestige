@@ -15,7 +15,8 @@ namespace SkillPrestige
     [Serializable]
     public class PrestigeSaveData
     {
-        private const string DataFilePath = @"Mods\SkillPrestige\Data.json";
+        private const string DataFileName = @"Data.json";
+        private static readonly string DataFilePath = Path.Combine(SkillPrestigeMod.ModPath, DataFileName);
         public static PrestigeSet CurrentlyLoadedPrestigeSet => Instance.PrestigeSaveFiles[CurrentlyLoadedSaveFileUniqueId];
         private static ulong CurrentlyLoadedSaveFileUniqueId { get; set; }
 

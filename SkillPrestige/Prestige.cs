@@ -82,8 +82,11 @@ namespace SkillPrestige
                 skill.SetSkillExperience(0);
                 skill.SetSkillLevel(0);
                 Logger.LogInformation($"Skill {skill.Type.Name} experience and level reset.");
-                RemovePlayerCraftingRecipesForSkill(skill.Type);
-                RemovePlayerCookingRecipesForSkill(skill.Type);
+                if (PerSaveOptions.Instance.ResetRecipesOnPrestige)
+                {
+                    RemovePlayerCraftingRecipesForSkill(skill.Type);
+                    RemovePlayerCookingRecipesForSkill(skill.Type);
+                }
                 Profession.RemoveProfessions(skill);
                 Profession.AddMissingProfessions();
                 PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == skill.Type).PrestigePoints++;
