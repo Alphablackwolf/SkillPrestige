@@ -3,6 +3,7 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using System;
+using System.IO;
 using SkillPrestige.Commands;
 using SkillPrestige.Logging;
 using SkillPrestige.Menus;
@@ -103,7 +104,7 @@ namespace SkillPrestige
         private void LocationChanged(object sender, EventArgs args)
         {
             Logger.LogVerbose("Location change detected.");
-            CurrentSaveOptionsPath = PerSaveConfigPath;
+            CurrentSaveOptionsPath = string.IsNullOrWhiteSpace(PerSaveConfigPath) ? Path.Combine(PerSaveConfigFolder, $@"{Game1.player.name.RemoveNumerics()}_{Game1.uniqueIDForThisGame}.json") : PerSaveConfigPath;
             PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
             PerSaveOptions.LoadPerSaveOptions();
             Profession.AddMissingProfessions();
