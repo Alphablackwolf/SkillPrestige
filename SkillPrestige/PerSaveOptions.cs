@@ -35,7 +35,7 @@ namespace SkillPrestige
             }
         }
 
-       public static void LoadPerSaveOptions()
+        private static void LoadPerSaveOptions()
         {
             Logger.LogInformation($"per save options file path: {SkillPrestigeMod.CurrentSaveOptionsPath}");
             if (!File.Exists(SkillPrestigeMod.CurrentSaveOptionsPath)) SetupPerSaveOptionsFile();
@@ -43,12 +43,22 @@ namespace SkillPrestige
             Logger.LogInformation("Deserializing per save options file...");
             try
             {
-
                 _instance = JsonConvert.DeserializeObject<PerSaveOptions>(File.ReadAllText(SkillPrestigeMod.CurrentSaveOptionsPath), settings);
+                if (Instance.CostOfTierOnePrestige <= 0)
+                {
+                    Logger.LogWarning("Tier one prestige cost loaded without value, defaulting to a cost of 1.");
+                    Instance.CostOfTierOnePrestige = 1;
+                }
+                if (Instance.CostOfTierTwoPrestige <= 0)
+                {
+                    Logger.LogWarning("Tier two prestige cost loaded without value, defaulting to a cost of 2.");
+                    Instance.CostOfTierOnePrestige = 2;
+                }
             }
             catch (Exception ex)
             {
-                Logger.LogError("Error deserializing per-save options file. Attempting to create new per-save options file...");
+                Logger.LogError($"Error deserializing per-save options file. {Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.StackTrace}"); 
+                Logger.LogInformation(" Attempting to create new per-save options file...");
                 SetupPerSaveOptionsFile();
             }
             Logger.LogInformation("Per save options loaded.");

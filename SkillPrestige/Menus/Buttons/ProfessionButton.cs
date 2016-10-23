@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SkillPrestige.Logging;
 using SkillPrestige.Professions;
 using StardewValley;
 
@@ -97,6 +98,7 @@ namespace SkillPrestige.Menus.Buttons
                 case 2:
                     return PerSaveOptions.Instance.CostOfTierTwoPrestige;
                 default:
+                    Logger.LogWarning("Tier for profession not found, defaulting to a cost of 1.");
                     return 1;
             }
         }
