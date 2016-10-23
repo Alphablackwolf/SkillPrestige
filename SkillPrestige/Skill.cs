@@ -86,7 +86,7 @@ namespace SkillPrestige
             {
                 Type = SkillType.Fishing,
                 SkillScreenPosition = 4,
-                SourceRectangleForSkillIcon = new Rectangle(80, 0, 16, 16),
+                SourceRectangleForSkillIcon = new Rectangle(16, 0, 16, 16),
                 Professions = Profession.FishingProfessions,
                 SetSkillLevel = x => Game1.player.fishingLevel = x,
                 GetSkillLevel = () => Game1.player.fishingLevel
@@ -95,7 +95,7 @@ namespace SkillPrestige
             {
                 Type = SkillType.Foraging,
                 SkillScreenPosition = 3,
-                SourceRectangleForSkillIcon = new Rectangle(32, 0, 16, 16),
+                SourceRectangleForSkillIcon = new Rectangle(80, 0, 16, 16),
                 Professions = Profession.ForagingProfessions,
                 SetSkillLevel = x => Game1.player.foragingLevel = x,
                 GetSkillLevel = () => Game1.player.foragingLevel
@@ -104,7 +104,7 @@ namespace SkillPrestige
             {
                 Type = SkillType.Mining,
                 SkillScreenPosition = 2,
-                SourceRectangleForSkillIcon = new Rectangle(16, 0, 16, 16),
+                SourceRectangleForSkillIcon = new Rectangle(32, 0, 16, 16),
                 Professions = Profession.MiningProfessions,
                 SetSkillLevel = x => Game1.player.miningLevel = x,
                 GetSkillLevel = () => Game1.player.miningLevel
