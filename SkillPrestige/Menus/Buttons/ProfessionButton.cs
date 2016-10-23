@@ -42,7 +42,7 @@ namespace SkillPrestige.Menus.Buttons
                                             : IsObtainable
                                                 ? CanBeAfforded
                                                     ? $"Click to permanently obtain the {Profession.DisplayName} profession."
-                                                    : $"You cannot afford this profession, you need {Profession.LevelAvailableAt / 5} prestige point(s) in this skill to purchase it."
+                                                    : $"You cannot afford this profession, you need {GetPrestigeCost()} prestige point(s) in this skill to purchase it."
                                                 : $"This profession is not available to obtain permanently until the {(Profession as TierTwoProfession)?.TierOneProfession.DisplayName} profession has been permanently obtained.";
 
         protected override string Text => Profession.DisplayName;
@@ -76,7 +76,7 @@ namespace SkillPrestige.Menus.Buttons
         protected override void OnMouseHover()
         {
             base.OnMouseHover();
-            if(!IsDisabled) Game1.playSound("smallSelect");
+            if (!IsDisabled) Game1.playSound("smallSelect");
         }
 
         protected override void OnMouseClick()
@@ -85,6 +85,20 @@ namespace SkillPrestige.Menus.Buttons
             Game1.playSound("bigSelect");
             Prestige.AddPrestigeProfession(Profession.Id);
             Selected = true;
+        }
+
+        private int GetPrestigeCost()
+        {
+            var tier = Profession.LevelAvailableAt / 5;
+            switch (tier)
+            {
+                case 1:
+                    return PerSaveOptions.Instance.CostOfTierOnePrestige;
+                case 2:
+                    return PerSaveOptions.Instance.CostOfTierTwoPrestige;
+                default:
+                    return 1;
+            }
         }
     }
 }

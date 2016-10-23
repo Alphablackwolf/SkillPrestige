@@ -17,8 +17,13 @@ namespace SkillPrestige
         /// </summary>
         public bool ResetRecipesOnPrestige { get; set; }
 
+        public int CostOfTierOnePrestige { get; set; }
+
+        public int CostOfTierTwoPrestige { get; set; }
+
         private PerSaveOptions() { }
         private static PerSaveOptions _instance;
+
         public static PerSaveOptions Instance 
         {
             get
@@ -36,7 +41,16 @@ namespace SkillPrestige
             if (!File.Exists(SkillPrestigeMod.CurrentSaveOptionsPath)) SetupPerSaveOptionsFile();
             var settings = new JsonSerializerSettings { ContractResolver = new PrivateSetterContractResolver() };
             Logger.LogInformation("Deserializing per save options file...");
-            _instance = JsonConvert.DeserializeObject<PerSaveOptions>(File.ReadAllText(SkillPrestigeMod.CurrentSaveOptionsPath), settings);
+            try
+            {
+
+                _instance = JsonConvert.DeserializeObject<PerSaveOptions>(File.ReadAllText(SkillPrestigeMod.CurrentSaveOptionsPath), settings);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("Error deserializing per-save options file. Attempting to create new per-save options file...");
+                SetupPerSaveOptionsFile();
+            }
             Logger.LogInformation("Per save options loaded.");
         }
 
@@ -46,6 +60,8 @@ namespace SkillPrestige
             try
             {
                 Instance.ResetRecipesOnPrestige =  true;
+                Instance.CostOfTierOnePrestige =  1;
+                Instance.CostOfTierTwoPrestige =  2;
                 Save();
             }
             catch(Exception exception)
@@ -61,5 +77,10 @@ namespace SkillPrestige
             File.WriteAllLines(SkillPrestigeMod.CurrentSaveOptionsPath, new[] { JsonConvert.SerializeObject(_instance) });
             Logger.LogInformation("Per save options file saved.");
         }
+
+        /// <summary>
+        /// Empty procedure to force the lazy load of the instance.
+        /// </summary>
+        public void Check() { }
     }
 }

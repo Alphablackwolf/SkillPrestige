@@ -45,13 +45,13 @@ namespace SkillPrestige
             var originalPrestigePointsForSkill = prestige.PrestigePoints;
             if (skill.Professions.Where(x => x.LevelAvailableAt == 5).Select(x => x.Id).Contains(professionId))
             {
-                prestige.PrestigePoints--;
+                prestige.PrestigePoints -= PerSaveOptions.Instance.CostOfTierOnePrestige;
                 Logger.LogInformation($"Spent prestige point on {skill.Type.Name} skill.");
             }
 
             else if (skill.Professions.Where(x => x.LevelAvailableAt == 10).Select(x => x.Id).Contains(professionId))
             {
-                prestige.PrestigePoints -= 2;
+                prestige.PrestigePoints -= PerSaveOptions.Instance.CostOfTierTwoPrestige;
                 Logger.LogInformation($"Spent 2 prestige points on {skill.Type.Name} skill.");
             }
             else

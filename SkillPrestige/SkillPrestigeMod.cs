@@ -106,7 +106,7 @@ namespace SkillPrestige
             Logger.LogVerbose("Location change detected.");
             CurrentSaveOptionsPath = string.IsNullOrWhiteSpace(PerSaveConfigPath) ? Path.Combine(PerSaveConfigFolder, $@"{Game1.player.name.RemoveNumerics()}_{Game1.uniqueIDForThisGame}.json") : PerSaveConfigPath;
             PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
-            PerSaveOptions.LoadPerSaveOptions();
+            PerSaveOptions.Instance.Check();
             Profession.AddMissingProfessions();
         }
 
