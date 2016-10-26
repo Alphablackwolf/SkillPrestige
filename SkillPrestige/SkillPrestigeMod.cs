@@ -40,6 +40,7 @@ namespace SkillPrestige
 
         public static string CurrentSaveOptionsPath { get; private set; }
 
+        public static Texture2D PrestigeIconTexture { get; private set; }
         
 
         #endregion
@@ -59,10 +60,8 @@ namespace SkillPrestige
             Logger.LogInformation("Detected game load.");
             if (Type.GetType("AllProfessions.AllProfessions, AllProfessions") != null)
             {
-                Logger.LogCriticalWarning(
-                    "Conflict Detected. This mod cannot work with AllProfessions. Skill Prestige disabled.");
-                Logger.LogDisplay(
-                    "Skill Prestige Mod: If you wish to use this mod in place of AllProfessions, remove the AllProfessions mod and run the player_resetallprofessions command.");
+                Logger.LogCriticalWarning("Conflict Detected. This mod cannot work with AllProfessions. Skill Prestige disabled.");
+                Logger.LogDisplay("Skill Prestige Mod: If you wish to use this mod in place of AllProfessions, remove the AllProfessions mod and run the player_resetallprofessions command.");
                 DeregisterGameEvents();
                 return;
             }
@@ -119,7 +118,11 @@ namespace SkillPrestige
         {
             Logger.LogInformation("Loading sprites...");
             Button.DefaultButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\DialogBoxGreen");
-            ProfessionButton.ProfessionButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\boardGameBorder");
+            MinimalistProfessionButton.ProfessionButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\boardGameBorder");
+            var prestigeIconFilePath = Path.Combine(ModPath, @"PrestigeIcon.png");
+            Logger.LogInformation($"Prestige Icon Path: {prestigeIconFilePath}");
+            var fileStream = new FileStream(prestigeIconFilePath, FileMode.Open);
+            PrestigeIconTexture = Texture2D.FromStream(Game1.graphics.GraphicsDevice, fileStream);
             Logger.LogInformation("Sprites loaded.");
         }
 

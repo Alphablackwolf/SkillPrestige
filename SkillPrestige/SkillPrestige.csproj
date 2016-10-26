@@ -66,6 +66,7 @@
     <Compile Include="JsonNet.PrivateSettersContractResolvers\MemberInfoExtensions.cs" />
     <Compile Include="JsonNet.PrivateSettersContractResolvers\PrivateSetterContractResolver.cs" />
     <Compile Include="Logging\LogLevel.cs" />
+    <Compile Include="Menus\Buttons\MinimalistProfessionButton.cs" />
     <Compile Include="Menus\Buttons\TextureButton.cs" />
     <Compile Include="Menus\LevelUpMenuDecorator.cs" />
     <Compile Include="Menus\Dialogs\LevelUpMessageDialogWithProfession.cs" />
@@ -127,7 +128,9 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Images\PrestigeIcon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /y /d "$(ProjectDir)$(OutDir)SkillPrestige.dll" "C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Mods\SkillPrestige"</PostBuildEvent>

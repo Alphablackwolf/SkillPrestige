@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Logging;
 using SkillPrestige.Menus.Dialogs;
@@ -24,10 +25,10 @@ namespace SkillPrestige.Menus.Buttons
         private Color DisplayColor => IsDisabled ? Color.Gray : Color.White;
 
 
-        protected override string HoverText => $"Click to prestige your {Skill?.Type?.Name} skill";
+        protected override string HoverText => IsDisabled ? $"You must reach level 10 in this skill and then{Environment.NewLine}sleep at least once in order to prestige this skill." : $"Click to prestige your {Skill?.Type?.Name} skill";
         protected override string Text => "Prestige";
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)  
         {
             spriteBatch.Draw(ButtonTexture, Bounds, DisplayColor);
             DrawTitleText(spriteBatch);

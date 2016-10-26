@@ -48,7 +48,7 @@ namespace SkillPrestige.Menus.Dialogs
         private void DrawProfessionBox(SpriteBatch spriteBatch, Rectangle bounds)
         {
 
-            spriteBatch.Draw(Buttons.ProfessionButton.ProfessionButtonTexture, bounds, Color.White);
+            spriteBatch.Draw(Buttons.MinimalistProfessionButton.ProfessionButtonTexture, bounds, Color.White);
             DrawProfessionTitleText(spriteBatch, bounds);
             DrawProfessionIcon(spriteBatch, bounds);
             DrawProfessionEffectText(spriteBatch, bounds);

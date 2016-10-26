@@ -98,7 +98,7 @@ namespace SkillPrestige.Menus.Buttons
                 textLocation += new Vector2(Bounds.X, Bounds.Y);
             }
 
-            Game1.spriteBatch.DrawString(TitleTextFont, Text ?? string.Empty, textLocation.Value, Game1.textColor);
+            spriteBatch.DrawString(TitleTextFont, Text ?? string.Empty, textLocation.Value, Game1.textColor);
         }
 
         internal void CheckForMouseHover(MouseMoveEventArguments arguments)

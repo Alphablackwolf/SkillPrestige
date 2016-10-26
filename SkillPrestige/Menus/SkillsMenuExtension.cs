@@ -17,7 +17,7 @@ namespace SkillPrestige.Menus
     internal static class SkillsMenuExtension
     {
         private static bool _skillsMenuInitialized;
-        private static readonly IList<SkillsMenuPrestigeButton> PrestigeButtons = new List<SkillsMenuPrestigeButton>();
+        private static readonly IList<TextureButton> PrestigeButtons = new List<TextureButton>();
 
         // ReSharper disable once SuggestBaseTypeForParameter - we specifically want the skills page here, even if our usage could work against IClickableMenu.
         private static void IntializeSkillsMenu(SkillsPage skillsPage)
@@ -27,17 +27,13 @@ namespace SkillPrestige.Menus
             PrestigeButtons.Clear();
             foreach (var skill in Skill.AllSkills)
             {
-                var width = 45 * Game1.pixelZoom;
-                var height = 12 * Game1.pixelZoom;
-                var yOffset = (int)Math.Floor(Game1.tileSize / 7.1);
-                var yPadding = (int)Math.Floor(Game1.tileSize / 1.1);
+                var width = 8 * Game1.pixelZoom;
+                var height = 8 * Game1.pixelZoom;
+                var yOffset = (int) Math.Floor(Game1.tileSize/2.5);
+                var yPadding = (int) Math.Floor(Game1.tileSize * 1.05);
                 var xOffset = skillsPage.width + Game1.tileSize / 2;
                 var bounds = new Rectangle(skillsPage.xPositionOnScreen + xOffset, skillsPage.yPositionOnScreen + yPadding + yOffset * skill.SkillScreenPosition + skill.SkillScreenPosition * height, width, height);
-                var prestigeButton = new SkillsMenuPrestigeButton
-                {
-                    Skill = skill,
-                    Bounds = bounds
-                };
+                var prestigeButton = new TextureButton(bounds, SkillPrestigeMod.PrestigeIconTexture, new Rectangle(0, 0, 32, 32), () => OpenPrestigeMenu(skill), "Click to open the Prestige menu.");
                 PrestigeButtons.Add(prestigeButton);
                 Logger.LogVerbose($"{skill.Type.Name} skill prestige button initiated at {bounds.X}, {bounds.Y}. Width: {bounds.Width}, Height: {bounds.Height}");
                 Mouse.MouseMoved += prestigeButton.CheckForMouseHover;
@@ -96,16 +92,15 @@ namespace SkillPrestige.Menus
         internal static void OpenPrestigeMenu(Skill skill)
         {
             Logger.LogVerbose("Skills Menu - Setting up Prestige Menu...");
-            var menuWidth = Game1.tileSize * 24;
-            var menuHeight = Game1.tileSize * 11;
+            var menuWidth = Game1.tileSize * 18;
+            var menuHeight = Game1.tileSize * 10;
 
             var menuXCenter = (menuWidth + IClickableMenu.borderWidth * 2) / 2;
             var menuYCenter = (menuHeight + IClickableMenu.borderWidth * 2) / 2;
             var viewport = Game1.graphics.GraphicsDevice.Viewport;
-            var screenXCenter = viewport.Width / 2;
-            var screenYCenter = viewport.Height / 2;
-            var bounds = new Rectangle(screenXCenter - menuXCenter, screenYCenter - menuYCenter,
-                menuWidth + IClickableMenu.borderWidth * 2, menuHeight + IClickableMenu.borderWidth * 2);
+            var screenXCenter = (int)(viewport.Width * (1.0 / Game1.options.zoomLevel)) / 2;
+            var screenYCenter = (int)(viewport.Height * (1.0 / Game1.options.zoomLevel)) / 2;
+            var bounds = new Rectangle(screenXCenter - menuXCenter, screenYCenter - menuYCenter, menuWidth + IClickableMenu.borderWidth*2, menuHeight + IClickableMenu.borderWidth*2);
             Game1.playSound("bigSelect");
             Logger.LogVerbose("Getting currently loaded prestige data...");
             var prestige = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == skill.Type);

@@ -52,7 +52,7 @@ namespace SkillPrestige
                 if (Instance.CostOfTierTwoPrestige <= 0)
                 {
                     Logger.LogWarning("Tier two prestige cost loaded without value, defaulting to a cost of 2.");
-                    Instance.CostOfTierOnePrestige = 2;
+                    Instance.CostOfTierTwoPrestige = 2;
                 }
             }
             catch (Exception ex)
