@@ -104,10 +104,10 @@ namespace SkillPrestigeCookingAdapter
                 EffectText = new[] { "Home-cooked meals are always at least silver" },
                 TierOneProfession = gourmet
             };
-            var heartyMeals = new TierTwoProfession
+            var intenseFlavors = new TierTwoProfession
             {
                 Id = 54,
-                DisplayName = "Home Cook",
+                DisplayName = "Intense Flavors",
                 EffectText = new[]
                 {
                     "Food buffs are one level stronger",
@@ -115,10 +115,10 @@ namespace SkillPrestigeCookingAdapter
                 },
                 TierOneProfession = satisfying
             };
-            var sousChef = new TierTwoProfession
+            var secretSpices = new TierTwoProfession
             {
                 Id = 55,
-                DisplayName = "Sous Chef",
+                DisplayName = "Secret Spices",
                 EffectText = new[]{"Provides a few random buffs when eating unbuffed food."},
                 TierOneProfession = satisfying
             };
@@ -129,8 +129,8 @@ namespace SkillPrestigeCookingAdapter
             };
             satisfying.TierTwoProfessions = new List<TierTwoProfession>
             {
-                heartyMeals,
-                sousChef
+                intenseFlavors,
+                secretSpices
             };
             return new List<Profession>
             {
@@ -138,8 +138,8 @@ namespace SkillPrestigeCookingAdapter
                 satisfying,
                 efficient,
                 professionalChef,
-                heartyMeals,
-                sousChef
+                intenseFlavors,
+                secretSpices
             };
         }
 
