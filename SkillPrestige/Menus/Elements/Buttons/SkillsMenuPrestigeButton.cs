@@ -1,6 +1,6 @@
 ﻿using StardewValley;
 
-namespace SkillPrestige.Menus.Buttons
+namespace SkillPrestige.Menus.Elements.Buttons
 {
     /// <summary>
     /// represents a prestige button on the skills page of Stardew Valley that opens the prestige menu.

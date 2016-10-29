@@ -6,7 +6,7 @@ using SkillPrestige.Menus.Dialogs;
 using StardewValley;
 using StardewValley.Menus;
 
-namespace SkillPrestige.Menus.Buttons
+namespace SkillPrestige.Menus.Elements.Buttons
 {
     /// <summary>
     /// Represents a prestige button inside the prestige menu.

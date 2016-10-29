@@ -4,6 +4,7 @@ using SkillPrestige.Professions;
 using StardewValley;
 using System;
 using System.Linq;
+using SkillPrestige.Menus.Elements.Buttons;
 
 namespace SkillPrestige.Menus.Dialogs
 {
@@ -48,7 +49,7 @@ namespace SkillPrestige.Menus.Dialogs
         private void DrawProfessionBox(SpriteBatch spriteBatch, Rectangle bounds)
         {
 
-            spriteBatch.Draw(Buttons.MinimalistProfessionButton.ProfessionButtonTexture, bounds, Color.White);
+            spriteBatch.Draw(MinimalistProfessionButton.ProfessionButtonTexture, bounds, Color.White);
             DrawProfessionTitleText(spriteBatch, bounds);
             DrawProfessionIcon(spriteBatch, bounds);
             DrawProfessionEffectText(spriteBatch, bounds);

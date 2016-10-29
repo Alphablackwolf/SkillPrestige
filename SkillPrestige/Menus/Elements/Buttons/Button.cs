@@ -5,7 +5,7 @@ using SkillPrestige.Logging;
 using StardewValley;
 using StardewValley.Menus;
 
-namespace SkillPrestige.Menus.Buttons
+namespace SkillPrestige.Menus.Elements.Buttons
 {
     /// <summary>
     /// Represnets a button in Stardew Valley.

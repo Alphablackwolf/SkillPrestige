@@ -7,7 +7,7 @@ using System.IO;
 using SkillPrestige.Commands;
 using SkillPrestige.Logging;
 using SkillPrestige.Menus;
-using SkillPrestige.Menus.Buttons;
+using SkillPrestige.Menus.Elements.Buttons;
 using SkillPrestige.Mods;
 using SkillPrestige.Professions;
 using StardewValley.Menus;

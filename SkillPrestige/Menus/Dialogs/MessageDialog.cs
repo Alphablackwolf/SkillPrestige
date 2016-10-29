@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.InputHandling;
 using SkillPrestige.Logging;
-using SkillPrestige.Menus.Buttons;
+using SkillPrestige.Menus.Elements.Buttons;
 using StardewValley;
 using StardewValley.Menus;
 

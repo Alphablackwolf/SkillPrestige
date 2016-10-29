@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.InputHandling;
 using SkillPrestige.Logging;
-using SkillPrestige.Menus.Buttons;
+using SkillPrestige.Menus.Elements.Buttons;
 using SkillPrestige.Professions;
 using StardewValley;
 using StardewValley.Menus;
@@ -20,6 +20,7 @@ namespace SkillPrestige.Menus
         private readonly Skill _skill;
         private readonly Prestige _prestige;
         private PrestigeButton _prestigeButton;
+        private TextureButton _settingsButton;
         private Vector2 _professionButtonRowStartLocation;
         private readonly int _rowPadding = Game1.tileSize / 3;
         private int _leftProfessionStartingXLocation;
@@ -54,6 +55,7 @@ namespace SkillPrestige.Menus
             _skill = skill;
             _prestige = prestige;
             InitiatePrestigeButton();
+            InitiateSettingsButton();
             _professionButtons = new List<MinimalistProfessionButton>();
             exitFunction = DeregisterMouseEvents;
         }
@@ -73,6 +75,34 @@ namespace SkillPrestige.Menus
                 Skill = _skill
             };
             Logger.LogVerbose("Prestige menu - Prestige button initiated.");
+        }
+
+        private void InitiateSettingsButton()
+        {
+            Logger.LogVerbose("Prestige menu - Initiating settings button...");
+            var buttonWidth = 16 * Game1.pixelZoom;
+            var buttonHeight = 16 * Game1.pixelZoom;
+            var rightEdgeOfDialog = xPositionOnScreen + width;
+            var bounds = new Rectangle(rightEdgeOfDialog - buttonWidth - Game1.tileSize, yPositionOnScreen, buttonWidth, buttonHeight);
+            _settingsButton = new TextureButton(bounds, Game1.mouseCursors, new Rectangle(64, 368, 16, 16), OpenSettingsMenu, "Open Settings Menu");
+            
+            Logger.LogVerbose("Prestige menu - Settings button initiated.");
+        }
+
+        private void OpenSettingsMenu()
+        {
+            Logger.LogVerbose("Prestige Menu - Initiating Settings Menu...");
+            var menuWidth = Game1.tileSize * 12;
+            var menuHeight = Game1.tileSize * 10;
+            var menuXCenter = (menuWidth + borderWidth * 2) / 2;
+            var menuYCenter = (menuHeight + borderWidth * 2) / 2;
+            var viewport = Game1.graphics.GraphicsDevice.Viewport;
+            var screenXCenter = (int)(viewport.Width * (1.0 / Game1.options.zoomLevel)) / 2;
+            var screenYCenter = (int)(viewport.Height * (1.0 / Game1.options.zoomLevel)) / 2;
+            var bounds = new Rectangle(screenXCenter - menuXCenter, screenYCenter - menuYCenter, menuWidth + borderWidth * 2, menuHeight + borderWidth * 2);
+            Game1.playSound("bigSelect");
+            Game1.activeClickableMenu = new SettingsMenu(bounds);
+            Logger.LogVerbose("Prestige Menu - Loaded Settings Menu.");
         }
 
         private void InitiateProfessionButtons()
@@ -96,7 +126,9 @@ namespace SkillPrestige.Menus
                 Mouse.MouseClicked += button.CheckForMouseClick;
             }
             Mouse.MouseMoved += _prestigeButton.CheckForMouseHover;
+            Mouse.MouseMoved += _settingsButton.CheckForMouseHover;
             Mouse.MouseClicked += _prestigeButton.CheckForMouseClick;
+            Mouse.MouseClicked += _settingsButton.CheckForMouseClick;
             Logger.LogVerbose("Prestige menu - Mouse events registered.");
         }
 
@@ -110,7 +142,9 @@ namespace SkillPrestige.Menus
                 Mouse.MouseClicked -= button.CheckForMouseClick;
             }
             Mouse.MouseMoved -= _prestigeButton.CheckForMouseHover;
+            Mouse.MouseMoved -= _settingsButton.CheckForMouseHover;
             Mouse.MouseClicked -= _prestigeButton.CheckForMouseClick;
+            Mouse.MouseClicked -= _settingsButton.CheckForMouseClick;
             _buttonClickRegistered = false;
             Logger.LogVerbose("Prestige menu - Mouse events deregistered.");
         }
@@ -195,6 +229,7 @@ namespace SkillPrestige.Menus
 
             Game1.drawDialogueBox(xPositionOnScreen, yPositionOnScreen, width, height, false, true);
             upperRightCloseButton?.draw(spriteBatch);
+            DrawSettingsButton(spriteBatch);
             DrawHeader(spriteBatch);
             DrawPrestigePoints(spriteBatch);
             _prestigeButton.Draw(spriteBatch);
@@ -205,6 +240,12 @@ namespace SkillPrestige.Menus
             DrawLevelTenProfessionCost(spriteBatch);
             DrawButtonHoverText(spriteBatch);
             Mouse.DrawCursor(spriteBatch);
+        }
+
+        private void DrawSettingsButton(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Game1.mouseCursors, new Vector2(_settingsButton.Bounds.X, _settingsButton.Bounds.Y), _settingsButton.SourceRectangle, Color.White, 0.0f, Vector2.Zero, Game1.pixelZoom, SpriteEffects.None, 0.0001f);
+
         }
 
         private void DrawHeader(SpriteBatch spriteBatch)

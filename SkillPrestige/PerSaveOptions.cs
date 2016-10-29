@@ -82,7 +82,7 @@ namespace SkillPrestige
             Logger.LogInformation("Successfully created new per save options file.");
         }
 
-        private static void Save()
+        public static void Save()
         {
             File.WriteAllLines(SkillPrestigeMod.CurrentSaveOptionsPath, new[] { JsonConvert.SerializeObject(_instance) });
             Logger.LogInformation("Per save options file saved.");

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.InputHandling;
 using SkillPrestige.Logging;
-using SkillPrestige.Menus.Buttons;
+using SkillPrestige.Menus.Elements.Buttons;
 using StardewValley;
 using StardewValley.Menus;
 
@@ -31,7 +31,7 @@ namespace SkillPrestige.Menus
                 var height = 8 * Game1.pixelZoom;
                 var yOffset = (int) Math.Floor(Game1.tileSize/2.5);
                 var yPadding = (int) Math.Floor(Game1.tileSize * 1.05);
-                var xOffset = skillsPage.width + Game1.tileSize / 2;
+                var xOffset = skillsPage.width + Game1.tileSize;
                 var bounds = new Rectangle(skillsPage.xPositionOnScreen + xOffset, skillsPage.yPositionOnScreen + yPadding + yOffset * skill.SkillScreenPosition + skill.SkillScreenPosition * height, width, height);
                 var prestigeButton = new TextureButton(bounds, SkillPrestigeMod.PrestigeIconTexture, new Rectangle(0, 0, 32, 32), () => OpenPrestigeMenu(skill), "Click to open the Prestige menu.");
                 PrestigeButtons.Add(prestigeButton);
