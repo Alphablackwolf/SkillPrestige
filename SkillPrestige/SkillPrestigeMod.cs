@@ -41,6 +41,8 @@ namespace SkillPrestige
         public static string CurrentSaveOptionsPath { get; private set; }
 
         public static Texture2D PrestigeIconTexture { get; private set; }
+
+        public static Texture2D CheckmarkTexture { get; private set; }
         
 
         #endregion
@@ -119,10 +121,16 @@ namespace SkillPrestige
             Logger.LogInformation("Loading sprites...");
             Button.DefaultButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\DialogBoxGreen");
             MinimalistProfessionButton.ProfessionButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\boardGameBorder");
+
             var prestigeIconFilePath = Path.Combine(ModPath, @"PrestigeIcon.png");
             Logger.LogInformation($"Prestige Icon Path: {prestigeIconFilePath}");
-            var fileStream = new FileStream(prestigeIconFilePath, FileMode.Open);
-            PrestigeIconTexture = Texture2D.FromStream(Game1.graphics.GraphicsDevice, fileStream);
+            var prestigeIconFileStream = new FileStream(prestigeIconFilePath, FileMode.Open);
+            PrestigeIconTexture = Texture2D.FromStream(Game1.graphics.GraphicsDevice, prestigeIconFileStream);
+
+            var checkmarkFilePath = Path.Combine(ModPath, @"Checkmark.png");
+            Logger.LogInformation($"Checkmark Path: {checkmarkFilePath}");
+            var checkmarkFileStream = new FileStream(checkmarkFilePath, FileMode.Open);
+            CheckmarkTexture = Texture2D.FromStream(Game1.graphics.GraphicsDevice, checkmarkFileStream);
             Logger.LogInformation("Sprites loaded.");
         }
 

@@ -32,6 +32,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
         public bool CanBeAfforded { get; set; }
         private bool IsDisabled => Selected || !IsObtainable || !CanBeAfforded;
         private Color DrawColor => IsDisabled ? Color.Gray : Color.White;
+        private Rectangle _checkmarkSourceRectangle = new Rectangle(0,0, 64,64);
 
         private static int TextYOffset => 4 * Game1.pixelZoom;
         private Vector2 _iconLocation;
@@ -53,6 +54,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
             spriteBatch.Draw(ButtonTexture, Bounds, DrawColor);
             DrawIcon(spriteBatch);
             DrawText(spriteBatch);
+            DrawCheckmark(spriteBatch);
         }
 
         private void DrawIcon(SpriteBatch spriteBatch)
@@ -71,6 +73,15 @@ namespace SkillPrestige.Menus.Elements.Buttons
             var textYLocationRelativeToButton = TextYOffset*2 + Profession.IconSourceRectangle.Height*Game1.pixelZoom;
             var locationOfTextRelativeToButton = new Vector2(textXLocationRelativeToButton, textYLocationRelativeToButton);
             DrawTitleText(spriteBatch, locationOfTextRelativeToButton);
+        }
+
+        private void DrawCheckmark(SpriteBatch spriteBatch)
+        {
+            if (!Selected) return;
+            var locationOfCheckmarkRelativeToButton = new Vector2(Bounds.Width - _checkmarkSourceRectangle.Width*Game1.pixelZoom/8, 0);
+            var buttonLocation = new Vector2(Bounds.X, Bounds.Y);
+            var checkmarkLocation = buttonLocation + locationOfCheckmarkRelativeToButton;
+            spriteBatch.Draw(SkillPrestigeMod.CheckmarkTexture, checkmarkLocation, _checkmarkSourceRectangle, Color.White, 0f, Vector2.Zero, Game1.pixelZoom / 4f, SpriteEffects.None, 1f);
         }
 
         protected override void OnMouseHover()

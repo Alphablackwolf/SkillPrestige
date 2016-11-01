@@ -32,8 +32,8 @@ namespace SkillPrestige.Menus
             get
             {
                 var viewport = Game1.graphics.GraphicsDevice.Viewport;
-                var screenXCenter = viewport.Width / 2;
-                var screenYCenter = viewport.Height / 2;
+                var screenXCenter = (int)(viewport.Width * (1.0 / Game1.options.zoomLevel)) / 2;
+                var screenYCenter = (int)(viewport.Height * (1.0 / Game1.options.zoomLevel)) / 2;
                 var dialogWidth = Game1.tileSize*10;
                 var dialogHeight = Game1.tileSize*8;
                 var xLocation = screenXCenter - width/2;
