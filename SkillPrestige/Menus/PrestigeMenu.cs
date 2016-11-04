@@ -69,7 +69,7 @@ namespace SkillPrestige.Menus
             var rightEdgeOfDialog = xPositionOnScreen + width;
             var bounds = new Rectangle(rightEdgeOfDialog - spaceToClearSideBorder - buttonWidth,
                 yPositionOnScreen + yOffset + (int)Math.Floor(Game1.tileSize * 3.15), buttonWidth, buttonHeight);
-            _prestigeButton = new PrestigeButton(Game1.player.getEffectiveSkillLevel(_skill.Type.Ordinal) < 10)
+            _prestigeButton = new PrestigeButton(_skill.GetSkillLevel() < 10)
             {
                 Bounds = bounds,
                 Skill = _skill
@@ -99,7 +99,8 @@ namespace SkillPrestige.Menus
             var viewport = Game1.graphics.GraphicsDevice.Viewport;
             var screenXCenter = (int)(viewport.Width * (1.0 / Game1.options.zoomLevel)) / 2;
             var screenYCenter = (int)(viewport.Height * (1.0 / Game1.options.zoomLevel)) / 2;
-            var bounds = new Rectangle(screenXCenter - menuXCenter, screenYCenter - menuYCenter, menuWidth + borderWidth * 2, menuHeight + borderWidth * 2);
+            var bounds = new Rectangle(screenXCenter - menuXCenter, screenYCenter - menuYCenter,
+                menuWidth + borderWidth*2, menuHeight + borderWidth*2);
             Game1.playSound("bigSelect");
             exitThisMenu(false);
             Game1.activeClickableMenu = new SettingsMenu(bounds);
