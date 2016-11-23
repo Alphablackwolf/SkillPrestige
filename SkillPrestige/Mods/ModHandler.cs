@@ -26,46 +26,40 @@ namespace SkillPrestige.Mods
                 return;
             }
             var targetInterface = typeof(ISkillMod);
-            try
+            var concreteModTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(x => x.GetTypesSafely())
+                .Where(x => targetInterface.IsAssignableFrom(x) && !x.IsAbstract).ToList();
+            Logger.LogInformation($"{concreteModTypes.Count} skill mods found.");
+            foreach (var mod in concreteModTypes)
             {
-                var concreteModTypes = AppDomain.CurrentDomain.GetAssemblies()
-                    .SelectMany(x => x.GetTypes())
-                    .Where(x => targetInterface.IsAssignableFrom(x) && !x.IsAbstract);
-                foreach (var mod in concreteModTypes)
+                ISkillMod skillMod;
+                try
                 {
-                    ISkillMod skillMod;
-                    try
-                    {
-                        skillMod = (ISkillMod) Activator.CreateInstance(mod);
-                    }
-                    catch (Exception exception)
-                        when (exception.GetType().In(typeof(ArgumentNullException), typeof(ArgumentException)))
-                    {
-                        Logger.LogWarning(
-                            $"Attempt to instantiate mod of type {mod.FullName} failed: {Environment.NewLine} {exception}");
-                        continue;
-                    }
-                    catch (Exception exception)
-                        when (exception.GetType().In(typeof(NotSupportedException), typeof(TargetInvocationException),
-                            typeof(MethodAccessException), typeof(MemberAccessException),
-                            typeof(InvalidComObjectException), typeof(MissingMethodException),
-                            typeof(COMException), typeof(TypeLoadException)))
-                    {
-                        Logger.LogError(
-                            $"Attempt to instantiate mod of type {mod.FullName} failed: {Environment.NewLine} {exception}");
-                        continue;
-                    }
-                    RegisterMod(skillMod);
-                    Logger.LogInformation("Internally loaded mods registered.");
+                    skillMod = (ISkillMod)Activator.CreateInstance(mod);
                 }
+                catch (Exception exception)
+                    when (exception.GetType().In(typeof(ArgumentNullException), typeof(ArgumentException)))
+                {
+                    Logger.LogWarning(
+                        $"Attempt to instantiate mod of type {mod.FullName} failed: {Environment.NewLine} {exception}");
+                    continue;
+                }
+                catch (Exception exception)
+                    when (exception.GetType().In(typeof(NotSupportedException), typeof(TargetInvocationException),
+                        typeof(MethodAccessException), typeof(MemberAccessException),
+                        typeof(InvalidComObjectException), typeof(MissingMethodException),
+                        typeof(COMException), typeof(TypeLoadException)))
+                {
+                    Logger.LogError(
+                        $"Attempt to instantiate mod of type {mod.FullName} failed: {Environment.NewLine} {exception}");
+                    continue;
+                }
+                RegisterMod(skillMod);
+                Logger.LogInformation("Internally loaded mods registered.");
             }
-            catch (Exception ex)
-            {
-                Logger.LogCritical("Failure to get full list types, cannot load skill mods so compatability with other skill mods is now stopped.");
-            }
-           
+
         }
-        
+
         /// <summary>
         /// Registers another skill mod to work with the skill prestige system.
         /// </summary>

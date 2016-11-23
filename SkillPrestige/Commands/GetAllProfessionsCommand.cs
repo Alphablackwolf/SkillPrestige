@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using SkillPrestige.Logging;
-using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 
@@ -22,7 +21,7 @@ namespace SkillPrestige.Commands
             const string professionSeparator = ", ";
             if (Game1.player == null)
             {
-                Log.AsyncR("A game file must be loaded in order to run this command.");
+                SkillPrestigeMod.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
             Logger.LogInformation("getting list of all professions...");
@@ -30,7 +29,7 @@ namespace SkillPrestige.Commands
             {
                 var allObtainedProfessions = skill.Professions.Where(x => Game1.player.professions.Contains(x.Id));
                 var professionNames = string.Join(professionSeparator, allObtainedProfessions.Select(x => x.DisplayName).ToArray()).TrimEnd(professionSeparator.ToCharArray());
-                Log.AsyncG($"{skill.Type.Name} skill (level: {skill.GetSkillLevel()}) professions: {professionNames}");
+                SkillPrestigeMod.LogMonitor.Log($"{skill.Type.Name} skill (level: {skill.GetSkillLevel()}) professions: {professionNames}");
             }
             Logger.LogInformation("list of all professions retrieved.");
         }

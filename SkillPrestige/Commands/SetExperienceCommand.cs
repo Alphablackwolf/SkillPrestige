@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Logging;
-using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 
@@ -35,24 +34,24 @@ namespace SkillPrestige.Commands
         {
             if (e.Command.CalledArgs.Length <= 1)
             {
-                Log.AsyncR("<skill> and <value> must be specified");
+                SkillPrestigeMod.LogMonitor.Log("<skill> and <value> must be specified");
                 return;
             }
             var skillArgument = e.Command.CalledArgs[0];
             if (!Skill.AllSkills.Select(x => x.Type.Name).Contains(skillArgument, StringComparer.InvariantCultureIgnoreCase))
             {
-                Log.AsyncR("<skill> is invalid");
+                SkillPrestigeMod.LogMonitor.Log("<skill> is invalid");
                 return;
             }
             int experienceArgument;
             if (!int.TryParse(e.Command.CalledArgs[1], out experienceArgument))
             {
-                Log.LogValueNotInt32();
+                SkillPrestigeMod.LogMonitor.Log("experience must be an integer.");
                 return;
             }
             if (Game1.player == null)
             {
-                Log.AsyncR("A game file must be loaded in order to run this command.");
+                SkillPrestigeMod.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
             Logger.LogInformation("Setting experience level...");

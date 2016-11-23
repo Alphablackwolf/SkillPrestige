@@ -22,23 +22,23 @@ namespace SkillPrestige
     {
         #region Manifest Data
 
-        public static string Author => "Alphablackwolf";
+        private static string Author => "Alphablackwolf";
 
-        public static string Description => "A mod that allows you to reset your skill levels from 10 to 0 in order to permanently obtain professions.";
-
-        public static System.Version Version => typeof(SkillPrestigeMod).Assembly.GetName().Version;
+        private static System.Version Version => typeof(SkillPrestigeMod).Assembly.GetName().Version;
 
         public static string Name => "Skill Prestige Mod";
 
-        public static string DllName => $"{typeof(SkillPrestigeMod).Namespace}.dll";
-
-        public static string Guid => "6b843e60-c8fc-4a25-a67b-4a38ac8dcf9b";
+        //public static string Guid => "6b843e60-c8fc-4a25-a67b-4a38ac8dcf9b";
 
         public static string ModPath { get; private set; }
 
         public static string OptionsPath { get; private set; }
 
+        public static IMonitor LogMonitor { get; private set; }
+
         public static string CurrentSaveOptionsPath { get; private set; }
+
+        public static string PerSaveOptionsDirectory { get; private set; }
 
         public static Texture2D PrestigeIconTexture { get; private set; }
 
@@ -47,10 +47,12 @@ namespace SkillPrestige
 
         #endregion
 
-        public override void Entry(params object[] objects)
+        public override void Entry(IModHelper helper)
         {
-            ModPath = PathOnDisk;
-            OptionsPath = BaseConfigPath;
+            LogMonitor = Monitor;
+            ModPath = helper.DirectoryPath;
+            PerSaveOptionsDirectory = Path.Combine(ModPath, "psconfigs/");
+            OptionsPath = Path.Combine(ModPath, "config.json");
             Logger.LogInformation("Detected game entry.");
             PrestigeSaveData.Instance.Read();
             RegisterGameEvents();
@@ -102,10 +104,10 @@ namespace SkillPrestige
             HandleState(args);
         }
 
-        private void LocationChanged(object sender, EventArgs args)
+        private static void LocationChanged(object sender, EventArgs args)
         {
             Logger.LogVerbose("Location change detected.");
-            CurrentSaveOptionsPath = string.IsNullOrWhiteSpace(PerSaveConfigPath) ? Path.Combine(PerSaveConfigFolder, $@"{Game1.player.name.RemoveNumerics()}_{Game1.uniqueIDForThisGame}.json") : PerSaveConfigPath;
+            CurrentSaveOptionsPath = Path.Combine(ModPath, "psconfigs/", $@"{Game1.player.name.RemoveNonAlphanumerics()}_{Game1.uniqueIDForThisGame}.json");
             PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
             PerSaveOptions.Instance.Check();
             Profession.AddMissingProfessions();

@@ -84,6 +84,7 @@ namespace SkillPrestige
 
         public static void Save()
         {
+            Directory.CreateDirectory(SkillPrestigeMod.PerSaveOptionsDirectory);
             File.WriteAllLines(SkillPrestigeMod.CurrentSaveOptionsPath, new[] { JsonConvert.SerializeObject(_instance) });
             Logger.LogInformation("Per save options file saved.");
         }

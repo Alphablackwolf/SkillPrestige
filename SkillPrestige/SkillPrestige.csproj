@@ -61,6 +61,7 @@
     <Compile Include="Commands\ResetPrestigeCommand.cs" />
     <Compile Include="Commands\ResetAllPrestigeCommand.cs" />
     <Compile Include="Commands\ResetAllProfessionsCommand.cs" />
+    <Compile Include="Commands\CheckForModCommand.cs" />
     <Compile Include="Commands\SetExperienceCommand.cs" />
     <Compile Include="Commands\SkillPrestigeCommand.cs" />
     <Compile Include="JsonNet.PrivateSettersContractResolvers\MemberInfoExtensions.cs" />
@@ -79,7 +80,6 @@
     <Compile Include="Mods\LuckSkill\LuckSkillTypeRegistration.cs" />
     <Compile Include="Mods\LuckSkill\LuckRegistration.cs" />
     <Compile Include="Mods\LuckSkill\LuckProfessions.cs" />
-    <Compile Include="Menus\Elements\Buttons\ProfessionButton.cs" />
     <Compile Include="PerSaveOptions.cs" />
     <Compile Include="Professions\CombatProfessions.cs" />
     <Compile Include="Professions\MiningProfessions.cs" />
@@ -97,7 +97,6 @@
     <Compile Include="Professions\TierTwoProfession.cs" />
     <Compile Include="Professions\TierOneProfession.cs" />
     <Compile Include="Professions\Profession.cs" />
-    <Compile Include="Menus\Elements\Buttons\SkillsMenuPrestigeButton.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Professions\DefenderSpecialHandling.cs" />
     <Compile Include="Professions\FighterSpecialHandling.cs" />

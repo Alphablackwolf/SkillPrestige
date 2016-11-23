@@ -20,7 +20,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
             IsDisabled = isDisabled;
         }
 
-        public Skill Skill { get; set; }
+        public Skill Skill { private get; set; }
         private bool IsDisabled { get; }
         private Color DisplayColor => IsDisabled ? Color.Gray : Color.White;
 

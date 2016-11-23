@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Logging;
-using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 
@@ -35,24 +34,24 @@ namespace SkillPrestige.Commands
         {
             if (e.Command.CalledArgs.Length < 1)
             {
-                Log.AsyncR("<profession> must be specified");
+                SkillPrestigeMod.LogMonitor.Log("<profession> must be specified");
                 return;
             }
             var professionArgument = e.Command.CalledArgs[0];
             if (!Skill.AllSkills.SelectMany(x => x.Professions).Select(x => x.DisplayName).Contains(professionArgument, StringComparer.InvariantCultureIgnoreCase))
             {
-                Log.AsyncR("<profession> is invalid");
+                SkillPrestigeMod.LogMonitor.Log("<profession> is invalid");
                 return;
             }
             if (Game1.player == null)
             {
-                Log.AsyncR("A game file must be loaded in order to run this command.");
+                SkillPrestigeMod.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
             var profession = Skill.AllSkills.SelectMany(x => x.Professions).Single(x => x.DisplayName.Equals(professionArgument, StringComparison.InvariantCultureIgnoreCase));
             if (Game1.player.professions.Contains(profession.Id))
             {
-                Log.AsyncR("profession already added.");
+                SkillPrestigeMod.LogMonitor.Log("profession already added.");
             }
             Logger.LogInformation($"Adding profession {professionArgument}...");
             Game1.player.professions.Add(profession.Id);

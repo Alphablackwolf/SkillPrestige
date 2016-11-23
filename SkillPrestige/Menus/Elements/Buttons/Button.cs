@@ -56,6 +56,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
             IsHovered = true;
         }
 
+        // ReSharper disable once VirtualMemberNeverOverridden.Global
         protected virtual void OnMouseLeave()
         {
             IsHovered = false;
@@ -70,6 +71,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
         /// </summary>
         protected ClickableTextureComponent ClickableTextureComponent;
 
+        // ReSharper disable once UnusedMemberInSuper.Global
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(ButtonTexture, Bounds, Color.White);

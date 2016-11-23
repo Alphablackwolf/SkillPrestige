@@ -27,9 +27,9 @@ namespace SkillPrestige.Menus.Elements.Buttons
         public static Texture2D ProfessionButtonTexture { get; set; }
 
         public Profession Profession { get; set; }
-        public bool Selected { get; set; }
-        public bool IsObtainable { get; set; }
-        public bool CanBeAfforded { get; set; }
+        public bool Selected { private get; set; }
+        public bool IsObtainable { private get; set; }
+        public bool CanBeAfforded { private get; set; }
         private bool IsDisabled => Selected || !IsObtainable || !CanBeAfforded;
         private Color DrawColor => IsDisabled ? Color.Gray : Color.White;
         private Rectangle _checkmarkSourceRectangle = new Rectangle(0,0, 64,64);

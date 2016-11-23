@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using SkillPrestige.Logging;
-using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 
@@ -22,10 +21,10 @@ namespace SkillPrestige.Commands
         {
             if (Game1.player == null)
             {
-                Log.AsyncR("A game file must be loaded in order to run this command.");
+                SkillPrestigeMod.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
-            Log.AsyncY("This command will remove all of your character's professions. " + Environment.NewLine +
+            SkillPrestigeMod.LogMonitor.Log("This command will remove all of your character's professions. " + Environment.NewLine +
                        "If you have read this and wish to continue confirm with 'y' or 'yes'");
             var response = Console.ReadLine();
             if (response == null ||

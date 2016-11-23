@@ -12,6 +12,7 @@ namespace SkillPrestige.Professions
         /// <summary>
         /// The tier two (available at level 10) professions that are available when this profession is chosen.
         /// </summary>
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public IEnumerable<TierTwoProfession> TierTwoProfessions { get; set; }
     }
 }

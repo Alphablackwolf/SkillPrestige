@@ -15,7 +15,7 @@ namespace SkillPrestige
         /// <summary>
         /// The logging verbosity for the mod. A log level set to Verbose will log all entries.
         /// </summary>
-        public LogLevel LogLevel { get; set; }
+        public LogLevel LogLevel { get; private set; }
 
         /// <summary>
         /// Whether or not testing mode is enabled, which adds testing specific commands to the system.
@@ -37,17 +37,17 @@ namespace SkillPrestige
 
        private static void LoadOptions()
         {
-            Logger.LogPriorToOptionsLoaded($"options file path: {SkillPrestigeMod.OptionsPath}");
+            Logger.LogDisplay($"options file path: {SkillPrestigeMod.OptionsPath}");
             if (!File.Exists(SkillPrestigeMod.OptionsPath)) SetupOptionsFile();
             var settings = new JsonSerializerSettings { ContractResolver = new PrivateSetterContractResolver() };
-            Logger.LogPriorToOptionsLoaded("Deserializing options file...");
+            Logger.LogDisplay("Deserializing options file...");
             _instance = JsonConvert.DeserializeObject<Options>(File.ReadAllText(SkillPrestigeMod.OptionsPath), settings);
             Logger.LogInformation("Options loaded.");
         }
 
         private static void SetupOptionsFile()
         {
-            Logger.LogPriorToOptionsLoaded("Creating new options file...");
+            Logger.LogDisplay("Creating new options file...");
             try
             {
                 Instance.LogLevel = LogLevel.Warning;

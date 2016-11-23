@@ -36,6 +36,7 @@ namespace SkillPrestige
         /// <param name="instance">The instance of the type you wish to set the field value of.</param>
         /// <param name="fieldName">>The name of the field you wish to set.</param>
         /// <param name="value">The value you wish to set the field to.</param>
+        // ReSharper disable once UnusedMember.Global
         public static void SetInstanceField<T, TMember>(this T instance, string fieldName, TMember value)
         {
             //Logger.LogVerbose($"Obtaining instance field {fieldName} on object of type {instance.GetType().FullName}");
@@ -99,7 +100,7 @@ namespace SkillPrestige
             }
             catch (ReflectionTypeLoadException exception)
             {
-                Logger.LogInformation($"Failed to load a type from assembly {assembly.FullName}. details: {Environment.NewLine} {exception} ");
+                Logger.LogInformation($"Failed to load a type from assembly {assembly.FullName}. details: {Environment.NewLine} {exception}");
                 return exception.Types.Where(x => x != null);
             }
         }
@@ -189,6 +190,19 @@ namespace SkillPrestige
             return items.Contains(value);
         }
 
-
+        /// <summary>
+        /// Removes all non-alphanumeric characters.
+        /// </summary>
+        /// <param name="value">The string to manipulate.</param>
+        /// <returns>The value string given, sans any non-alphanumeric characters.</returns>
+        public static string RemoveNonAlphanumerics(this string value)
+        {
+            foreach (var character in value)
+            {
+                if (!char.IsLetterOrDigit(character))
+                    value = value.Replace(character.ToString(), "");
+            }
+            return value;
+        }
     }
 }

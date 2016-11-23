@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using SkillPrestige.Logging;
-using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 
@@ -22,10 +21,10 @@ namespace SkillPrestige.Commands
         {
             if (Game1.player == null)
             {
-                Log.AsyncR("A game file must be loaded in order to run this command.");
+                SkillPrestigeMod.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
-            Log.AsyncY("This command will reset your character's prestiged selections and prestige points. " + Environment.NewLine +
+            SkillPrestigeMod.LogMonitor.Log("This command will reset your character's prestiged selections and prestige points. " + Environment.NewLine +
                        "it is recommended you run the player_resetAllProfessions command after running this command." + Environment.NewLine +
                        "Please note that this command by itself will only clear the prestige data located in the skills prestige mod folder, " +
                        "and *not* the player's gained professions. once this is run all professions already prestiged/purchased will still belong to the player." + Environment.NewLine +

@@ -14,7 +14,7 @@ namespace SkillPrestige.SkillTypes
         {
             Logger.LogInformation("Registering skill types...");
             var concreteSkillTypeRegistrations = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypesSafely()).Where(x => typeof(ISkillTypeRegistration).IsAssignableFrom(x) && x.IsClass && !x.IsAbstract).ToList();
-            Logger.LogVerbose($"concerete skill type registration count: {concreteSkillTypeRegistrations.Count()}");
+            Logger.LogVerbose($"concerete skill type registration count: {concreteSkillTypeRegistrations.Count}");
             foreach (var registration in concreteSkillTypeRegistrations)
             {
                 Logger.LogVerbose($"Creating instance of type {registration.FullName}...");

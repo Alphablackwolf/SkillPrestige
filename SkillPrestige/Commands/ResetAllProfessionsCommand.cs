@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Logging;
 using SkillPrestige.Professions;
-using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 
@@ -24,14 +23,14 @@ namespace SkillPrestige.Commands
         {
             if (Type.GetType("AllProfessions.AllProfessions, AllProfessions") != null)
             {
-                Log.AsyncR("Command cannot be run while AllProfessions is still installed. Please remove AllProfessions before proceeding.");
+                SkillPrestigeMod.LogMonitor.Log("Command cannot be run while AllProfessions is still installed. Please remove AllProfessions before proceeding.");
             }
                 if (Game1.player == null)
             {
-                Log.AsyncR("A game file must be loaded in order to run this command.");
+                SkillPrestigeMod.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
-            Log.AsyncY("This command will reset your character's professions to the first profession available for each skill that your skill level warrants. " + Environment.NewLine +
+            SkillPrestigeMod.LogMonitor.Log("This command will reset your character's professions to the first profession available for each skill that your skill level warrants. " + Environment.NewLine +
                        "For example, if your farming skill is level 10, you will only have the Rancher and Coopmaster skills after this command has been run. " + Environment.NewLine +
                        "If you would prefer to choose your professions, use the player_clearallprofessions command, followed by the player_addprofession command for each profession you wish to add." + Environment.NewLine +
                        "If you have read this and wish to continue confirm with 'y' or 'yes'");

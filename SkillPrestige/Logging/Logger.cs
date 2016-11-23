@@ -1,5 +1,4 @@
 ﻿using System;
-using StardewModdingAPI;
 
 namespace SkillPrestige.Logging
 {
@@ -10,47 +9,42 @@ namespace SkillPrestige.Logging
     {
         public static void LogVerbose(string message)
         {
-            if(Options.Instance.LogLevel >= LogLevel.Verbose) Log.Async(FormatMessage(message));
+            if(Options.Instance.LogLevel >= LogLevel.Verbose) SkillPrestigeMod.LogMonitor.Log(FormatMessage(message), StardewModdingAPI.LogLevel.Trace);
         }
 
         public static void LogInformation(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Information) Log.AsyncColour(FormatMessage(message), ConsoleColor.White);
+            if (Options.Instance.LogLevel >= LogLevel.Information) SkillPrestigeMod.LogMonitor.Log(FormatMessage(message), StardewModdingAPI.LogLevel.Info);
         }
 
         public static void LogWarning(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Warning) Log.AsyncY(FormatMessage(message));
+            if (Options.Instance.LogLevel >= LogLevel.Warning) SkillPrestigeMod.LogMonitor.Log(FormatMessage(message), StardewModdingAPI.LogLevel.Warn);
         }
 
         public static void LogError(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Error) Log.AsyncO(FormatMessage(message).AddErrorText());
+            if (Options.Instance.LogLevel >= LogLevel.Error) SkillPrestigeMod.LogMonitor.Log(FormatMessage(message).AddErrorText(), StardewModdingAPI.LogLevel.Error);
         }
 
         public static void LogCritical(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Critical) Log.AsyncR(FormatMessage(message).AddErrorText());
+            if (Options.Instance.LogLevel >= LogLevel.Critical) SkillPrestigeMod.LogMonitor.Log(FormatMessage(message).AddErrorText(), StardewModdingAPI.LogLevel.Alert);
         }
 
         public static void LogCriticalWarning(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Critical) Log.AsyncR(FormatMessage(message));
+            if (Options.Instance.LogLevel >= LogLevel.Critical) SkillPrestigeMod.LogMonitor.Log(FormatMessage(message), StardewModdingAPI.LogLevel.Alert);
         }
 
         public static void LogDisplay(string message)
         {
-            Log.AsyncG(message);
-        }
-
-        public static void LogPriorToOptionsLoaded(string message)
-        {
-            Log.AsyncColour(FormatMessage(message), ConsoleColor.White);
+            SkillPrestigeMod.LogMonitor.Log(FormatMessage(message));
         }
 
         public static void LogOptionsError(string message)
         {
-            Log.AsyncR(FormatMessage(message).AddErrorText());
+            SkillPrestigeMod.LogMonitor.Log(FormatMessage(message).AddErrorText());
         }
 
         private static string FormatMessage(string message)

@@ -34,6 +34,7 @@ namespace SkillPrestige
         /// </summary>
         public Rectangle SourceRectangleForSkillIcon { get; set; }
 
+        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
         public Texture2D SkillIconTexture { get; set; } = Game1.buffsIcons;
 
         /// <summary>
