@@ -114,6 +114,7 @@
     <Compile Include="PrestigeSet.cs" />
     <Compile Include="Mods\ModHandler.cs" />
     <Compile Include="Logging\Logger.cs" />
+    <Compile Include="ExperienceHandler.cs" />
     <Compile Include="Skill.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="SkillPrestigeMod.cs" />

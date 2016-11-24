@@ -43,6 +43,8 @@ namespace SkillPrestige
         public static Texture2D PrestigeIconTexture { get; private set; }
 
         public static Texture2D CheckmarkTexture { get; private set; }
+
+        public static bool SaveIsLoaded { get; private set; }
         
 
         #endregion
@@ -84,6 +86,7 @@ namespace SkillPrestige
             LocationEvents.CurrentLocationChanged += LocationChanged;
             GraphicsEvents.OnPostRenderGuiEvent += PostRenderGuiEvent;
             GameEvents.UpdateTick += GameUpdate;
+            GameEvents.OneSecondTick += UpdateExperience;
             Logger.LogInformation("Game events registered.");
         }
 
@@ -110,6 +113,7 @@ namespace SkillPrestige
             CurrentSaveOptionsPath = Path.Combine(ModPath, "psconfigs/", $@"{Game1.player.name.RemoveNonAlphanumerics()}_{Game1.uniqueIDForThisGame}.json");
             PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
             PerSaveOptions.Instance.Check();
+            SaveIsLoaded = true;
             Profession.AddMissingProfessions();
         }
 
@@ -140,6 +144,11 @@ namespace SkillPrestige
         {
             CheckForGameSave();
             CheckForLevelUpMenu();
+        }
+
+        private static void UpdateExperience(object sender, EventArgs args)
+        {
+            if(SaveIsLoaded) ExperienceHandler.UpdateExperience();
         }
 
         private static void CheckForGameSave()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Logging;
@@ -14,18 +15,22 @@ namespace SkillPrestige.Menus.Elements.Buttons
     public class PrestigeButton : Button
     {
 
-        public PrestigeButton(bool isDisabled)
+        public PrestigeButton(bool isDisabled, Skill skill)
         {
             TitleTextFont = Game1.dialogueFont;
             IsDisabled = isDisabled;
+            Skill = skill;
         }
 
-        public Skill Skill { private get; set; }
+        private Skill Skill { get; }
         private bool IsDisabled { get; }
         private Color DisplayColor => IsDisabled ? Color.Gray : Color.White;
 
 
-        protected override string HoverText => IsDisabled ? $"You must reach level 10 in this skill and then{Environment.NewLine}sleep at least once in order to prestige this skill." : $"Click to prestige your {Skill?.Type?.Name} skill";
+        protected override string HoverText => IsDisabled 
+            ? $"You must reach level 10 in this skill and then{Environment.NewLine}sleep at least once in order to prestige this skill." 
+            : $"Click to prestige your {Skill?.Type?.Name} skill.{Environment.NewLine}" +
+              $"{(PerSaveOptions.Instance.UseExperienceMultiplier ? $"Next XP Bonus: {(int)Math.Floor((PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == Skill?.Type).PrestigePoints + 1) * PerSaveOptions.Instance.ExperienceMultiplier * 100)}%" : string.Empty)}";
         protected override string Text => "Prestige";
 
         public override void Draw(SpriteBatch spriteBatch)  
