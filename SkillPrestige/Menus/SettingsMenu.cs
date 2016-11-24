@@ -22,6 +22,7 @@ namespace SkillPrestige.Menus
         private Checkbox _useExperienceMultiplierCheckbox;
         private IntegerEditor _tierOneCostEditor;
         private IntegerEditor _tierTwoCostEditor;
+        private IntegerEditor _pointsPerPrestigeEditor;
 
         public SettingsMenu(Rectangle bounds) : base(bounds.X, bounds.Y, bounds.Width, bounds.Height, true)
         {
@@ -42,6 +43,7 @@ namespace SkillPrestige.Menus
             Mouse.MouseClicked += _useExperienceMultiplierCheckbox.CheckForMouseClick;
             _tierOneCostEditor.RegisterMouseEvents();
             _tierTwoCostEditor.RegisterMouseEvents();
+            _pointsPerPrestigeEditor.RegisterMouseEvents();
             Logger.LogVerbose("Settings menu - Mouse events registered.");
         }
 
@@ -55,6 +57,7 @@ namespace SkillPrestige.Menus
             Mouse.MouseClicked -= _useExperienceMultiplierCheckbox.CheckForMouseClick;
             _tierOneCostEditor.DeregisterMouseEvents();
             _tierTwoCostEditor.DeregisterMouseEvents();
+            _pointsPerPrestigeEditor.DeregisterMouseEvents();
             _buttonClickRegistered = false;
             Logger.LogVerbose("Settings menu - Mouse events deregistered.");
         }
@@ -78,6 +81,9 @@ namespace SkillPrestige.Menus
             var tierTwoEditorLocation = tierOneEditorLocation;
             tierTwoEditorLocation.Y += _tierOneCostEditor.Bounds.Height + padding;
             _tierTwoCostEditor = new IntegerEditor("Cost of Tier 2 Prestige", PerSaveOptions.Instance.CostOfTierTwoPrestige, 1, 100, tierTwoEditorLocation, ChangeTierTwoCost);
+            var pointsPerPrestigeEditorLocation = tierTwoEditorLocation;
+            pointsPerPrestigeEditorLocation.Y += _tierTwoCostEditor.Bounds.Height + padding;
+            _pointsPerPrestigeEditor = new IntegerEditor("Points Per Prestige", PerSaveOptions.Instance.PointsPerPrestige, 1, 100, pointsPerPrestigeEditorLocation, ChangePointsPerPrestige);
         }
 
         private static void ChangeRecipeReset(bool resetRecipes)
@@ -104,6 +110,12 @@ namespace SkillPrestige.Menus
             PerSaveOptions.Save();
         }
 
+        private static void ChangePointsPerPrestige(int points)
+        {
+            PerSaveOptions.Instance.PointsPerPrestige = points;
+            PerSaveOptions.Save();
+        }
+
         public override void draw(SpriteBatch spriteBatch)
         {
             if (_debouceWaitTime < 10)
@@ -123,6 +135,7 @@ namespace SkillPrestige.Menus
             _useExperienceMultiplierCheckbox.Draw(spriteBatch);
             _tierOneCostEditor.Draw(spriteBatch);
             _tierTwoCostEditor.Draw(spriteBatch);
+            _pointsPerPrestigeEditor.Draw(spriteBatch);
             Mouse.DrawCursor(spriteBatch);
         }
 

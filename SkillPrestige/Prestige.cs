@@ -89,8 +89,8 @@ namespace SkillPrestige
                 }
                 Profession.RemoveProfessions(skill);
                 Profession.AddMissingProfessions();
-                PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == skill.Type).PrestigePoints++;
-                Logger.LogInformation($"Prestige point added to {skill.Type.Name} skill.");
+                PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == skill.Type).PrestigePoints += PerSaveOptions.Instance.PointsPerPrestige;
+                Logger.LogInformation($"{PerSaveOptions.Instance.PointsPerPrestige} Prestige point(s) added to {skill.Type.Name} skill.");
             }
             catch (Exception exception)
             {
