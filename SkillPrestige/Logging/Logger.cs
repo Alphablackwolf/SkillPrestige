@@ -49,7 +49,7 @@ namespace SkillPrestige.Logging
 
         private static string FormatMessage(string message)
         {
-            return $"{SkillPrestigeMod.Name}: {message}";
+            return message;
         }
 
         private static string AddErrorText(this string message)

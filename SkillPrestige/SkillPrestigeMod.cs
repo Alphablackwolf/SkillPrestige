@@ -15,21 +15,9 @@ using static SkillPrestige.InputHandling.Mouse;
 
 namespace SkillPrestige
 {
-    /// <summary>
-    /// The Skill Prestige Mod by Alphablackwolf. Enjoy!
-    /// </summary>
+    /// <summary>The Skill Prestige Mod by Alphablackwolf. Enjoy!</summary>
     public class SkillPrestigeMod : Mod
     {
-        #region Manifest Data
-
-        private static string Author => "Alphablackwolf";
-
-        private static System.Version Version => typeof(SkillPrestigeMod).Assembly.GetName().Version;
-
-        public static string Name => "Skill Prestige Mod";
-
-        //public static string Guid => "6b843e60-c8fc-4a25-a67b-4a38ac8dcf9b";
-
         public static string ModPath { get; private set; }
 
         public static string OptionsPath { get; private set; }
@@ -45,9 +33,7 @@ namespace SkillPrestige
         public static Texture2D CheckmarkTexture { get; private set; }
 
         public static IModHelper Helper;
-
-        #endregion
-
+        
         public override void Entry(IModHelper helper)
         {
             // initialise
@@ -86,7 +72,7 @@ namespace SkillPrestige
             GraphicsEvents.OnPostRenderGuiEvent += PostRenderGuiEvent;
             GameEvents.UpdateTick += GameUpdate;
 
-            Logger.LogDisplay($"{Name} version {Version} by {Author} Initialized.");
+            Logger.LogDisplay($"{this.ModManifest.Name} version {this.ModManifest.Version} by {this.ModManifest.Author} Initialized.");
         }
 
         private static void MouseChanged(object sender, EventArgsMouseStateChanged args)
