@@ -1,15 +1,15 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StardewModdingAPI;
-using StardewModdingAPI.Events;
-using StardewValley;
-using System;
+﻿using System;
 using System.IO;
+using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Commands;
 using SkillPrestige.Logging;
 using SkillPrestige.Menus;
 using SkillPrestige.Menus.Elements.Buttons;
 using SkillPrestige.Mods;
 using SkillPrestige.Professions;
+using StardewModdingAPI;
+using StardewModdingAPI.Events;
+using StardewValley;
 using StardewValley.Menus;
 using static SkillPrestige.InputHandling.Mouse;
 
@@ -50,55 +50,43 @@ namespace SkillPrestige
 
         public override void Entry(IModHelper helper)
         {
+            // initialise
             SkillPrestigeMod.Helper = helper;
             LogMonitor = Monitor;
             ModPath = helper.DirectoryPath;
             PerSaveOptionsDirectory = Path.Combine(ModPath, "psconfigs/");
             OptionsPath = Path.Combine(ModPath, "config.json");
             Logger.LogInformation("Detected game entry.");
-            PrestigeSaveData.Instance.Read();
-            RegisterGameEvents();
-            Logger.LogDisplay($"{Name} version {Version} by {Author} Initialized.");
-        }
 
-        private void GameLoaded(object sender, EventArgs args)
-        {
-            Logger.LogInformation("Detected game load.");
+            // read data
+            PrestigeSaveData.Instance.Read();
+
+            // check for mod conflicts
             if (Type.GetType("AllProfessions.AllProfessions, AllProfessions") != null)
             {
                 Logger.LogCriticalWarning("Conflict Detected. This mod cannot work with AllProfessions. Skill Prestige disabled.");
                 Logger.LogDisplay("Skill Prestige Mod: If you wish to use this mod in place of AllProfessions, remove the AllProfessions mod and run the player_resetallprofessions command.");
-                DeregisterGameEvents();
                 return;
             }
-            ModHandler.RegisterLoadedMods();
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse - constant is manually changed for testing.
-            if (Options.Instance.TestingMode) RegisterTestingCommands();
-            RegisterCommands();
-        }
 
-        private void RegisterGameEvents()
-        {
-            Logger.LogInformation("Registering game events...");
-            GameEvents.GameLoaded += GameLoaded;
-            GameEvents.LoadContent += LoadSprites;
+            // load sprites
+            LoadSprites();
+
+            // load mods
+            ModHandler.RegisterLoadedMods();
+
+            // register commands
+            if (Options.Instance.TestingMode)
+                RegisterTestingCommands();
+            RegisterCommands();
+
+            // register events
             ControlEvents.MouseChanged += MouseChanged;
             LocationEvents.CurrentLocationChanged += LocationChanged;
             GraphicsEvents.OnPostRenderGuiEvent += PostRenderGuiEvent;
             GameEvents.UpdateTick += GameUpdate;
-            Logger.LogInformation("Game events registered.");
-        }
 
-        private void DeregisterGameEvents()
-        {
-            Logger.LogInformation("Deregistering game events...");
-            GameEvents.GameLoaded -= GameLoaded;
-            GameEvents.LoadContent -= LoadSprites;
-            ControlEvents.MouseChanged -= MouseChanged;
-            LocationEvents.CurrentLocationChanged -= LocationChanged;
-            GraphicsEvents.OnPostRenderGuiEvent -= PostRenderGuiEvent;
-            GameEvents.UpdateTick -= GameUpdate;
-            Logger.LogInformation("Game events deregistered.");
+            Logger.LogDisplay($"{Name} version {Version} by {Author} Initialized.");
         }
 
         private static void MouseChanged(object sender, EventArgsMouseStateChanged args)
@@ -120,7 +108,7 @@ namespace SkillPrestige
             SkillsMenuExtension.AddPrestigeButtonsToMenu();
         }
 
-        private static void LoadSprites(object sender, EventArgs args)
+        private static void LoadSprites()
         {
             Logger.LogInformation("Loading sprites...");
             Button.DefaultButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\DialogBoxGreen");
