@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using SkillPrestige.Logging;
-using StardewModdingAPI.Events;
 using StardewValley;
 
 namespace SkillPrestige.Commands
 {
-    /// <summary>
-    /// Represents the command that resets the player's professions after all professions has been removed.
-    /// </summary>
-    /// // ReSharper disable once UnusedMember.Global - referenced via reflection
+    /// <summary>A command that resets the player's professions after all professions has been removed.</summary>
     internal class ResetAllPrestigeCommand : SkillPrestigeCommand
     {
+        /*********
+        ** Public methods
+        *********/
+        /// <summary>Construct an instance.</summary>
+        public ResetAllPrestigeCommand()
+            : base("player_resetallprestige", "Resets all prestige professions and prestige points.\n\nUsage: player_resetallprestige", isTestCommand: true) { }
 
-        public ResetAllPrestigeCommand() : base("player_resetallprestige", "Resets all prestige professions and prestige points.") { }
-
-        protected override bool TestingCommand => true;
-
-        protected override void ApplyCommandEffect(object sender, EventArgsCommand e)
+        /// <summary>Invokes the command when called from the console.</summary>
+        /// <param name="args">The command-line arguments.</param>
+        public override void Apply(string[] args)
         {
             if (Game1.player == null)
             {
@@ -30,9 +30,7 @@ namespace SkillPrestige.Commands
                        "and *not* the player's gained professions. once this is run all professions already prestiged/purchased will still belong to the player." + Environment.NewLine +
                        "If you have read this and wish to continue confirm with 'y' or 'yes'");
             var response = Console.ReadLine();
-            if (response == null ||
-                (!response.Equals("y", StringComparison.InvariantCultureIgnoreCase) &&
-                 !response.Equals("yes", StringComparison.InvariantCultureIgnoreCase)))
+            if (response == null || (!response.Equals("y", StringComparison.InvariantCultureIgnoreCase) && !response.Equals("yes", StringComparison.InvariantCultureIgnoreCase)))
             {
                 Logger.LogVerbose("Cancelled all prestige reset.");
                 return;

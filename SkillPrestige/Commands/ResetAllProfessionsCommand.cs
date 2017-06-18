@@ -3,29 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Logging;
 using SkillPrestige.Professions;
-using StardewModdingAPI.Events;
 using StardewValley;
 
 namespace SkillPrestige.Commands
 {
-    /// <summary>
-    /// Represents the command that resets the player's professions after all professions has been removed.
-    /// </summary>
-    /// // ReSharper disable once UnusedMember.Global - referenced via reflection
+    /// <summary>A command that resets the player's professions after all professions has been removed.</summary>
     internal class ResetAllProfessionsCommand : SkillPrestigeCommand
     {
+        /*********
+        ** Public methods
+        *********/
+        /// <summary>Construct an instance.</summary>
+        public ResetAllProfessionsCommand()
+            : base("player_resetallprofessions", "Resets professions from all profession mods to only be a single profession tree for each skill.\n\nUsage: player_resetallprofessions", isTestCommand: false) { }
 
-        public ResetAllProfessionsCommand() : base("player_resetallprofessions", "Resets professions from all professions mod to only be a single profession tree for each skill.") { }
-
-        protected override bool TestingCommand => false;
-
-        protected override void ApplyCommandEffect(object sender, EventArgsCommand e)
+        /// <summary>Invokes the command when called from the console.</summary>
+        /// <param name="args">The command-line arguments.</param>
+        public override void Apply(string[] args)
         {
             if (Type.GetType("AllProfessions.AllProfessions, AllProfessions") != null)
             {
                 SkillPrestigeMod.LogMonitor.Log("Command cannot be run while AllProfessions is still installed. Please remove AllProfessions before proceeding.");
             }
-                if (Game1.player == null)
+            if (Game1.player == null)
             {
                 SkillPrestigeMod.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
@@ -35,9 +35,7 @@ namespace SkillPrestige.Commands
                        "If you would prefer to choose your professions, use the player_clearallprofessions command, followed by the player_addprofession command for each profession you wish to add." + Environment.NewLine +
                        "If you have read this and wish to continue confirm with 'y' or 'yes'");
             var response = Console.ReadLine();
-            if (response == null ||
-                (!response.Equals("y", StringComparison.InvariantCultureIgnoreCase) &&
-                 !response.Equals("yes", StringComparison.InvariantCultureIgnoreCase)))
+            if (response == null || (!response.Equals("y", StringComparison.InvariantCultureIgnoreCase) && !response.Equals("yes", StringComparison.InvariantCultureIgnoreCase)))
             {
                 Logger.LogVerbose("Cancelled all profession reset.");
                 return;
