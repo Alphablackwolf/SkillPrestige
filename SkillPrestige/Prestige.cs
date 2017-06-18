@@ -5,6 +5,7 @@ using SkillPrestige.Logging;
 using SkillPrestige.Professions;
 using SkillPrestige.SkillTypes;
 using StardewValley;
+using SFarmer = StardewValley.Farmer;
 
 namespace SkillPrestige
 {
@@ -110,7 +111,7 @@ namespace SkillPrestige
                 var recipe in
                 CraftingRecipe.craftingRecipes.Where(
                     x =>
-                        x.Value.Split('/')[4].Contains(Farmer.getSkillNameFromIndex(skillType.Ordinal)) &&
+                        x.Value.Split('/')[4].Contains(SFarmer.getSkillNameFromIndex(skillType.Ordinal)) &&
                         Game1.player.craftingRecipes.ContainsKey(x.Key)))
             {
                 Logger.LogVerbose($"Removing {skillType.Name} crafting recipe {recipe.Value}");
@@ -131,7 +132,7 @@ namespace SkillPrestige
                 var recipe in
                 CraftingRecipe.cookingRecipes.Where(
                     x =>
-                        x.Value.Split('/')[3].Contains(Farmer.getSkillNameFromIndex(skillType.Ordinal)) &&
+                        x.Value.Split('/')[3].Contains(SFarmer.getSkillNameFromIndex(skillType.Ordinal)) &&
                         Game1.player.cookingRecipes.ContainsKey(x.Key)))
             {
                 Logger.LogVerbose($"Removing {skillType.Name} cooking recipe {recipe.Value}");
