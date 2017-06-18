@@ -1,37 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using StardewModdingAPI.Events;
 
 namespace SkillPrestige.Commands
 {
-    /// <summary>
-    /// Represents the command that sets experience levels for a player.
-    /// </summary>
+    /// <summary>A command that checks whether a mod is installed.</summary>
     /// // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class CheckForModCommand : SkillPrestigeCommand
     {
+        /*********
+        ** Public methods
+        *********/
+        /// <summary>Construct an instance.</summary>
+        public CheckForModCommand()
+            : base("checkformod", "Checks for the existence of a mod.\n\nUsage: checkformod <namespace> <modname>\n- namespace: the mod namespace.\n- mod: the mod name.", isTestCommand: true) { }
 
-        public CheckForModCommand() : base("checkformod", "Checks for the existence of a mod | checkformod <namespace> <modname>", GetArgumentDescriptions()) { }
-
-        private static IEnumerable<string> GetArgumentDescriptions()
+        /// <summary>Invokes the command when called from the console.</summary>
+        /// <param name="args">The command-line arguments.</param>
+        public override void Apply(string[] args)
         {
-            return new[]
-            {
-                "<namespace> The namespace of the mod <modname> The name of the mod"
-            };
-        }
-
-        protected override bool TestingCommand => true;
-
-        protected override void ApplyCommandEffect(object sender, EventArgsCommand e)
-        {
-            if (e.Command.CalledArgs.Length <= 1)
+            if (args.Length <= 1)
             {
                 SkillPrestigeMod.LogMonitor.Log("<namespace> and <modname> must be specified");
                 return;
             }
-            var namespaceArgument = e.Command.CalledArgs[0];
-            var modNameArgument = e.Command.CalledArgs[1];
+            var namespaceArgument = args[0];
+            var modNameArgument = args[1];
             SkillPrestigeMod.LogMonitor.Log($"mod {modNameArgument} {(Type.GetType($"{namespaceArgument}.{modNameArgument}, {namespaceArgument}") == null ? "not " : string.Empty)}found.");
         }
     }

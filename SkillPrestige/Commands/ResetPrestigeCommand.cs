@@ -2,37 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Logging;
-using StardewModdingAPI.Events;
 using StardewValley;
 
 namespace SkillPrestige.Commands
 {
-    /// <summary>
-    /// Represents the command that resets the player's professions after all professions has been removed.
-    /// </summary>
-    /// // ReSharper disable once UnusedMember.Global - referenced via reflection
+    /// <summary>A command that resets the player's professions after all professions has been removed.</summary>
     internal class ResetPrestigeCommand : SkillPrestigeCommand
     {
+        /*********
+        ** Public methods
+        *********/
+        /// <summary>Construct an instance.</summary>
+        public ResetPrestigeCommand()
+            : base("player_resetprestige", GetDescription(), isTestCommand: true) { }
 
-        public ResetPrestigeCommand() : base("player_resetprestige", "Resets prestiged professions and prestige points for a specific skill | player_resetprestige <skill>.", GetArgumentDescriptions()) { }
-
-        private static IEnumerable<string> GetArgumentDescriptions()
+        /// <summary>Invokes the command when called from the console.</summary>
+        /// <param name="args">The command-line arguments.</param>
+        public override void Apply(string[] args)
         {
-            const string skillSeparator = ", ";
-            var skillNames =
-                string.Join(skillSeparator, Skill.AllSkills.Select(x => x.Type.Name).ToArray())
-                    .TrimEnd(skillSeparator.ToCharArray());
-            return new[]
-            {
-                $"({skillNames})<skill>"
-            };
-        }
-
-        protected override bool TestingCommand => true;
-
-        protected override void ApplyCommandEffect(object sender, EventArgsCommand e)
-        {
-            if (e.Command.CalledArgs.Length < 1)
+            if (args.Length < 1)
             {
                 SkillPrestigeMod.LogMonitor.Log("<skill> must be specified");
                 return;
@@ -42,15 +30,13 @@ namespace SkillPrestige.Commands
                 SkillPrestigeMod.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
-            var skillArgument = e.Command.CalledArgs[0];
+            var skillArgument = args[0];
             SkillPrestigeMod.LogMonitor.Log($"This command will reset your character's prestiged selections and prestige points for the {skillArgument} skill. " + Environment.NewLine +
                        "Please note that this command by itself will only clear the prestige data located in the skills prestige mod folder, " +
                        "and *not* the player's gained professions. once this is run all professions already prestiged/purchased will still belong to the player." + Environment.NewLine +
                        "If you have read this and wish to continue confirm with 'y' or 'yes'");
             var response = Console.ReadLine();
-            if (response == null ||
-                (!response.Equals("y", StringComparison.InvariantCultureIgnoreCase) &&
-                 !response.Equals("yes", StringComparison.InvariantCultureIgnoreCase)))
+            if (response == null || (!response.Equals("y", StringComparison.InvariantCultureIgnoreCase) && !response.Equals("yes", StringComparison.InvariantCultureIgnoreCase)))
             {
                 Logger.LogVerbose($"Cancelled prestige reset for {skillArgument} skill.");
                 return;
@@ -61,6 +47,20 @@ namespace SkillPrestige.Commands
             prestige.PrestigeProfessionsSelected = new List<int>();
             PrestigeSaveData.Instance.Save();
             Logger.LogInformation($"{skillArgument} skill prestige data reset.");
+        }
+
+
+        /*********
+        ** Protected methods
+        *********/
+        /// <summary>Get the command's help description.</summary>
+        private static string GetDescription()
+        {
+            string skillNames = string.Join(", ", Skill.AllSkills.Select(x => x.Type.Name));
+            return
+                "Resets prestiged professions and prestige points for a specific skill.\n\n"
+                + "Usage: player_resetprestige <skill>\n"
+                + $"- skill: the name of the skill (one of {skillNames}).";
         }
     }
 }

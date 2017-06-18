@@ -43,12 +43,14 @@ namespace SkillPrestige
         public static Texture2D PrestigeIconTexture { get; private set; }
 
         public static Texture2D CheckmarkTexture { get; private set; }
-        
+
+        public static IModHelper Helper;
 
         #endregion
 
         public override void Entry(IModHelper helper)
         {
+            SkillPrestigeMod.Helper = helper;
             LogMonitor = Monitor;
             ModPath = helper.DirectoryPath;
             PerSaveOptionsDirectory = Path.Combine(ModPath, "psconfigs/");
@@ -163,14 +165,14 @@ namespace SkillPrestige
         private static void RegisterTestingCommands()
         {
             Logger.LogInformation("Registering Testing commands...");
-            SkillPrestigeCommand.RegisterCommands(true);
+            SkillPrestigeCommand.RegisterCommands(SkillPrestigeMod.Helper.ConsoleCommands, true);
             Logger.LogInformation("Testing commands registered.");
         }
 
         private static void RegisterCommands()
         {
             Logger.LogInformation("Registering commands...");
-            SkillPrestigeCommand.RegisterCommands(false);
+            SkillPrestigeCommand.RegisterCommands(SkillPrestigeMod.Helper.ConsoleCommands, false);
             Logger.LogInformation("Commands registered.");
         }
     }
