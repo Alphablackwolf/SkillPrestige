@@ -18,6 +18,8 @@ namespace SkillPrestige
     /// <summary>The Skill Prestige Mod by Alphablackwolf. Enjoy!</summary>
     public class SkillPrestigeMod : Mod
     {
+        private static bool IsFirstUpdate = true;
+
         public static string ModPath { get; private set; }
 
         public static string OptionsPath { get; private set; }
@@ -33,7 +35,7 @@ namespace SkillPrestige
         public static Texture2D CheckmarkTexture { get; private set; }
 
         public static IModHelper Helper;
-        
+
         public override void Entry(IModHelper helper)
         {
             // initialise
@@ -57,14 +59,6 @@ namespace SkillPrestige
 
             // load sprites
             LoadSprites();
-
-            // load mods
-            ModHandler.RegisterLoadedMods();
-
-            // register commands
-            if (Options.Instance.TestingMode)
-                RegisterTestingCommands();
-            RegisterCommands();
 
             // register events
             ControlEvents.MouseChanged += MouseChanged;
@@ -114,8 +108,25 @@ namespace SkillPrestige
 
         private static void GameUpdate(object sender, EventArgs args)
         {
+            if (IsFirstUpdate)
+            {
+                AfterModsInitialised();
+                IsFirstUpdate = false;
+            }
+
             CheckForGameSave();
             CheckForLevelUpMenu();
+        }
+
+        private static void AfterModsInitialised()
+        {
+            // load mods
+            ModHandler.RegisterLoadedMods();
+
+            // register commands
+            if (Options.Instance.TestingMode)
+                RegisterTestingCommands();
+            RegisterCommands();
         }
 
         private static void CheckForGameSave()
