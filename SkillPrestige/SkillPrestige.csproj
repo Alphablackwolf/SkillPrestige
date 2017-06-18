@@ -128,11 +128,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="manifest.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Checkmark.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\Checkmark.png" />
     <Content Include="Images\PrestigeIcon.png" />
+    <Content Include="PrestigeIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,0 +1,13 @@
+{
+  "Name": "Skill Prestige",
+  "Author": "Alphablackwolf",
+  "Version": {
+    "MajorVersion": 1,
+    "MinorVersion": 0,
+    "PatchVersion": 9,
+    "Build": "0"
+  },
+  "Description": "",
+  "UniqueID": "6b843e60-c8fc-4a25-a67b-4a38ac8dcf9b",
+  "EntryDll": "SkillPrestige.dll"
+}
