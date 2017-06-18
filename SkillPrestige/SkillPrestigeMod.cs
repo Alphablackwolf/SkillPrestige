@@ -48,7 +48,7 @@ namespace SkillPrestige
             PrestigeSaveData.Instance.Read();
 
             // check for mod conflicts
-            if (Type.GetType("AllProfessions.AllProfessions, AllProfessions") != null)
+            if (helper.ModRegistry.IsLoaded("community.AllProfessions"))
             {
                 Logger.LogCriticalWarning("Conflict Detected. This mod cannot work with AllProfessions. Skill Prestige disabled.");
                 Logger.LogDisplay("Skill Prestige Mod: If you wish to use this mod in place of AllProfessions, remove the AllProfessions mod and run the player_resetallprofessions command.");
