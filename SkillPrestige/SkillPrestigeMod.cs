@@ -64,7 +64,7 @@ namespace SkillPrestige
             }
             LoadSprites();
             RegisterGameEvents();
-            //ReplaceStardewValleyCode();
+            ReplaceStardewValleyCode();
             Logger.LogDisplay($"{ModManifest.Name} version {ModManifest.Version} by {ModManifest.Author} Initialized.");
         }
 
