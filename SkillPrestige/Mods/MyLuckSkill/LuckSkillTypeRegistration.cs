@@ -1,7 +1,7 @@
 ﻿using SkillPrestige.Logging;
 using SkillPrestige.SkillTypes;
 
-namespace SkillPrestige.Mods.LuckSkill
+namespace SkillPrestige.Mods.MyLuckSkill
 {
     // ReSharper disable once UnusedMember.Global - referenced through reflection.
     public sealed class LuckSkillTypeRegistration : SkillType, ISkillTypeRegistration

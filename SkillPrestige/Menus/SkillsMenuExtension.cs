@@ -89,7 +89,7 @@ namespace SkillPrestige.Menus
             }
         }
 
-        internal static void OpenPrestigeMenu(Skill skill)
+        private static void OpenPrestigeMenu(Skill skill)
         {
             Logger.LogVerbose("Skills Menu - Setting up Prestige Menu...");
             var menuWidth = Game1.tileSize * 18;

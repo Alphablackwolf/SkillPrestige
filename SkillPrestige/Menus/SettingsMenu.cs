@@ -19,8 +19,10 @@ namespace SkillPrestige.Menus
         private bool _inputInitiated;
 
         private Checkbox _resetRecipesCheckbox;
+        private Checkbox _useExperienceMultiplierCheckbox;
         private IntegerEditor _tierOneCostEditor;
         private IntegerEditor _tierTwoCostEditor;
+        private IntegerEditor _pointsPerPrestigeEditor;
 
         public SettingsMenu(Rectangle bounds) : base(bounds.X, bounds.Y, bounds.Width, bounds.Height, true)
         {
@@ -36,9 +38,12 @@ namespace SkillPrestige.Menus
             _buttonClickRegistered = true;
             Logger.LogVerbose("Settings menu - Registering mouse events...");
             Mouse.MouseMoved += _resetRecipesCheckbox.CheckForMouseHover;
+            Mouse.MouseMoved += _useExperienceMultiplierCheckbox.CheckForMouseHover;
             Mouse.MouseClicked += _resetRecipesCheckbox.CheckForMouseClick;
+            Mouse.MouseClicked += _useExperienceMultiplierCheckbox.CheckForMouseClick;
             _tierOneCostEditor.RegisterMouseEvents();
             _tierTwoCostEditor.RegisterMouseEvents();
+            _pointsPerPrestigeEditor.RegisterMouseEvents();
             Logger.LogVerbose("Settings menu - Mouse events registered.");
         }
 
@@ -47,9 +52,12 @@ namespace SkillPrestige.Menus
             Logger.LogVerbose("Settings menu - Deregistering mouse events...");
             if (!_buttonClickRegistered) return;
             Mouse.MouseMoved -= _resetRecipesCheckbox.CheckForMouseHover;
+            Mouse.MouseMoved -= _useExperienceMultiplierCheckbox.CheckForMouseHover;
             Mouse.MouseClicked -= _resetRecipesCheckbox.CheckForMouseClick;
+            Mouse.MouseClicked -= _useExperienceMultiplierCheckbox.CheckForMouseClick;
             _tierOneCostEditor.DeregisterMouseEvents();
             _tierTwoCostEditor.DeregisterMouseEvents();
+            _pointsPerPrestigeEditor.DeregisterMouseEvents();
             _buttonClickRegistered = false;
             Logger.LogVerbose("Settings menu - Mouse events deregistered.");
         }
@@ -65,16 +73,28 @@ namespace SkillPrestige.Menus
             var resetRecipeCheckboxBounds = new Rectangle(xPositionOnScreen + spaceToClearSideBorder * 3, yPositionOnScreen + (int)Math.Floor(Game1.tileSize * 3.5), 9*Game1.pixelZoom, 9 * Game1.pixelZoom);
             _resetRecipesCheckbox = new Checkbox(PerSaveOptions.Instance.ResetRecipesOnPrestige, "Reset Recipes upon prestige.", resetRecipeCheckboxBounds, ChangeRecipeReset);
             var padding = 4*Game1.pixelZoom;
-            var tierOneEditorLocation = new Vector2(resetRecipeCheckboxBounds.X, resetRecipeCheckboxBounds.Y + resetRecipeCheckboxBounds.Height + padding);
+            var useExperienceMultiplierCheckboxBounds = resetRecipeCheckboxBounds;
+            useExperienceMultiplierCheckboxBounds.Y += resetRecipeCheckboxBounds.Height + padding;
+            _useExperienceMultiplierCheckbox = new Checkbox(PerSaveOptions.Instance.UseExperienceMultiplier, "Use prestige points experience multiplier.", useExperienceMultiplierCheckboxBounds, ChangeUseExperienceMultiplier);
+            var tierOneEditorLocation = new Vector2(useExperienceMultiplierCheckboxBounds.X, useExperienceMultiplierCheckboxBounds.Y + useExperienceMultiplierCheckboxBounds.Height + padding);
             _tierOneCostEditor = new IntegerEditor("Cost of Tier 1 Prestige", PerSaveOptions.Instance.CostOfTierOnePrestige, 1, 100, tierOneEditorLocation, ChangeTierOneCost);
             var tierTwoEditorLocation = tierOneEditorLocation;
             tierTwoEditorLocation.Y += _tierOneCostEditor.Bounds.Height + padding;
             _tierTwoCostEditor = new IntegerEditor("Cost of Tier 2 Prestige", PerSaveOptions.Instance.CostOfTierTwoPrestige, 1, 100, tierTwoEditorLocation, ChangeTierTwoCost);
+            var pointsPerPrestigeEditorLocation = tierTwoEditorLocation;
+            pointsPerPrestigeEditorLocation.Y += _tierTwoCostEditor.Bounds.Height + padding;
+            _pointsPerPrestigeEditor = new IntegerEditor("Points Per Prestige", PerSaveOptions.Instance.PointsPerPrestige, 1, 100, pointsPerPrestigeEditorLocation, ChangePointsPerPrestige);
         }
 
         private static void ChangeRecipeReset(bool resetRecipes)
         {
             PerSaveOptions.Instance.ResetRecipesOnPrestige = resetRecipes;
+            PerSaveOptions.Save();
+        }
+
+        private static void ChangeUseExperienceMultiplier(bool useExperienceMultiplier)
+        {
+            PerSaveOptions.Instance.UseExperienceMultiplier = useExperienceMultiplier;
             PerSaveOptions.Save();
         }
 
@@ -87,6 +107,12 @@ namespace SkillPrestige.Menus
         private static void ChangeTierTwoCost(int cost)
         {
             PerSaveOptions.Instance.CostOfTierTwoPrestige = cost;
+            PerSaveOptions.Save();
+        }
+
+        private static void ChangePointsPerPrestige(int points)
+        {
+            PerSaveOptions.Instance.PointsPerPrestige = points;
             PerSaveOptions.Save();
         }
 
@@ -106,8 +132,10 @@ namespace SkillPrestige.Menus
             DrawHeader(spriteBatch);
             if (!_inputInitiated) InitiateInput();
             _resetRecipesCheckbox.Draw(spriteBatch);
+            _useExperienceMultiplierCheckbox.Draw(spriteBatch);
             _tierOneCostEditor.Draw(spriteBatch);
             _tierTwoCostEditor.Draw(spriteBatch);
+            _pointsPerPrestigeEditor.Draw(spriteBatch);
             Mouse.DrawCursor(spriteBatch);
         }
 

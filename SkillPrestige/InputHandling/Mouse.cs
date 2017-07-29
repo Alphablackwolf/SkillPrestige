@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SkillPrestige.Logging;
 using StardewModdingAPI.Events;
 using StardewValley;
 
@@ -68,7 +67,6 @@ namespace SkillPrestige.InputHandling
             }
             _waitingForMouseRelease = false;
             var releaseMouseLocation = new Point(_currentMouseState.X, _currentMouseState.Y);
-            Logger.LogVerbose($"mouse click at {MouseLastClickLocation} released at {releaseMouseLocation}");
             MouseClicked?.Invoke(new MouseClickEventArguments(MouseLastClickLocation, releaseMouseLocation));
         }
 

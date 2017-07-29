@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Logging;
 using StardewModdingAPI;
-using StardewModdingAPI.Events;
 
 namespace SkillPrestige.Commands
 {
@@ -23,58 +21,44 @@ namespace SkillPrestige.Commands
         private string Description { get; }
 
         /// <summary>
-        /// The help description of the aguments in the command.
-        /// </summary>
-        private IEnumerable<string> ArgumentDescriptions { get; }
-
-        /// <summary>
         /// Whether or not the command is used only in test mode.
         /// </summary>
         protected abstract bool TestingCommand { get; }
 
-        protected SkillPrestigeCommand(string name, string description, IEnumerable<string> argumentDescriptions = null)
+        protected SkillPrestigeCommand(string name, string description)
         {
             Name = name;
             Description = description;
-            ArgumentDescriptions = argumentDescriptions;
         }
 
         /// <summary>
         /// Registers a command with the SMAPI console.
         /// </summary>
-        private void RegisterCommand()
+        private void RegisterCommand(ICommandHelper helper)
         {
             Logger.LogInformation($"Registering {Name} command...");
-            if (ArgumentDescriptions != null)
-            {
-                Command.RegisterCommand(Name, Description, ArgumentDescriptions.ToArray()).CommandFired += ApplyCommandEffect;
-            }
-            else
-            {
-                Command.RegisterCommand(Name, Description).CommandFired += ApplyCommandEffect;
-            }
+            helper.Add(Name, Description, (name, args) => Apply(args));
             Logger.LogInformation($"{Name} command registered.");
         }
 
         /// <summary>
         /// Applies the effect of a command when it is called from the console.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected abstract void ApplyCommandEffect(object sender, EventArgsCommand e);
+        protected abstract void Apply(string[] args);
 
         /// <summary>
         /// Registers all commands found in the system.
         /// </summary>
+        /// <param name="helper">The SMAPI Command helper.</param>
         /// <param name="testCommands">Whether or not you wish to only register testing commands.</param>
-        public static void RegisterCommands(bool testCommands)
+        public static void RegisterCommands(ICommandHelper helper, bool testCommands)
         {
             var concreteCommands = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypesSafely())
                 .Where(x => x.IsSubclassOf(typeof(SkillPrestigeCommand)) && !x.IsAbstract);
             foreach (var commandType in concreteCommands)
             {
                 var command = (SkillPrestigeCommand)Activator.CreateInstance(commandType);
-                if (!(testCommands ^ command.TestingCommand)) command.RegisterCommand();
+                if (!(testCommands ^ command.TestingCommand)) command.RegisterCommand(helper);
             }
         }
     }

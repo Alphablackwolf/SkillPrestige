@@ -17,9 +17,16 @@ namespace SkillPrestige
         /// </summary>
         public bool ResetRecipesOnPrestige { get; set; }
 
+        public bool UseExperienceMultiplier { get; set; }
+
+        public decimal ExperienceMultiplier { get; private set; }
+
         public int CostOfTierOnePrestige { get; set; }
 
         public int CostOfTierTwoPrestige { get; set; }
+
+        public int PointsPerPrestige { get; set; }
+        
 
         private PerSaveOptions() { }
         private static PerSaveOptions _instance;
@@ -54,6 +61,17 @@ namespace SkillPrestige
                     Logger.LogWarning("Tier two prestige cost loaded without value, defaulting to a cost of 2.");
                     Instance.CostOfTierTwoPrestige = 2;
                 }
+                if (Instance.ExperienceMultiplier <= 0)
+                {
+                    Logger.LogWarning("Experience Multiplier loaded without value, defaulting to 10%, turning on experience multiplier usage.");
+                    Instance.ExperienceMultiplier = 0.1m;
+                    Instance.UseExperienceMultiplier = true;
+                }
+                if (Instance.PointsPerPrestige <= 0)
+                {
+                    Logger.LogWarning("Points per prestige loaded without value, defaulting to a 1 point per prestige.");
+                    Instance.PointsPerPrestige = 1;
+                }
             }
             catch (Exception ex)
             {
@@ -70,8 +88,11 @@ namespace SkillPrestige
             try
             {
                 Instance.ResetRecipesOnPrestige =  true;
+                Instance.UseExperienceMultiplier =  true;
+                Instance.ExperienceMultiplier =  0.1m;
                 Instance.CostOfTierOnePrestige =  1;
                 Instance.CostOfTierTwoPrestige =  2;
+                Instance.PointsPerPrestige =  1;
                 Save();
             }
             catch(Exception exception)

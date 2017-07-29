@@ -3,23 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Logging;
 using SkillPrestige.Professions;
-using StardewModdingAPI.Events;
 using StardewValley;
 
 namespace SkillPrestige.Commands
 {
     /// <summary>
-    /// Represents the command that resets the player's professions after all professions has been removed.
+    /// A command that resets the player's professions after all professions has been removed.
     /// </summary>
     /// // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class ResetAllProfessionsCommand : SkillPrestigeCommand
     {
 
-        public ResetAllProfessionsCommand() : base("player_resetallprofessions", "Resets professions from all professions mod to only be a single profession tree for each skill.") { }
+        public ResetAllProfessionsCommand() : base("player_resetallprofessions", "Resets professions from all profession mods to only be a single profession tree for each skill.\n\nUsage: player_resetallprofessions") { }
 
         protected override bool TestingCommand => false;
 
-        protected override void ApplyCommandEffect(object sender, EventArgsCommand e)
+        protected override void Apply(string[] args)
         {
             if (Type.GetType("AllProfessions.AllProfessions, AllProfessions") != null)
             {

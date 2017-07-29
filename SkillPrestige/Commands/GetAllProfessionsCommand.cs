@@ -1,22 +1,21 @@
 ﻿using System.Linq;
 using SkillPrestige.Logging;
-using StardewModdingAPI.Events;
 using StardewValley;
 
 namespace SkillPrestige.Commands
 {
     /// <summary>
-    /// Represents the command that resets the player's professions after all professions has been removed.
+    /// A command that resets the player's professions after all professions has been removed.
     /// </summary>
     /// // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class GetAllProfessionsCommand : SkillPrestigeCommand
     {
 
-        public GetAllProfessionsCommand() : base("player_getallprofessions", "Returns a list of all professions the player has.") { }
+        public GetAllProfessionsCommand() : base("player_getallprofessions", "Returns a list of all professions the player has.\n\nUsage: player_getallprofessions") { }
 
         protected override bool TestingCommand => true;
 
-        protected override void ApplyCommandEffect(object sender, EventArgsCommand e)
+        protected override void Apply(string[] args)
         {
             const string professionSeparator = ", ";
             if (Game1.player == null)

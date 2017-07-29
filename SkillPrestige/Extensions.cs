@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Logging;
+using System.Runtime.CompilerServices;
 
 namespace SkillPrestige
 {
@@ -102,6 +103,31 @@ namespace SkillPrestige
             {
                 Logger.LogInformation($"Failed to load a type from assembly {assembly.FullName}. details: {Environment.NewLine} {exception}");
                 return exception.Types.Where(x => x != null);
+            }
+        }
+
+        public static void ReplaceMethod(this Type typeToReplace, string methodNameToReplace, Type replacementType, string replacementMethodName)
+        {
+            var methodToReplace = typeToReplace.GetMethod(methodNameToReplace, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+            var methodToInject = replacementType.GetMethod(replacementMethodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+            RuntimeHelpers.PrepareMethod(methodToReplace.MethodHandle);
+            RuntimeHelpers.PrepareMethod(methodToInject.MethodHandle);
+
+            unsafe
+            {
+                if (IntPtr.Size == 4)
+                {
+                    var injectedMethodPointer = (int*) methodToInject.MethodHandle.Value.ToPointer() + 2;
+                    var targetMethodPointer = (int*) methodToReplace.MethodHandle.Value.ToPointer() + 2;
+                    *targetMethodPointer = *injectedMethodPointer;
+                }
+                else
+                {
+
+                    var injectedMethodPointer = (long*) methodToInject.MethodHandle.Value.ToPointer() + 1;
+                    var targetMethodPointer = (long*) methodToReplace.MethodHandle.Value.ToPointer() + 1;
+                    *targetMethodPointer = *injectedMethodPointer;
+                }
             }
         }
 
