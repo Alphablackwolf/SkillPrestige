@@ -11,6 +11,9 @@
     <AssemblyName>SkillPrestigeCookingAdapter</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <DeployModFolderName>zSkillPrestigeCookingAdapter</DeployModFolderName>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,35 +34,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CookingSkill">
-      <HintPath>..\..\..\..\..\Downloads\CookingSkill\CookingSkill.dll</HintPath>
+      <HintPath>$(GamePath)\Mods\CookingSkill\CookingSkill.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\SkillPrestige\SkillPrestige\bin\Release\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework, Version=3.5.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.5.0\lib\net45\nunit.framework.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SkillPrestige">
-      <HintPath>..\..\SkillPrestige\SkillPrestige\bin\Release\SkillPrestige.dll</HintPath>
-    </Reference>
-    <Reference Include="Stardew Valley">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Stardew Valley.exe</HintPath>
-    </Reference>
-    <Reference Include="StardewModdingAPI">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\StardewModdingAPI.exe</HintPath>
+    <Reference Include="SkillPrestige, Version=1.0.6.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(GamePath)\Mods\SkillPrestige\SkillPrestige.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CookingSkillMod.cs" />
@@ -67,15 +48,20 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="manifest.json" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  <Import Project="..\packages\Pathoschild.Stardew.ModBuildConfig.1.6.2\build\Pathoschild.Stardew.ModBuildConfig.targets" Condition="Exists('..\packages\Pathoschild.Stardew.ModBuildConfig.1.6.2\build\Pathoschild.Stardew.ModBuildConfig.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Pathoschild.Stardew.ModBuildConfig.1.6.2\build\Pathoschild.Stardew.ModBuildConfig.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Pathoschild.Stardew.ModBuildConfig.1.6.2\build\Pathoschild.Stardew.ModBuildConfig.targets'))" />
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
