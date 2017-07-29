@@ -57,6 +57,7 @@ namespace SkillPrestige.SkillTypes
         {
             unchecked
             {
+                // ReSharper disable NonReadonlyMemberInGetHashCode -- used by deserializer only
                 return ((Name?.GetHashCode() ?? 0) * 397) ^ Ordinal;
             }
         }

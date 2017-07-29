@@ -3,7 +3,7 @@ using Moq;
 using NUnit.Framework;
 using SkillPrestige;
 using SkillPrestige.Mods;
-using SkillPrestige.Mods.LuckSkill;
+using SkillPrestige.Mods.MyLuckSkill;
 using SkillPrestige.SkillTypes;
 
 

@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SkillPrestige.Bonuses;
+using SkillPrestige.Menus;
 using SkillPrestige.Mods;
 using SkillPrestige.Professions;
 using SkillPrestige.SkillTypes;
 using StardewValley;
+using StardewValley.Menus;
 
 namespace SkillPrestige
 {
@@ -15,13 +18,20 @@ namespace SkillPrestige
     /// </summary>
     public class Skill
     {
-
         public Skill()
         {
             SetSkillExperience = x =>
             {
                 Game1.player.experiencePoints[Type.Ordinal] = 0;
                 Game1.player.gainExperience(Type.Ordinal, x);
+            };
+            LevelUpManager = new LevelUpManager
+            {
+                MenuType = typeof(LevelUpMenu),
+                GetLevel = () => (int)(Game1.activeClickableMenu as LevelUpMenu).GetInstanceField("currentLevel"),
+                GetSkill = () => AllSkills.Single(y => y.Type.Ordinal == (int?)(Game1.activeClickableMenu as LevelUpMenu)?.GetInstanceField("currentSkill")),
+                CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<LevelUpMenu>(skill, level, new LevelUpMenu(skill.Type.Ordinal, level), 
+                "professionsToChoose", "leftProfessionDescription", "rightProfessionDescription", LevelUpMenu.getProfessionDescription)
             };
         }
 
@@ -61,13 +71,25 @@ namespace SkillPrestige
         /// If you are implementing this class for your mod it should be whatever would be needed to retrieve the player's current skill level.
         /// </summary>
         public Func<int> GetSkillLevel;
-        
+
         /// <summary>
         /// An action to set the skill's experience. For the unmodded game (and the luck mod) 
         /// it is setting the experience on the farmer object in the base game based upon a given array index. (e.g. Game1.player.experiencePoints[0]) 
         /// If you are implementing this class for your mod it should be whatever would be needed to set the skill experience level to a given integer.
         /// </summary>
-        public Action<int> SetSkillExperience { get; private set; } 
+        // ReSharper disable once MemberCanBePrivate.Global used by other mods.
+        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
+        public Action<int> SetSkillExperience { get; set; }
+
+        /// <summary>
+        /// The management class for any level up menu.
+        /// </summary>
+        public LevelUpManager LevelUpManager { get; set; }
+
+        /// <summary>
+        /// The types of bonuses available with this skill.
+        /// </summary>
+        public IEnumerable<BonusType> AvailableBonusTypes { get; set; }
 
         /// <summary>
         /// The default skills available in the unmodded game.
@@ -81,7 +103,8 @@ namespace SkillPrestige
                 SourceRectangleForSkillIcon = new Rectangle(0, 0, 16, 16),
                 Professions = Profession.FarmingProfessions,
                 SetSkillLevel = x => Game1.player.farmingLevel = x,
-                GetSkillLevel = () => Game1.player.farmingLevel
+                GetSkillLevel = () => Game1.player.farmingLevel,
+                AvailableBonusTypes = BonusType.FarmingBonusTypes
             },
             new Skill
             {

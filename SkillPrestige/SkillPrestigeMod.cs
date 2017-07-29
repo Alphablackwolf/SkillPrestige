@@ -4,29 +4,23 @@ using StardewModdingAPI.Events;
 using StardewValley;
 using System;
 using System.IO;
+using System.Linq;
 using SkillPrestige.Commands;
 using SkillPrestige.Logging;
 using SkillPrestige.Menus;
 using SkillPrestige.Menus.Elements.Buttons;
 using SkillPrestige.Mods;
 using SkillPrestige.Professions;
-using StardewValley.Menus;
 using static SkillPrestige.InputHandling.Mouse;
 
 namespace SkillPrestige
 {
     /// <summary>
-    /// The Skill Prestige Mod by Alphablackwolf. Enjoy!
+    /// The Skill Prestige Mod by Alphablackwolf. Enjoy! 
     /// </summary>
     public class SkillPrestigeMod : Mod
     {
         #region Manifest Data
-
-        private static string Author => "Alphablackwolf";
-
-        private static System.Version Version => typeof(SkillPrestigeMod).Assembly.GetName().Version;
-
-        public static string Name => "Skill Prestige Mod";
 
         //public static string Guid => "6b843e60-c8fc-4a25-a67b-4a38ac8dcf9b";
 
@@ -44,62 +38,46 @@ namespace SkillPrestige
 
         public static Texture2D CheckmarkTexture { get; private set; }
 
-        public static bool SaveIsLoaded { get; private set; }
-        
+        private static bool SaveIsLoaded { get; set; }
+
+        private IModHelper ModHelper { get; set; }
+
+        private static bool _isFirstUpdate = true;
 
         #endregion
 
         public override void Entry(IModHelper helper)
         {
+            ModHelper = helper;
             LogMonitor = Monitor;
             ModPath = helper.DirectoryPath;
             PerSaveOptionsDirectory = Path.Combine(ModPath, "psconfigs/");
             OptionsPath = Path.Combine(ModPath, "config.json");
             Logger.LogInformation("Detected game entry.");
             PrestigeSaveData.Instance.Read();
-            RegisterGameEvents();
-            Logger.LogDisplay($"{Name} version {Version} by {Author} Initialized.");
-        }
-
-        private void GameLoaded(object sender, EventArgs args)
-        {
-            Logger.LogInformation("Detected game load.");
-            if (Type.GetType("AllProfessions.AllProfessions, AllProfessions") != null)
+            
+            if (ModHelper.ModRegistry.IsLoaded("community.AllProfessions"))
             {
                 Logger.LogCriticalWarning("Conflict Detected. This mod cannot work with AllProfessions. Skill Prestige disabled.");
                 Logger.LogDisplay("Skill Prestige Mod: If you wish to use this mod in place of AllProfessions, remove the AllProfessions mod and run the player_resetallprofessions command.");
-                DeregisterGameEvents();
                 return;
             }
-            ModHandler.RegisterLoadedMods();
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse - constant is manually changed for testing.
-            if (Options.Instance.TestingMode) RegisterTestingCommands();
-            RegisterCommands();
+            LoadSprites();
+            RegisterGameEvents();
+            //ReplaceStardewValleyCode();
+            Logger.LogDisplay($"{ModManifest.Name} version {ModManifest.Version} by {ModManifest.Author} Initialized.");
         }
 
         private void RegisterGameEvents()
         {
             Logger.LogInformation("Registering game events...");
-            GameEvents.GameLoaded += GameLoaded;
-            GameEvents.LoadContent += LoadSprites;
             ControlEvents.MouseChanged += MouseChanged;
             LocationEvents.CurrentLocationChanged += LocationChanged;
             GraphicsEvents.OnPostRenderGuiEvent += PostRenderGuiEvent;
             GameEvents.UpdateTick += GameUpdate;
-            GameEvents.OneSecondTick += UpdateExperience;
+            GameEvents.HalfSecondTick += HalfSecondTick;
+            GameEvents.OneSecondTick += OneSecondTick;
             Logger.LogInformation("Game events registered.");
-        }
-
-        private void DeregisterGameEvents()
-        {
-            Logger.LogInformation("Deregistering game events...");
-            GameEvents.GameLoaded -= GameLoaded;
-            GameEvents.LoadContent -= LoadSprites;
-            ControlEvents.MouseChanged -= MouseChanged;
-            LocationEvents.CurrentLocationChanged -= LocationChanged;
-            GraphicsEvents.OnPostRenderGuiEvent -= PostRenderGuiEvent;
-            GameEvents.UpdateTick -= GameUpdate;
-            Logger.LogInformation("Game events deregistered.");
         }
 
         private static void MouseChanged(object sender, EventArgsMouseStateChanged args)
@@ -122,7 +100,7 @@ namespace SkillPrestige
             SkillsMenuExtension.AddPrestigeButtonsToMenu();
         }
 
-        private static void LoadSprites(object sender, EventArgs args)
+        private static void LoadSprites()
         {
             Logger.LogInformation("Loading sprites...");
             Button.DefaultButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\DialogBoxGreen");
@@ -140,15 +118,35 @@ namespace SkillPrestige
             Logger.LogInformation("Sprites loaded.");
         }
 
-        private static void GameUpdate(object sender, EventArgs args)
+        private void GameUpdate(object sender, EventArgs args)
         {
+            if (_isFirstUpdate)
+            {
+                ModHandler.RegisterLoadedMods();
+                if (Options.Instance.TestingMode) RegisterTestingCommands();
+                RegisterCommands();
+                _isFirstUpdate = false;
+            }
             CheckForGameSave();
             CheckForLevelUpMenu();
         }
 
-        private static void UpdateExperience(object sender, EventArgs args)
+
+        private static void OneSecondTick(object sender, EventArgs args)
         {
-            if(SaveIsLoaded) ExperienceHandler.UpdateExperience();
+            //one second tick for this, as the detection of changed experience can happen as infrequently as possible. a 10 second tick would be well within tolerance.
+            UpdateExperience();
+        }
+
+        private static void HalfSecondTick(object sender, EventArgs args)
+        {
+            //from what I can tell of the original game code, tools cannot be used quicker than 600ms, so a half second tick is the largest tick that will always catch that the tool was used.
+            ToolProficiencyHandler.HandleToolProficiency();
+        }
+
+        private static void UpdateExperience()
+        {
+            if (SaveIsLoaded) ExperienceHandler.UpdateExperience();
         }
 
         private static void CheckForGameSave()
@@ -160,27 +158,38 @@ namespace SkillPrestige
 
         private static void CheckForLevelUpMenu()
         {
-            var levelUpMenu = Game1.activeClickableMenu as LevelUpMenu;
-            var currentLevel = (int?)levelUpMenu?.GetInstanceField("currentLevel");
-            if (currentLevel % 5 != 0) return;
-            Logger.LogInformation("Level up menu as profession chooser detected.");
-            var currentSkill = (int)levelUpMenu.GetInstanceField("currentSkill");
-            Game1.activeClickableMenu = new LevelUpMenuDecorator(currentSkill, currentLevel.Value);
-            Logger.LogInformation("Replaced level up menu with custom menu.");
+            foreach (var levelUpManager in Skill.AllSkills.Select(x => x.LevelUpManager).GroupBy(x => x.MenuType).Select(g => g.First()))
+            {
+                if (Game1.activeClickableMenu == null || Game1.activeClickableMenu.GetType() != levelUpManager.MenuType) continue;
+                var currentLevel = levelUpManager.GetLevel.Invoke();
+                if (currentLevel % 5 != 0) return;
+                Logger.LogInformation("Level up menu as profession chooser detected.");
+                var currentSkill = levelUpManager.GetSkill.Invoke();
+                Game1.activeClickableMenu = levelUpManager.CreateNewLevelUpMenu.Invoke(currentSkill, currentLevel);
+                Logger.LogInformation("Replaced level up menu with custom menu.");
+            }
         }
 
-        private static void RegisterTestingCommands()
+        private void RegisterTestingCommands()
         {
             Logger.LogInformation("Registering Testing commands...");
-            SkillPrestigeCommand.RegisterCommands(true);
+            SkillPrestigeCommand.RegisterCommands(ModHelper.ConsoleCommands, true);
             Logger.LogInformation("Testing commands registered.");
         }
 
-        private static void RegisterCommands()
+        private void RegisterCommands()
         {
             Logger.LogInformation("Registering commands...");
-            SkillPrestigeCommand.RegisterCommands(false);
+            SkillPrestigeCommand.RegisterCommands(ModHelper.ConsoleCommands, false);
             Logger.LogInformation("Commands registered.");
+        }
+
+        private static void ReplaceStardewValleyCode()
+        {
+            Logger.LogInformation("Hijacking Methods...");
+            Logger.LogInformation("Hijacking Crop Harvest method...");
+            typeof(Crop).ReplaceMethod("harvest", typeof(CropReplacement), "HarvestReplacement");
+            Logger.LogInformation("Crop Harvest method hijacked!");
         }
     }
 }

@@ -36,6 +36,7 @@ namespace SkillPrestige.Mods
                 try
                 {
                     skillMod = (ISkillMod)Activator.CreateInstance(mod);
+                    RegisterMod(skillMod);
                 }
                 catch (Exception exception)
                     when (exception.GetType().In(typeof(ArgumentNullException), typeof(ArgumentException)))
@@ -54,10 +55,9 @@ namespace SkillPrestige.Mods
                         $"Attempt to instantiate mod of type {mod.FullName} failed: {Environment.NewLine} {exception}");
                     continue;
                 }
-                RegisterMod(skillMod);
+                
                 Logger.LogInformation("Internally loaded mods registered.");
             }
-
         }
 
         /// <summary>
@@ -67,6 +67,11 @@ namespace SkillPrestige.Mods
         /// and the mod must implement ISkillMod. It is recommended to inherit from SkillPrestige's SkillMod class.</param>
         public static void RegisterMod(ISkillMod mod)
         {
+            if (!mod.IsFound)
+            {
+                Logger.LogInformation($"{mod.DisplayName} Mod not found. Mod not registered.");
+                return;
+            }
             try
             {
                 Logger.LogInformation($"Registering mod: {mod.DisplayName} ...");
@@ -92,7 +97,7 @@ namespace SkillPrestige.Mods
             }
             catch (Exception exception)
             {
-                Logger.LogWarning($"Failed to register mod. please ensure mod implements the ISKillMod interface correctly and none of its members generate errors when called. {Environment.NewLine} {exception}");
+                Logger.LogWarning($"Failed to register mod. please ensure mod implements the ISKillMod interface correctly and none of its members generate errors when called. {Environment.NewLine}{exception.Message}{Environment.NewLine}{exception.StackTrace}");
             }
         }
 

@@ -3,7 +3,7 @@ using SkillPrestige.Logging;
 using SkillPrestige.Professions;
 using SkillPrestige.Professions.Registration;
 
-namespace SkillPrestige.Mods.LuckSkill
+namespace SkillPrestige.Mods.MyLuckSkill
 {
     // ReSharper disable once UnusedMember.Global - referenced and created through reflection.
     public sealed class LuckRegistration : ProfessionRegistration

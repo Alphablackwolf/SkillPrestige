@@ -1,43 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Logging;
-using StardewModdingAPI.Events;
 using StardewValley;
 
 namespace SkillPrestige.Commands
 {
     /// <summary>
-    /// Represents the command that clears all professions from a player's game.
+    /// A command that clears all professions from a player's game.
     /// </summary>
     // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class AddProfessionCommand : SkillPrestigeCommand
     {
 
-        public AddProfessionCommand() : base("player_addprofession", "Adds the specified profession to the player | player_addprofession <profession>", GetArgumentDescriptions()) { }
-
-        private static IEnumerable<string> GetArgumentDescriptions()
-        {
-            const string professionSeparator = ", ";
-            var professionNames =
-                string.Join(professionSeparator, Skill.AllSkills.SelectMany(x => x.Professions).Select(x => x.DisplayName).ToArray())
-                    .TrimEnd(professionSeparator.ToCharArray());
-            return new[]
-            {
-                $"({professionNames})<profession>"
-            };
-        }
+        public AddProfessionCommand() : base("player_addprofession", GetDescription()) { }
 
         protected override bool TestingCommand => false;
 
-        protected override void ApplyCommandEffect(object sender, EventArgsCommand e)
+        protected override void Apply(string[] args)
         {
-            if (e.Command.CalledArgs.Length < 1)
+            if (args.Length < 1)
             {
                 SkillPrestigeMod.LogMonitor.Log("<profession> must be specified");
                 return;
             }
-            var professionArgument = e.Command.CalledArgs[0];
+            var professionArgument = args[0];
             if (!Skill.AllSkills.SelectMany(x => x.Professions).Select(x => x.DisplayName).Contains(professionArgument, StringComparer.InvariantCultureIgnoreCase))
             {
                 SkillPrestigeMod.LogMonitor.Log("<profession> is invalid");
@@ -57,6 +43,15 @@ namespace SkillPrestige.Commands
             Game1.player.professions.Add(profession.Id);
             profession.SpecialHandling?.ApplyEffect();
             Logger.LogInformation($"Profession {professionArgument} added.");
+        }
+
+        private static string GetDescription()
+        {
+            var professionNames = string.Join(", ", Skill.AllSkills.SelectMany(x => x.Professions).Select(x => x.DisplayName));
+            return
+                "Adds the specified profession to the player.\n\n"
+                + "Usage: player_addprofession <profession>\n"
+                + $"- profession: the name of the profession to add (one of {professionNames}).";
         }
     }
 }

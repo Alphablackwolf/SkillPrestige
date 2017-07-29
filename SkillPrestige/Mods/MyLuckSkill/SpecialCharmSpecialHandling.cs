@@ -2,7 +2,7 @@
 using SkillPrestige.Professions;
 using StardewValley;
 
-namespace SkillPrestige.Mods.LuckSkill
+namespace SkillPrestige.Mods.MyLuckSkill
 {
     /// <summary>
     /// Special handling for adding the special charm effect from the luck profession.

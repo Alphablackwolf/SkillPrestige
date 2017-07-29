@@ -49,7 +49,7 @@ namespace SkillPrestige.Logging
 
         private static string AddErrorText(this string message)
         {
-            return $"{message} {Environment.NewLine} Please file a bug report on NexusMods.";
+            return $"{message}{Environment.NewLine}Please file a bug report on NexusMods.";
         }
     }
 }

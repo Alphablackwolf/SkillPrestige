@@ -17,7 +17,7 @@ namespace SkillPrestige.Menus.Dialogs
             : base(bounds, message)
         {
             _skill = skill;
-            YPostionOfHeaderPartition = bounds.Y + (int) Math.Floor(Game1.tileSize*2.5);
+            YPostionOfHeaderPartition = yPositionOnScreen + (int) Math.Floor(Game1.tileSize*2.5);
         }
 
         protected override void DrawDecorations(SpriteBatch spriteBatch)

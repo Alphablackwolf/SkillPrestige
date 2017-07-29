@@ -27,7 +27,7 @@ namespace SkillPrestige.Menus.Dialogs
         protected override void DrawMessage(SpriteBatch spriteBatch)
         {
             var xLocationOfMessage = xPositionOnScreen + spaceToClearSideBorder * 2 + TextPadding;
-            var yLocationOfMessage = YPostionOfHeaderPartition + spaceToClearTopBorder;
+            var yLocationOfMessage = YPostionOfHeaderPartition + spaceToClearTopBorder / 2;
             DrawMessage(spriteBatch, Game1.dialogueFont, new Vector2(xLocationOfMessage, yLocationOfMessage), SectionWidth);
         }
 
@@ -40,7 +40,7 @@ namespace SkillPrestige.Menus.Dialogs
         private void DrawProfession(SpriteBatch spriteBatch)
         {
             var xLocationOfProfessionBox = xPositionOnScreen + SectionWidth + TextPadding;
-            var yLocationOfProfessionBox = YPostionOfHeaderPartition + spaceToClearTopBorder + TextPadding;
+            var yLocationOfProfessionBox = YPostionOfHeaderPartition + spaceToClearTopBorder / 2 + TextPadding;
             var professionBoxBounds = new Rectangle(xLocationOfProfessionBox, yLocationOfProfessionBox, SectionWidth, (int)Math.Ceiling(Game1.tileSize * 3.5));
             DrawProfessionBox(spriteBatch, professionBoxBounds);
         }

@@ -1,50 +1,45 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Logging;
-using StardewModdingAPI.Events;
 using StardewValley;
 
 namespace SkillPrestige.Commands
 {
     /// <summary>
-    /// Represents the command that sets experience levels for a player.
+    /// A command that sets experience levels for a player.
     /// </summary>
     /// // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class SetExperienceCommand : SkillPrestigeCommand
     {
 
-        public SetExperienceCommand() : base("player_setexperience", "Sets the player's specified skill to the specified level of experience | player_setexperience <skill> <value>", GetArgumentDescriptions()) { }
+        public SetExperienceCommand() : base("player_setexperience", GetDescription()) { }
 
-        private static IEnumerable<string> GetArgumentDescriptions()
+        private static string GetDescription()
         {
-            const string skillSeparator = ", ";
-            var skillNames =
-                string.Join(skillSeparator, Skill.AllSkills.Select(x => x.Type.Name).ToArray())
-                    .TrimEnd(skillSeparator.ToCharArray());
-            return new[]
-            {
-                $"({skillNames})<skill> (0-15000)<value> The target experience level"
-            };
+            var skillNames = string.Join(", ", Skill.AllSkills.Select(x => x.Type.Name));
+            return "Sets the player's specified skill to the specified level of experience.\n\n"
+                        + "Usage: player_setexperience <skill> <level>\n"
+                        + $"- skill: the name of the skill (one of {skillNames}).\n"
+                        + "- level: the target experience level.";
         }
 
         protected override bool TestingCommand => true;
 
-        protected override void ApplyCommandEffect(object sender, EventArgsCommand e)
+        protected override void Apply(string[] args)
         {
-            if (e.Command.CalledArgs.Length <= 1)
+            if (args.Length <= 1)
             {
                 SkillPrestigeMod.LogMonitor.Log("<skill> and <value> must be specified");
                 return;
             }
-            var skillArgument = e.Command.CalledArgs[0];
+            var skillArgument = args[0];
             if (!Skill.AllSkills.Select(x => x.Type.Name).Contains(skillArgument, StringComparer.InvariantCultureIgnoreCase))
             {
                 SkillPrestigeMod.LogMonitor.Log("<skill> is invalid");
                 return;
             }
             int experienceArgument;
-            if (!int.TryParse(e.Command.CalledArgs[1], out experienceArgument))
+            if (!int.TryParse(args[1], out experienceArgument))
             {
                 SkillPrestigeMod.LogMonitor.Log("experience must be an integer.");
                 return;

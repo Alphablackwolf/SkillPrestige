@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SkillPrestige.Bonuses;
 using SkillPrestige.Logging;
 using SkillPrestige.Professions;
 using SkillPrestige.SkillTypes;
@@ -33,6 +34,11 @@ namespace SkillPrestige
         /// Professions that have been chosen to be permanent using skill points.
         /// </summary>
         public IList<int> PrestigeProfessionsSelected { get; set; }
+
+        /// <summary>
+        /// Bonuses that have been purchased for this prestige.
+        /// </summary>
+        public IList<Bonus> Bonuses { get; set; }
 
         /// <summary>
         /// Purchases a profession to be part of the prestige set.
@@ -88,6 +94,7 @@ namespace SkillPrestige
                     RemovePlayerCookingRecipesForSkill(skill.Type);
                 }
                 Profession.RemoveProfessions(skill);
+                PlayerManager.CorrectStats(skill);
                 Profession.AddMissingProfessions();
                 PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == skill.Type).PrestigePoints += PerSaveOptions.Instance.PointsPerPrestige;
                 Logger.LogInformation($"{PerSaveOptions.Instance.PointsPerPrestige} Prestige point(s) added to {skill.Type.Name} skill.");
@@ -110,7 +117,7 @@ namespace SkillPrestige
                 var recipe in
                 CraftingRecipe.craftingRecipes.Where(
                     x =>
-                        x.Value.Split('/')[4].Contains(Farmer.getSkillNameFromIndex(skillType.Ordinal)) &&
+                        x.Value.Split('/')[4].Contains(StardewValley.Farmer.getSkillNameFromIndex(skillType.Ordinal)) &&
                         Game1.player.craftingRecipes.ContainsKey(x.Key)))
             {
                 Logger.LogVerbose($"Removing {skillType.Name} crafting recipe {recipe.Value}");
@@ -131,7 +138,7 @@ namespace SkillPrestige
                 var recipe in
                 CraftingRecipe.cookingRecipes.Where(
                     x =>
-                        x.Value.Split('/')[3].Contains(Farmer.getSkillNameFromIndex(skillType.Ordinal)) &&
+                        x.Value.Split('/')[3].Contains(StardewValley.Farmer.getSkillNameFromIndex(skillType.Ordinal)) &&
                         Game1.player.cookingRecipes.ContainsKey(x.Key)))
             {
                 Logger.LogVerbose($"Removing {skillType.Name} cooking recipe {recipe.Value}");
