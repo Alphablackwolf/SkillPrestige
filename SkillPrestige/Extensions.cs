@@ -62,7 +62,8 @@ namespace SkillPrestige
                 var method = type.GetMethod(functionName, bindingAttributes);
                 if (method == null) return default(TReturn);
                 var result = method.Invoke(null, arguments);
-                return !(result is TReturn) ? default(TReturn) : (TReturn)result;
+                // ReSharper disable once MergeConditionalExpression - a conditional merge would make this unviable to work with both reference and value types.
+                return result is TReturn ? (TReturn)result : default(TReturn);
             }
             catch (Exception ex)
             {
@@ -110,6 +111,11 @@ namespace SkillPrestige
         {
             var methodToReplace = typeToReplace.GetMethod(methodNameToReplace, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
             var methodToInject = replacementType.GetMethod(replacementMethodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+            if (!methodToReplace.MethodSignaturesMatch(methodToInject))
+            {
+                Logger.LogError($"{methodNameToReplace} could not be replaced with {replacementMethodName} due to unmatching signatures.");
+                return;
+            }
             RuntimeHelpers.PrepareMethod(methodToReplace.MethodHandle);
             RuntimeHelpers.PrepareMethod(methodToInject.MethodHandle);
 
@@ -129,6 +135,15 @@ namespace SkillPrestige
                     *targetMethodPointer = *injectedMethodPointer;
                 }
             }
+        }
+
+        private static bool MethodSignaturesMatch(this MethodInfo method, MethodInfo methodToCompare)
+        {
+            if (method.ReturnType != methodToCompare.ReturnType) return false;
+            var parameterTypes = method.GetParameters();
+            var parameterTypesToCompare = methodToCompare.GetParameters();
+            if (parameterTypes.Length != parameterTypesToCompare.Length) return false;
+            return !parameterTypes.Where((t, i) => t.ParameterType != parameterTypesToCompare[i].ParameterType).Any();
         }
 
         /// <summary>
