@@ -15,7 +15,7 @@ namespace SkillPrestigeCookingAdapter
     /// The Cooking prestige skill mod.
     /// </summary>
     // ReSharper disable once UnusedMember.Global - invoked by another application through reflection.
-    public class CookingSkillMod : ISkillMod
+    public class CookingSkillMod : SkillMod
     {
         private static readonly int[] ExpNeededForLevel =
         {
@@ -31,12 +31,12 @@ namespace SkillPrestigeCookingAdapter
             15000
         };
 
-        public string DisplayName => "Cooking Skill";
+        public override string DisplayName => "Cooking Skill";
 
-        public bool IsFound => SkillPrestigeCookingAdapterMod.IsCookingSkillModLoaded;
+        protected override string UniqueId => "spacechase0.CookingSkill";
 
 
-        public IEnumerable<Skill> AdditionalSkills => GetSkills();
+        public override IEnumerable<Skill> AdditionalSkills => GetSkills();
         
         private IEnumerable<Skill> GetSkills()
         {
@@ -67,7 +67,7 @@ namespace SkillPrestigeCookingAdapter
             }
         }
 
-        public IEnumerable<Prestige> AdditonalPrestiges => IsFound ? new List<Prestige>
+        public override IEnumerable<Prestige> AdditonalPrestiges => IsFound ? new List<Prestige>
         {
             new Prestige
             {
@@ -110,7 +110,7 @@ namespace SkillPrestigeCookingAdapter
             else
             {
                 var addedExperience = amount - Game1.player.experiencePoints[6];
-                CookingSkill.CookingSkillMod.addCookingExp(addedExperience);
+                Mod.addCookingExp(addedExperience);
             }
         }
 

@@ -12,11 +12,6 @@ namespace SkillPrestigeCookingAdapter
         internal static Texture2D IconTexture;
 
         /// <summary>
-        /// Whether the Cooking Skill mod is loaded.
-        /// </summary>
-        internal static bool IsCookingSkillModLoaded;
-
-        /// <summary>
         /// Whether the Luck Skill mod is loaded.
         /// </summary>
         internal static bool IsLuckSkillModLoaded;
@@ -24,7 +19,6 @@ namespace SkillPrestigeCookingAdapter
         public override void Entry(IModHelper helper)
         {
             IconTexture = helper.Content.Load<Texture2D>("icon.png");
-            IsCookingSkillModLoaded = helper.ModRegistry.IsLoaded("spacechase0.CookingSkill");
             IsLuckSkillModLoaded = helper.ModRegistry.IsLoaded("spacechase0.LuckSkill");
         }
     }
