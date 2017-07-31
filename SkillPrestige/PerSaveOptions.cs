@@ -110,9 +110,15 @@ namespace SkillPrestige
             Logger.LogInformation("Per save options file saved.");
         }
 
+        public static void ClearLoadedPerSaveOptionsFile()
+        {
+            _instance = null;
+        }
+
         /// <summary>
         /// Empty procedure to force the lazy load of the instance.
         /// </summary>
+        // ReSharper disable once MemberCanBeMadeStatic.Global - the whole point of this is to force the load of the instance.
         public void Check() { }
     }
 }

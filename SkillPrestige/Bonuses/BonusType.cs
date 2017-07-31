@@ -19,7 +19,7 @@ namespace SkillPrestige.Bonuses
         {
             Logger.LogInformation("Registering bonus types...");
             //gets all non abstract classes that implement IBonusTypeRegistration.
-            var concreteBonusTypeRegistrations = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypesSafely())
+            var concreteBonusTypeRegistrations = AppDomain.CurrentDomain.GetNonSystemAssemblies().SelectMany(x => x.GetTypesSafely())
                 .Where(x => typeof(IBonusTypeRegistration).IsAssignableFrom(x) && x.IsClass && !x.IsAbstract).ToList();
             Logger.LogVerbose($"{concreteBonusTypeRegistrations.Count} concrete bonus type registrations found.");
             foreach (var registration in concreteBonusTypeRegistrations)

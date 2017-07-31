@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SkillPrestige.Commands
+﻿namespace SkillPrestige.Commands
 {
     /// <summary>
     /// A command that checks wehther a mod is installed
@@ -9,20 +7,19 @@ namespace SkillPrestige.Commands
     internal class CheckForModCommand : SkillPrestigeCommand
     {
 
-        public CheckForModCommand() : base("checkformod", "Checks for the existence of a mod.\n\nUsage: checkformod <namespace> <modname>\n- namespace: the mod namespace.\n- mod: the mod name.") { }
+        public CheckForModCommand() : base("checkformod", "Checks for the existence of a mod.\n\nUsage: checkformod <uniqueId>\n- uniqueId: the mod's uniqueId as found in the manifest.") { }
 
         protected override bool TestingCommand => true;
 
         protected override void Apply(string[] args)
         {
-            if (args.Length <= 1)
+            if (args.Length < 1)
             {
-                SkillPrestigeMod.LogMonitor.Log("<namespace> and <modname> must be specified");
+                SkillPrestigeMod.LogMonitor.Log("<uniqueid> must be specified");
                 return;
             }
-            var namespaceArgument = args[0];
-            var modNameArgument = args[1];
-            SkillPrestigeMod.LogMonitor.Log($"mod {modNameArgument} {(Type.GetType($"{namespaceArgument}.{modNameArgument}, {namespaceArgument}") == null ? "not " : string.Empty)}found.");
+            var uniqueIdArgument = args[0];
+            SkillPrestigeMod.LogMonitor.Log($"mod {uniqueIdArgument} {(SkillPrestigeMod.ModRegistry.IsLoaded(uniqueIdArgument) ? string.Empty : "not ")}found.");
         }
     }
 }

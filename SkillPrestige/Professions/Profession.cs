@@ -23,7 +23,7 @@ namespace SkillPrestige.Professions
         {
             Logger.LogInformation("Registering professions...");
             //gets all non abstract classes that implement IProfessionRegistration.
-            var concreteProfessionRegistrations = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypesSafely())
+            var concreteProfessionRegistrations = AppDomain.CurrentDomain.GetNonSystemAssemblies().SelectMany(x => x.GetTypesSafely())
                 .Where(x => typeof(IProfessionRegistration).IsAssignableFrom(x) && x.IsClass && !x.IsAbstract).ToList();
             Logger.LogVerbose($"{concreteProfessionRegistrations.Count} concrete profession registrations found.");
             foreach (var registration in concreteProfessionRegistrations)

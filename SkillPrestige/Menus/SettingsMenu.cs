@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.InputHandling;
 using SkillPrestige.Logging;
@@ -70,7 +69,7 @@ namespace SkillPrestige.Menus
             if (_inputInitiated) return;
             _inputInitiated = true;
             Logger.LogVerbose("Settings menu - intiating input.");
-            var resetRecipeCheckboxBounds = new Rectangle(xPositionOnScreen + spaceToClearSideBorder * 3, yPositionOnScreen + (int)Math.Floor(Game1.tileSize * 3.5), 9*Game1.pixelZoom, 9 * Game1.pixelZoom);
+            var resetRecipeCheckboxBounds = new Rectangle(xPositionOnScreen + spaceToClearSideBorder * 3, yPositionOnScreen + (Game1.tileSize * 3.5).Floor(), 9*Game1.pixelZoom, 9 * Game1.pixelZoom);
             _resetRecipesCheckbox = new Checkbox(PerSaveOptions.Instance.ResetRecipesOnPrestige, "Reset Recipes upon prestige.", resetRecipeCheckboxBounds, ChangeRecipeReset);
             var padding = 4*Game1.pixelZoom;
             var useExperienceMultiplierCheckboxBounds = resetRecipeCheckboxBounds;
@@ -143,7 +142,7 @@ namespace SkillPrestige.Menus
         {
             const string title = "Skill Prestige Settings";
             spriteBatch.DrawString(Game1.dialogueFont, title, new Vector2(xPositionOnScreen + width / 2 - Game1.dialogueFont.MeasureString(title).X / 2f, yPositionOnScreen + spaceToClearTopBorder + Game1.tileSize / 4), Game1.textColor);
-            drawHorizontalPartition(spriteBatch, yPositionOnScreen + (int)Math.Floor(Game1.tileSize * 2.5));
+            drawHorizontalPartition(spriteBatch, yPositionOnScreen + (Game1.tileSize * 2.5).Floor());
         }
     }
 }

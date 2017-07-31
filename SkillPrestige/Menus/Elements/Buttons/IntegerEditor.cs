@@ -36,13 +36,13 @@ namespace SkillPrestige.Menus.Elements.Buttons
             Minimum = minimum;
             Maximum = maximum;
             Text = text;
-            var buttonYOffset = (int) Math.Ceiling(Game1.smallFont.MeasureString(text).Y) + _linePadding;
-            _minusButton = new TextureButton(new Rectangle((int)Math.Floor(location.X), (int)Math.Floor(location.Y) + buttonYOffset, PixelsWide * Game1.pixelZoom, PixelsHigh * Game1.pixelZoom), Game1.mouseCursors, OptionsPlusMinus.minusButtonSource, MinusButtonClicked);
-            var plusButtonOffset = (int)Math.Ceiling(NumberSprite.getWidth(Maximum) * 1.5) + _minusButton.Bounds.Width * 4;
-            _plusButton = new TextureButton(new Rectangle((int)Math.Floor(location.X) + plusButtonOffset, (int)Math.Floor(location.Y) + buttonYOffset, PixelsWide * Game1.pixelZoom, PixelsHigh * Game1.pixelZoom), Game1.mouseCursors, OptionsPlusMinus.plusButtonSource, PlusButtonClicked);
-            var maxWidth = new[] { _plusButton.Bounds.X + _plusButton.Bounds.Width - (int)Math.Floor(location.X), (int)Math.Ceiling(Game1.smallFont.MeasureString(text).X)}.Max();
+            var buttonYOffset = (Game1.smallFont.MeasureString(text).Y).Ceiling() + _linePadding;
+            _minusButton = new TextureButton(new Rectangle(location.X.Floor(), location.Y.Floor() + buttonYOffset, PixelsWide * Game1.pixelZoom, PixelsHigh * Game1.pixelZoom), Game1.mouseCursors, OptionsPlusMinus.minusButtonSource, MinusButtonClicked);
+            var plusButtonOffset = (NumberSprite.getWidth(Maximum) * 1.5).Ceiling() + _minusButton.Bounds.Width * 4;
+            _plusButton = new TextureButton(new Rectangle(location.X.Floor() + plusButtonOffset, location.Y.Floor() + buttonYOffset, PixelsWide * Game1.pixelZoom, PixelsHigh * Game1.pixelZoom), Game1.mouseCursors, OptionsPlusMinus.plusButtonSource, PlusButtonClicked);
+            var maxWidth = new[] { _plusButton.Bounds.X + _plusButton.Bounds.Width - location.X.Floor(), (Game1.smallFont.MeasureString(text).X).Ceiling()}.Max();
             var maxHeight = buttonYOffset + new[] {_minusButton.Bounds.Height, _plusButton.Bounds.Height, NumberSprite.getHeight()}.Max();
-            Bounds = new Rectangle((int)Math.Floor(location.X), (int)Math.Floor(location.Y), maxWidth, maxHeight);
+            Bounds = new Rectangle(location.X.Floor(), location.Y.Floor(), maxWidth, maxHeight);
         }
 
         private void MinusButtonClicked()
@@ -105,7 +105,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
 
             _minusButton.Draw(spriteBatch, Value == Minimum ? Color.Gray : Color.White);
             var numberLocation = location;
-            numberLocation.X += _minusButton.Bounds.Width * 3 + (int)Math.Ceiling(NumberSprite.getWidth(Value) * 1.5);
+            numberLocation.X += _minusButton.Bounds.Width * 3 + (NumberSprite.getWidth(Value) * 1.5).Ceiling();
             numberLocation.Y += _linePadding;
             NumberSprite.draw(Value, spriteBatch, numberLocation, Color.SandyBrown, 1f, .85f, 1f, 0);
 

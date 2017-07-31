@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using SkillPrestige.Logging;
 using StardewValley;
 
@@ -13,6 +12,12 @@ namespace SkillPrestige
         private static bool ExperienceLoaded { get; set; }
 
         private static int[] LastExperiencePoints { get; set; }
+
+        public static void ResetExperience()
+        {
+            ExperienceLoaded = false;
+            LastExperiencePoints = null;
+        }
 
         public static void UpdateExperience()
         {
@@ -33,7 +38,7 @@ namespace SkillPrestige
                 var skillExperienceFactor = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType.Ordinal == skillIndex).PrestigePoints * PerSaveOptions.Instance.ExperienceMultiplier;
                 if (gainedExperience <= 0 || skillExperienceFactor <= 0) continue;
                 Logger.LogVerbose($"Detected {gainedExperience} experience gained in {Skill.AllSkills.Single(x => x.Type.Ordinal == skillIndex).Type.Name} skill.");
-                var extraExperience = (int)Math.Floor(gainedExperience*skillExperienceFactor);
+                var extraExperience = (gainedExperience*skillExperienceFactor).Floor();
                 Logger.LogVerbose($"Adding {extraExperience} experience to {Skill.AllSkills.Single(x => x.Type.Ordinal == skillIndex).Type.Name} skill.");
                 Game1.player.gainExperience(skillIndex, extraExperience);
             }

@@ -26,17 +26,18 @@ namespace SkillPrestige.Mods
                 return;
             }
             var targetInterface = typeof(ISkillMod);
-            var concreteModTypes = AppDomain.CurrentDomain.GetAssemblies()
+            var concreteModTypes = AppDomain.CurrentDomain.GetNonSystemAssemblies()
                 .SelectMany(x => x.GetTypesSafely())
                 .Where(x => targetInterface.IsAssignableFrom(x) && !x.IsAbstract).ToList();
             Logger.LogInformation($"{concreteModTypes.Count} skill mods found.");
+            var numberOfModsLoadedSuccessfully = 0;
             foreach (var mod in concreteModTypes)
             {
-                ISkillMod skillMod;
                 try
                 {
-                    skillMod = (ISkillMod)Activator.CreateInstance(mod);
+                    var skillMod = (ISkillMod)Activator.CreateInstance(mod);
                     RegisterMod(skillMod);
+                    numberOfModsLoadedSuccessfully++;
                 }
                 catch (Exception exception)
                     when (exception.GetType().In(typeof(ArgumentNullException), typeof(ArgumentException)))
@@ -56,7 +57,7 @@ namespace SkillPrestige.Mods
                     continue;
                 }
                 
-                Logger.LogInformation("Internally loaded mods registered.");
+                Logger.LogInformation($"Internally loaded mods registered: {numberOfModsLoadedSuccessfully}");
             }
         }
 

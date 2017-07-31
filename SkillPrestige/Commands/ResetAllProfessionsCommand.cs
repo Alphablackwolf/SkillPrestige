@@ -20,11 +20,11 @@ namespace SkillPrestige.Commands
 
         protected override void Apply(string[] args)
         {
-            if (Type.GetType("AllProfessions.AllProfessions, AllProfessions") != null)
+            if (SkillPrestigeMod.ModRegistry.IsLoaded("community.AllProfessions"))
             {
                 SkillPrestigeMod.LogMonitor.Log("Command cannot be run while AllProfessions is still installed. Please remove AllProfessions before proceeding.");
             }
-                if (Game1.player == null)
+            if (Game1.player == null)
             {
                 SkillPrestigeMod.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;

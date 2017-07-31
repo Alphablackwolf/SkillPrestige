@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -29,8 +28,8 @@ namespace SkillPrestige.Menus
             {
                 var width = 8 * Game1.pixelZoom;
                 var height = 8 * Game1.pixelZoom;
-                var yOffset = (int) Math.Floor(Game1.tileSize/2.5);
-                var yPadding = (int) Math.Floor(Game1.tileSize * 1.05);
+                var yOffset = (Game1.tileSize/2.5).Floor();
+                var yPadding = (Game1.tileSize * 1.05).Floor();
                 var xOffset = skillsPage.width + Game1.tileSize;
                 var bounds = new Rectangle(skillsPage.xPositionOnScreen + xOffset, skillsPage.yPositionOnScreen + yPadding + yOffset * skill.SkillScreenPosition + skill.SkillScreenPosition * height, width, height);
                 var prestigeButton = new TextureButton(bounds, SkillPrestigeMod.PrestigeIconTexture, new Rectangle(0, 0, 32, 32), () => OpenPrestigeMenu(skill), "Click to open the Prestige menu.");

@@ -74,7 +74,7 @@ namespace SkillPrestige.Bonuses.TypeRegistration
                 },
                 SkillType = SkillTypes.SkillType.Farming
             };
-            Logger.LogInformation("Farm,ing bonus types registered.");
+            Logger.LogInformation("Farming bonus types registered.");
         }
     }
 }
