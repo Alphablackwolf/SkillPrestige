@@ -99,11 +99,13 @@ namespace SkillPrestige
 
         private static void SaveFileLoaded(object sender, EventArgs args)
         {
+            PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
             SaveIsLoaded = true;
         }
 
         private static void ReturnToTitle(object sender, EventArgs args)
         {
+            PrestigeSaveData.Instance.Read();
             SaveIsLoaded = false;
             Logger.LogInformation("Return To Title.");
             PerSaveOptions.ClearLoadedPerSaveOptionsFile();
