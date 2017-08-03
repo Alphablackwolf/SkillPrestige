@@ -41,10 +41,17 @@ namespace SkillPrestige
                 LastExperiencePoints = (int[])Game1.player.experiencePoints.Clone();
                 Logger.LogVerbose("Loaded Experience state.");
                 return;
-
+            }
+            if (Game1.player.experiencePoints.SequenceEqual(LastExperiencePoints)) return;
+            if (Game1.player.experiencePoints.Length != LastExperiencePoints.Length)
+            {
+                LastExperiencePoints = (int[])Game1.player.experiencePoints.Clone();
+                return;
             }
             for (var skillIndex = 0; skillIndex < Game1.player.experiencePoints.Length; skillIndex++)
             {
+                var skillHasAPrestige = Skill.AllSkills.Any(x => x.Type.Ordinal == skillIndex);
+                if (!skillHasAPrestige) continue; 
                 var lastExperienceDetected = LastExperiencePoints[skillIndex];
                 var currentExperience = Game1.player.experiencePoints[skillIndex];
                 var gainedExperience = currentExperience - lastExperienceDetected;
