@@ -8,7 +8,7 @@ namespace SkillPrestige
     public static class CropQualityFactor
     {
 
-        public static decimal QualityImprovementChance { get; set; }
+        public static decimal QualityImprovementChance { private get; set; }
 
         public static int GetCropQualityIncrease()
         {

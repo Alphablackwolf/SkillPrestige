@@ -196,6 +196,11 @@ namespace SkillPrestige
             return itemsToCheck.Contains(item);
         }
 
+        public static bool IsOneOf<T>(this T item, IEnumerable<T> itemsToCheck)
+        {
+            return itemsToCheck.Contains(item);
+        }
+
         /// <summary>
         /// Checks to see if the text starts with any one of the passed strings.
         /// </summary>

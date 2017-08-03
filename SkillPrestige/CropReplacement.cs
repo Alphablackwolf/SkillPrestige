@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using StardewValley;
 using StardewValley.Characters;
@@ -14,7 +16,8 @@ namespace SkillPrestige
     public class CropReplacement : Crop
     {
         /// <summary>
-        /// Pulled from the decompiled Stardew Valley code, *slightly* reworked for readability, added quality adjustment.
+        /// Pulled from the decompiled Stardew Valley code, *slightly* reworked for readability. 
+        /// Added quality adjustment, and regrowth chances.
         /// </summary>
         /// <param name="xTile"></param>
         /// <param name="yTile"></param>
@@ -23,7 +26,18 @@ namespace SkillPrestige
         /// <returns></returns>
         public bool HarvestReplacement(int xTile, int yTile, HoeDirt soil, JunimoHarvester junimoHarvester = null)
         {
-            if (dead) return junimoHarvester != null;
+            var seedIndex = 0;
+            if (CropRegrowthFactor.RegrowthChance > 0)
+            {
+                seedIndex = GetSeedOfCrop();
+            }
+            if (dead)
+            {
+                if (!CropRegrowthFactor.GetDeadCropRegrowthSuccess()) return junimoHarvester != null;
+                if (junimoHarvester != null) junimoHarvester.tryToAddItemToHut(new Object(seedIndex, 1));
+                else Game1.createObjectDebris(seedIndex, xTile, yTile);
+                return junimoHarvester != null;
+            }
             if (forageCrop)
             {
                 Object forageCropObject = null;
@@ -99,8 +113,12 @@ namespace SkillPrestige
                     for (var index = 0; index < numberOfCropsProduced; ++index)
                     {
                         if (junimoHarvester != null) junimoHarvester.tryToAddItemToHut(new Object(indexOfHarvest, 1, false, -1, quality));
-                        else
-                            Game1.createObjectDebris(indexOfHarvest, xTile, yTile, -1, quality);
+                        else Game1.createObjectDebris(indexOfHarvest, xTile, yTile, -1, quality);
+                    }
+                    if (CropRegrowthFactor.GetCropRegrowthSuccess())
+                    {
+                        if (junimoHarvester != null) junimoHarvester.tryToAddItemToHut(new Object(seedIndex, 1));
+                        else Game1.createObjectDebris(seedIndex, xTile, yTile);
                     }
                     if (regrowAfterHarvest == -1) return true;
                     dayOfCurrentPhase = regrowAfterHarvest;
@@ -168,6 +186,11 @@ namespace SkillPrestige
                 }
             }
             return false;
+        }
+
+        private int GetSeedOfCrop()
+        {
+            return Game1.content.Load<Dictionary<int, string>>("Data\\Crops").First(x => x.Value.Split('/')[3] == indexOfHarvest.ToString()).Key;
         }
     }
 }

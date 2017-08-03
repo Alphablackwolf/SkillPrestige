@@ -40,7 +40,6 @@ namespace SkillPrestige
 
         private static bool SaveIsLoaded { get; set; }
 
-
         private IModHelper ModHelper { get; set; }
 
         private static bool _isFirstUpdate = true;
