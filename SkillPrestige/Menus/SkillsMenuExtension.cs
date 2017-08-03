@@ -67,6 +67,7 @@ namespace SkillPrestige.Menus
                 if (!_skillsMenuInitialized) IntializeSkillsMenu(skillsPage);
                 var spriteBatch = Game1.spriteBatch;
                 DrawPrestigeButtons(spriteBatch);
+                DrawProfessionHoverText(spriteBatch, skillsPage);
                 DrawPrestigeButtonsHoverText(spriteBatch);
                 Mouse.DrawCursor(spriteBatch);
             }
@@ -86,6 +87,14 @@ namespace SkillPrestige.Menus
             {
                 prestigeButton.DrawHoverText(spriteBatch);
             }
+        }
+
+        private static void DrawProfessionHoverText(SpriteBatch spriteBatch, SkillsPage skillsPage)
+        {
+            var hoverText = (string) skillsPage.GetInstanceField("hoverText");
+            if (hoverText.Length <= 0) return;
+            var hoverTitle = (string) skillsPage.GetInstanceField("hoverTitle");
+            IClickableMenu.drawHoverText(spriteBatch, hoverText, Game1.smallFont, 0, 0, -1, hoverTitle.Length > 0 ? hoverTitle : null);
         }
 
         private static void OpenPrestigeMenu(Skill skill)

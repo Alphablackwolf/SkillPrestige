@@ -26,7 +26,7 @@ namespace SkillPrestige
             //Logger.LogVerbose($"Obtaining instance field {fieldName} on object of type {instance.GetType().FullName}");
             const BindingFlags bindingAttributes = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
             var memberInfo = instance.GetType().GetField(fieldName, bindingAttributes);
-            return memberInfo != null ? memberInfo.GetValue(instance) : null;
+            return memberInfo?.GetValue(instance);
         }
 
         /// <summary>

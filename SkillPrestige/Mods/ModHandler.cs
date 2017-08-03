@@ -84,12 +84,10 @@ namespace SkillPrestige.Mods
                 var intersectingMods = GetIntersectingModProfessions(mod);
                 if (intersectingMods.Any())
                 {
-                    Logger.LogWarning(
-                        $"Cannot load skill mod: {mod.DisplayName}, as it collides with another mod's skills. Details:");
+                    Logger.LogWarning($"Cannot load skill mod: {mod.DisplayName}, as it collides with another mod's skills. Details:");
                     foreach (var intersectingMod in intersectingMods)
                     {
-                        Logger.LogWarning(
-                            $"Skill mod {mod.DisplayName} registration failed due to {intersectingMod.Key.DisplayName}, for profession ids: {string.Join(",", intersectingMod.Value)}");
+                        Logger.LogWarning($"Skill mod {mod.DisplayName} registration failed due to {intersectingMod.Key.DisplayName}, for profession ids: {string.Join(",", intersectingMod.Value)}");
                     }
                     return;
                 }

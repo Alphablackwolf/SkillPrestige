@@ -70,7 +70,28 @@ namespace SkillPrestige.Menus
             var rightEdgeOfDialog = xPositionOnScreen + width;
             var bounds = new Rectangle(rightEdgeOfDialog - spaceToClearSideBorder - buttonWidth,
                 yPositionOnScreen + yOffset + (Game1.tileSize * 3.15).Floor(), buttonWidth, buttonHeight);
-            _prestigeButton = new PrestigeButton(_skill.GetSkillLevel() < 10, _skill)
+
+            var prestigeButtonDisabled = true;
+            if (PerSaveOptions.Instance.PainlessPrestigeMode)
+            {
+                if (Game1.player.experiencePoints[_skill.Type.Ordinal] >= 15000 + PerSaveOptions.Instance.ExperienceNeededPerPainlessPrestige)
+                {
+                    prestigeButtonDisabled = false;
+                }
+            }
+            else
+            {
+                if (_skill.GetSkillLevel() == 10)
+                {
+                    var newLevelForSkillExists = Game1.player.newLevels.Any(point => point.X == _skill.Type.Ordinal && point.Y > 0);
+                    if (!newLevelForSkillExists)
+                    {
+                        prestigeButtonDisabled = false;
+                    }
+                }
+            }
+
+            _prestigeButton = new PrestigeButton(prestigeButtonDisabled, _skill)
             {
                 Bounds = bounds,
             };

@@ -51,16 +51,20 @@ namespace SkillPrestige.Commands
             }
             Logger.LogInformation("Setting experience level...");
             Logger.LogVerbose($"experience argument: {experienceArgument}");
-            experienceArgument = experienceArgument.Clamp(0, 15000);
+            experienceArgument = experienceArgument.Clamp(0, 100000);
             Logger.LogVerbose($"experience used: {experienceArgument}");
             var skill = Skill.AllSkills.Single(x => x.Type.Name.Equals(skillArgument, StringComparison.InvariantCultureIgnoreCase));
+           
             var playerSkillExperience = Game1.player.experiencePoints[skill.Type.Ordinal];
             Logger.LogVerbose($"Current experience level for {skill.Type.Name} skill: {playerSkillExperience}");
             Logger.LogVerbose($"Setting {skill.Type.Name} skill to {experienceArgument} experience.");
+            ExperienceHandler.DisableExperienceGains = true;
             skill.SetSkillExperience(experienceArgument);
+            ExperienceHandler.DisableExperienceGains = false;
             var skillLevel = GetLevel(experienceArgument);
             Logger.LogVerbose($"Setting skill level for {experienceArgument} experience: {skillLevel}");
             skill.SetSkillLevel(skillLevel);
+            
         }
 
         private static int GetLevel(int experience)

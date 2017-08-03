@@ -38,9 +38,9 @@ namespace SkillPrestige
         // ReSharper disable once MemberCanBePrivate.Global - used publically, resharper is wrong.
         public static PrestigeSaveData Instance
         {
-            get { return _instance ?? (_instance = new PrestigeSaveData()); }
+            get => _instance ?? (_instance = new PrestigeSaveData());
             // ReSharper disable once UnusedMember.Global - used by deseralizer.
-            set { _instance = value; }
+            set => _instance = value;
         }
 
         // ReSharper disable once MemberCanBeMadeStatic.Global - removing this removes lazy load in accessor for the instance. 

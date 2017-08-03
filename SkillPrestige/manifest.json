@@ -3,7 +3,7 @@
   "Author": "Alphablackwolf",
   "Version": {
     "MajorVersion": 1,
-    "MinorVersion": 1,
+    "MinorVersion": 2,
     "PatchVersion": 0,
     "Build": null
   },
@@ -11,4 +11,4 @@
   "Description": "Lets you earn permanent profession perks beyond that which can normally be obtained in Vanilla play by spending Prestige Points, earned by resetting a skill from 10 to 0.",
   "UniqueID": "alphablackwolf.skillPrestige",
   "EntryDll": "SkillPrestige.dll"
-}
+} 
