@@ -14,8 +14,7 @@ namespace SkillPrestige.Mods.MyLuckSkill
     public class LuckSkillMod : SkillMod
     {
         public override string DisplayName => "Luck Skill";
-        protected override string Namespace => "LuckSkill";
-        protected override string ClassName => "LuckSkillMod";
+        protected override string UniqueId => "spacechase0.LuckSkill";
 
         public override IEnumerable<Skill> AdditionalSkills => IsFound
             ? new List<Skill>

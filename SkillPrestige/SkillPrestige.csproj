@@ -33,6 +33,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ExtendedMinecart">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Mods\ExtendedMinecart\ExtendedMinecart.dll</HintPath>
+    </Reference>
     <Reference Include="LuckSkill">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Mods\LuckSkill\LuckSkill.dll</HintPath>
     </Reference>
@@ -58,6 +61,7 @@
     <Compile Include="Commands\SetExperienceCommand.cs" />
     <Compile Include="Commands\SkillPrestigeCommand.cs" />
     <Compile Include="Bonuses\TypeRegistration\IBonusTypeRegistration.cs" />
+    <Compile Include="CropRegrowthFactor.cs" />
     <Compile Include="JsonNet.PrivateSettersContractResolvers\MemberInfoExtensions.cs" />
     <Compile Include="JsonNet.PrivateSettersContractResolvers\PrivateSetterContractResolver.cs" />
     <Compile Include="Logging\LogLevel.cs" />
@@ -116,6 +120,7 @@
     <Compile Include="Options.cs" />
     <Compile Include="CropReplacement.cs" />
     <Compile Include="CropQualityFactor.cs" />
+    <Compile Include="AnimalProduceHandler.cs" />
     <Compile Include="ToolTypeLookup.cs" />
     <Compile Include="ToolType.cs" />
     <Compile Include="ToolProficiencyHandler.cs" />
@@ -131,7 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="manifest.json"/>
+    <None Include="manifest.json" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

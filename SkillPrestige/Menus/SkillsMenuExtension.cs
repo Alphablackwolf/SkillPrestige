@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -29,8 +28,8 @@ namespace SkillPrestige.Menus
             {
                 var width = 8 * Game1.pixelZoom;
                 var height = 8 * Game1.pixelZoom;
-                var yOffset = (int) Math.Floor(Game1.tileSize/2.5);
-                var yPadding = (int) Math.Floor(Game1.tileSize * 1.05);
+                var yOffset = (Game1.tileSize/2.5).Floor();
+                var yPadding = (Game1.tileSize * 1.05).Floor();
                 var xOffset = skillsPage.width + Game1.tileSize;
                 var bounds = new Rectangle(skillsPage.xPositionOnScreen + xOffset, skillsPage.yPositionOnScreen + yPadding + yOffset * skill.SkillScreenPosition + skill.SkillScreenPosition * height, width, height);
                 var prestigeButton = new TextureButton(bounds, SkillPrestigeMod.PrestigeIconTexture, new Rectangle(0, 0, 32, 32), () => OpenPrestigeMenu(skill), "Click to open the Prestige menu.");
@@ -68,6 +67,7 @@ namespace SkillPrestige.Menus
                 if (!_skillsMenuInitialized) IntializeSkillsMenu(skillsPage);
                 var spriteBatch = Game1.spriteBatch;
                 DrawPrestigeButtons(spriteBatch);
+                DrawProfessionHoverText(spriteBatch, skillsPage);
                 DrawPrestigeButtonsHoverText(spriteBatch);
                 Mouse.DrawCursor(spriteBatch);
             }
@@ -87,6 +87,14 @@ namespace SkillPrestige.Menus
             {
                 prestigeButton.DrawHoverText(spriteBatch);
             }
+        }
+
+        private static void DrawProfessionHoverText(SpriteBatch spriteBatch, SkillsPage skillsPage)
+        {
+            var hoverText = (string) skillsPage.GetInstanceField("hoverText");
+            if (hoverText.Length <= 0) return;
+            var hoverTitle = (string) skillsPage.GetInstanceField("hoverTitle");
+            IClickableMenu.drawHoverText(spriteBatch, hoverText, Game1.smallFont, 0, 0, -1, hoverTitle.Length > 0 ? hoverTitle : null);
         }
 
         private static void OpenPrestigeMenu(Skill skill)

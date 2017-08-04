@@ -84,20 +84,30 @@ namespace SkillPrestige
         {
             try
             {
-                Logger.LogInformation($"Prestiging skill {skill.Type.Name}.");
-                skill.SetSkillExperience(0);
-                skill.SetSkillLevel(0);
-                Logger.LogInformation($"Skill {skill.Type.Name} experience and level reset.");
-                if (PerSaveOptions.Instance.ResetRecipesOnPrestige)
+                if (PerSaveOptions.Instance.PainlessPrestigeMode)
                 {
-                    RemovePlayerCraftingRecipesForSkill(skill.Type);
-                    RemovePlayerCookingRecipesForSkill(skill.Type);
+                    Logger.LogInformation($"Prestiging skill {skill.Type.Name} via Painless Mode.");
+                    skill.SetSkillExperience(Game1.player.experiencePoints[skill.Type.Ordinal] - PerSaveOptions.Instance.ExperienceNeededPerPainlessPrestige);
+                    Logger.LogInformation($"Removed {PerSaveOptions.Instance.ExperienceNeededPerPainlessPrestige} experience points from {skill.Type.Name} skill.");
                 }
-                Profession.RemoveProfessions(skill);
-                PlayerManager.CorrectStats(skill);
-                Profession.AddMissingProfessions();
+                else
+                {
+                    Logger.LogInformation($"Prestiging skill {skill.Type.Name}.");
+                    skill.SetSkillExperience(0);
+                    skill.SetSkillLevel(0);
+                    Logger.LogInformation($"Skill {skill.Type.Name} experience and level reset.");
+                    if (PerSaveOptions.Instance.ResetRecipesOnPrestige)
+                    {
+                        RemovePlayerCraftingRecipesForSkill(skill.Type);
+                        RemovePlayerCookingRecipesForSkill(skill.Type);
+                    }
+                    Profession.RemoveProfessions(skill);
+                    PlayerManager.CorrectStats(skill);
+                    Profession.AddMissingProfessions();
+                }
                 PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == skill.Type).PrestigePoints += PerSaveOptions.Instance.PointsPerPrestige;
                 Logger.LogInformation($"{PerSaveOptions.Instance.PointsPerPrestige} Prestige point(s) added to {skill.Type.Name} skill.");
+
             }
             catch (Exception exception)
             {
@@ -111,13 +121,12 @@ namespace SkillPrestige
         /// <param name="skillType">the skill type to remove all crafting recipes from.</param>
         private static void RemovePlayerCraftingRecipesForSkill(SkillType skillType)
         {
-
             Logger.LogInformation($"Removing {skillType.Name} crafting recipes");
             foreach (
                 var recipe in
                 CraftingRecipe.craftingRecipes.Where(
                     x =>
-                        x.Value.Split('/')[4].Contains(StardewValley.Farmer.getSkillNameFromIndex(skillType.Ordinal)) &&
+                        x.Value.Split('/')[4].Contains(skillType.Name) &&
                         Game1.player.craftingRecipes.ContainsKey(x.Key)))
             {
                 Logger.LogVerbose($"Removing {skillType.Name} crafting recipe {recipe.Value}");
@@ -133,12 +142,17 @@ namespace SkillPrestige
         /// <param name="skillType">the skill type to remove all cooking recipes from.</param>
         private static void RemovePlayerCookingRecipesForSkill(SkillType skillType)
         {
-            Logger.LogInformation($"Removing {skillType.Name} cooking recipes");
+            if (skillType.Name.IsOneOf("Cooking", string.Empty))
+            {
+                Logger.LogInformation($"Wiping skill cooking recipes for skill: {skillType.Name} could remove more than intended. Exiting skill cooking recipe wipe.");
+                return;
+            }
+            Logger.LogInformation($"Removing {skillType.Name} cooking recipes.");
             foreach (
                 var recipe in
                 CraftingRecipe.cookingRecipes.Where(
                     x =>
-                        x.Value.Split('/')[3].Contains(StardewValley.Farmer.getSkillNameFromIndex(skillType.Ordinal)) &&
+                        x.Value.Split('/')[3].Contains(skillType.Name) &&
                         Game1.player.cookingRecipes.ContainsKey(x.Key)))
             {
                 Logger.LogVerbose($"Removing {skillType.Name} cooking recipe {recipe.Value}");

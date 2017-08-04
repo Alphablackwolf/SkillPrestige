@@ -25,8 +25,17 @@ namespace SkillPrestige
 
         public int CostOfTierTwoPrestige { get; set; }
 
+        /// <summary>
+        /// Number of prestige points gained per prestige of a skill.
+        /// </summary>
         public int PointsPerPrestige { get; set; }
         
+        /// <summary>
+        /// A mode where the player pays for prestige via the points gained after reaching level 10, never resetting to 0.
+        /// </summary>
+        public bool PainlessPrestigeMode { get; set; }
+
+        public int ExperienceNeededPerPainlessPrestige { get; set; }
 
         private PerSaveOptions() { }
         private static PerSaveOptions _instance;
@@ -72,6 +81,11 @@ namespace SkillPrestige
                     Logger.LogWarning("Points per prestige loaded without value, defaulting to a 1 point per prestige.");
                     Instance.PointsPerPrestige = 1;
                 }
+                if (Instance.ExperienceNeededPerPainlessPrestige <= 0)
+                {
+                    Logger.LogWarning("Experience points needed per painless prestige loaded without value, defaulting to 15000 points per painless prestige.");
+                    Instance.ExperienceNeededPerPainlessPrestige = 15000;
+                }
             }
             catch (Exception ex)
             {
@@ -93,6 +107,7 @@ namespace SkillPrestige
                 Instance.CostOfTierOnePrestige =  1;
                 Instance.CostOfTierTwoPrestige =  2;
                 Instance.PointsPerPrestige =  1;
+                Instance.ExperienceNeededPerPainlessPrestige = 15000;
                 Save();
             }
             catch(Exception exception)
@@ -110,9 +125,15 @@ namespace SkillPrestige
             Logger.LogInformation("Per save options file saved.");
         }
 
+        public static void ClearLoadedPerSaveOptionsFile()
+        {
+            _instance = null;
+        }
+
         /// <summary>
         /// Empty procedure to force the lazy load of the instance.
         /// </summary>
+        // ReSharper disable once MemberCanBeMadeStatic.Global - the whole point of this is to force the load of the instance.
         public void Check() { }
     }
 }

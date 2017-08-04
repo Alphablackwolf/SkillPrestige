@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
 
@@ -17,7 +16,7 @@ namespace SkillPrestige.Menus.Dialogs
             : base(bounds, message)
         {
             _skill = skill;
-            YPostionOfHeaderPartition = yPositionOnScreen + (int) Math.Floor(Game1.tileSize*2.5);
+            YPostionOfHeaderPartition = yPositionOnScreen + (Game1.tileSize*2.5).Floor();
         }
 
         protected override void DrawDecorations(SpriteBatch spriteBatch)
@@ -32,7 +31,7 @@ namespace SkillPrestige.Menus.Dialogs
             DrawSkillIcon(spriteBatch, new Vector2(xPositionOnScreen + spaceToClearSideBorder + borderWidth, yPositionOnScreen + spaceToClearTopBorder + Game1.tileSize / 4));
             spriteBatch.DrawString(Game1.dialogueFont, title, new Vector2(xPositionOnScreen + width / 2 - Game1.dialogueFont.MeasureString(title).X / 2f, yPositionOnScreen + spaceToClearTopBorder + Game1.tileSize / 4), Game1.textColor);
             DrawSkillIcon(spriteBatch, new Vector2(xPositionOnScreen + width - spaceToClearSideBorder - borderWidth - Game1.tileSize, yPositionOnScreen + spaceToClearTopBorder + Game1.tileSize / 4));
-            drawHorizontalPartition(spriteBatch, yPositionOnScreen + (int)Math.Floor(Game1.tileSize * 2.5));
+            drawHorizontalPartition(spriteBatch, yPositionOnScreen + (Game1.tileSize * 2.5).Floor());
         }
 
         private void DrawSkillIcon(SpriteBatch spriteBatch, Vector2 location)

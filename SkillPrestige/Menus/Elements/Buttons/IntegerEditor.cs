@@ -19,6 +19,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
         private int Value { get; set; }
         private int Minimum { get; }
         private int Maximum { get; }
+        private int Increment { get; }
 
         private readonly TextureButton _minusButton;
         private readonly TextureButton _plusButton;
@@ -28,7 +29,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
 
         private readonly ClickCallback _onClick;
 
-        public IntegerEditor(string text, int startingNumber, int minimum, int maximum, Vector2 location, ClickCallback onClickCallback)
+        public IntegerEditor(string text, int startingNumber, int minimum, int maximum, Vector2 location, ClickCallback onClickCallback, int increment = 1)
         {
             if(maximum <= minimum) throw new ArgumentException($"{nameof(minimum)} value cannot exceed {nameof(maximum)} value.");
             _onClick = onClickCallback;
@@ -36,13 +37,14 @@ namespace SkillPrestige.Menus.Elements.Buttons
             Minimum = minimum;
             Maximum = maximum;
             Text = text;
-            var buttonYOffset = (int) Math.Ceiling(Game1.smallFont.MeasureString(text).Y) + _linePadding;
-            _minusButton = new TextureButton(new Rectangle((int)Math.Floor(location.X), (int)Math.Floor(location.Y) + buttonYOffset, PixelsWide * Game1.pixelZoom, PixelsHigh * Game1.pixelZoom), Game1.mouseCursors, OptionsPlusMinus.minusButtonSource, MinusButtonClicked);
-            var plusButtonOffset = (int)Math.Ceiling(NumberSprite.getWidth(Maximum) * 1.5) + _minusButton.Bounds.Width * 4;
-            _plusButton = new TextureButton(new Rectangle((int)Math.Floor(location.X) + plusButtonOffset, (int)Math.Floor(location.Y) + buttonYOffset, PixelsWide * Game1.pixelZoom, PixelsHigh * Game1.pixelZoom), Game1.mouseCursors, OptionsPlusMinus.plusButtonSource, PlusButtonClicked);
-            var maxWidth = new[] { _plusButton.Bounds.X + _plusButton.Bounds.Width - (int)Math.Floor(location.X), (int)Math.Ceiling(Game1.smallFont.MeasureString(text).X)}.Max();
+            Increment = increment;
+            var buttonYOffset = Game1.smallFont.MeasureString(text).Y.Ceiling() + _linePadding;
+            _minusButton = new TextureButton(new Rectangle(location.X.Floor(), location.Y.Floor() + buttonYOffset, PixelsWide * Game1.pixelZoom, PixelsHigh * Game1.pixelZoom), Game1.mouseCursors, OptionsPlusMinus.minusButtonSource, MinusButtonClicked);
+            var plusButtonOffset = MeasureNumberWidth(Maximum) + _minusButton.Bounds.Width;
+            _plusButton = new TextureButton(new Rectangle(location.X.Floor() + plusButtonOffset, location.Y.Floor() + buttonYOffset, PixelsWide * Game1.pixelZoom, PixelsHigh * Game1.pixelZoom), Game1.mouseCursors, OptionsPlusMinus.plusButtonSource, PlusButtonClicked);
+            var maxWidth = new[] { _plusButton.Bounds.X + _plusButton.Bounds.Width - location.X.Floor(), Game1.smallFont.MeasureString(text).X.Ceiling()}.Max();
             var maxHeight = buttonYOffset + new[] {_minusButton.Bounds.Height, _plusButton.Bounds.Height, NumberSprite.getHeight()}.Max();
-            Bounds = new Rectangle((int)Math.Floor(location.X), (int)Math.Floor(location.Y), maxWidth, maxHeight);
+            Bounds = new Rectangle(location.X.Floor(), location.Y.Floor(), maxWidth, maxHeight);
         }
 
         private void MinusButtonClicked()
@@ -50,7 +52,8 @@ namespace SkillPrestige.Menus.Elements.Buttons
             Logger.LogVerbose($"{Text} minus button clicked.");
             if (Value <= Minimum) return;
             Game1.playSound("drumkit6");
-            Value--;
+            Value -= Increment;
+            if (Value < Minimum) Value = Minimum;
             SendValue();
         }
 
@@ -59,7 +62,8 @@ namespace SkillPrestige.Menus.Elements.Buttons
             Logger.LogVerbose($"{Text} plus button clicked.");
             if (Value >= Maximum) return;
             Game1.playSound("drumkit6");
-            Value++;
+            Value += Increment;
+            if (Value > Maximum) Value = Maximum;
             SendValue();
         }
 
@@ -102,14 +106,34 @@ namespace SkillPrestige.Menus.Elements.Buttons
             var location = new Vector2(Bounds.X, Bounds.Y);
             spriteBatch.DrawString(Game1.smallFont, Text, location, Game1.textColor);
             location.Y += Game1.smallFont.MeasureString(Text).Y + _linePadding ;
-
             _minusButton.Draw(spriteBatch, Value == Minimum ? Color.Gray : Color.White);
             var numberLocation = location;
-            numberLocation.X += _minusButton.Bounds.Width * 3 + (int)Math.Ceiling(NumberSprite.getWidth(Value) * 1.5);
+            var controlAreaWidth = _plusButton.Bounds.X + _plusButton.Bounds.Width - Bounds.X;
+            numberLocation.X += controlAreaWidth / 2 + GetNumberXOffset(Value) / 2;
             numberLocation.Y += _linePadding;
             NumberSprite.draw(Value, spriteBatch, numberLocation, Color.SandyBrown, 1f, .85f, 1f, 0);
-
             _plusButton.Draw(spriteBatch, Value == Maximum ? Color.Gray : Color.White);
         }
+
+        /// <summary>
+        /// // Numbers are printed starting at the given location, then moving to the left for each digit. This does *NOT* mean that the location given is the right edge.
+        /// Instead, the location given to the number would be at the X location in this pixel diagram for the number 703, This is why we subtract a single digit width.
+        ///             __   _ X__
+        ///              /  | |  _|
+        ///             /   |_| __|
+        /// </summary>
+        /// <param name="number"></param>
+        /// <returns></returns>
+        private static int GetNumberXOffset(int number)
+        {
+            return MeasureNumberWidth(number) - SingleDigitWidth;
+        }
+
+        private static int MeasureNumberWidth(int number)
+        {
+            return number.ToString().Length * SingleDigitWidth;
+        }
+
+        private static int SingleDigitWidth => 8 * Game1.pixelZoom - 4;
     }
 }

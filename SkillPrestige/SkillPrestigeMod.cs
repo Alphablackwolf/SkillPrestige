@@ -22,8 +22,6 @@ namespace SkillPrestige
     {
         #region Manifest Data
 
-        //public static string Guid => "6b843e60-c8fc-4a25-a67b-4a38ac8dcf9b";
-
         public static string ModPath { get; private set; }
 
         public static string OptionsPath { get; private set; }
@@ -38,6 +36,8 @@ namespace SkillPrestige
 
         public static Texture2D CheckmarkTexture { get; private set; }
 
+        public static IModRegistry ModRegistry { get; private set; }
+
         private static bool SaveIsLoaded { get; set; }
 
         private IModHelper ModHelper { get; set; }
@@ -51,6 +51,7 @@ namespace SkillPrestige
             ModHelper = helper;
             LogMonitor = Monitor;
             ModPath = helper.DirectoryPath;
+            ModRegistry = helper.ModRegistry;
             PerSaveOptionsDirectory = Path.Combine(ModPath, "psconfigs/");
             OptionsPath = Path.Combine(ModPath, "config.json");
             Logger.LogInformation("Detected game entry.");
@@ -77,7 +78,10 @@ namespace SkillPrestige
             GameEvents.UpdateTick += GameUpdate;
             GameEvents.HalfSecondTick += HalfSecondTick;
             GameEvents.OneSecondTick += OneSecondTick;
+            TimeEvents.AfterDayStarted += AfterDayStarted;
             Logger.LogInformation("Game events registered.");
+            SaveEvents.AfterLoad += SaveFileLoaded;
+            SaveEvents.AfterReturnToTitle += ReturnToTitle;
         }
 
         private static void MouseChanged(object sender, EventArgsMouseStateChanged args)
@@ -91,10 +95,29 @@ namespace SkillPrestige
             CurrentSaveOptionsPath = Path.Combine(ModPath, "psconfigs/", $@"{Game1.player.name.RemoveNonAlphanumerics()}_{Game1.uniqueIDForThisGame}.json");
             PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
             PerSaveOptions.Instance.Check();
-            SaveIsLoaded = true;
             Profession.AddMissingProfessions();
         }
 
+        private static void AfterDayStarted(object sender, EventArgs args)
+        {
+            Logger.LogVerbose("New Day Started");
+            AnimalProduceHandler.HandleSpawnedAnimalProductQuantityIncrease();
+        }
+
+        private static void SaveFileLoaded(object sender, EventArgs args)
+        {
+            PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
+            SaveIsLoaded = true;
+        }
+
+        private static void ReturnToTitle(object sender, EventArgs args)
+        {
+            PrestigeSaveData.Instance.Read();
+            SaveIsLoaded = false;
+            Logger.LogInformation("Return To Title.");
+            PerSaveOptions.ClearLoadedPerSaveOptionsFile();
+            ExperienceHandler.ResetExperience();
+        }
         private static void PostRenderGuiEvent(object sender, EventArgs args)
         {
             SkillsMenuExtension.AddPrestigeButtonsToMenu();

@@ -26,17 +26,18 @@ namespace SkillPrestige.Mods
                 return;
             }
             var targetInterface = typeof(ISkillMod);
-            var concreteModTypes = AppDomain.CurrentDomain.GetAssemblies()
+            var concreteModTypes = AppDomain.CurrentDomain.GetNonSystemAssemblies()
                 .SelectMany(x => x.GetTypesSafely())
                 .Where(x => targetInterface.IsAssignableFrom(x) && !x.IsAbstract).ToList();
             Logger.LogInformation($"{concreteModTypes.Count} skill mods found.");
+            var numberOfModsLoadedSuccessfully = 0;
             foreach (var mod in concreteModTypes)
             {
-                ISkillMod skillMod;
                 try
                 {
-                    skillMod = (ISkillMod)Activator.CreateInstance(mod);
+                    var skillMod = (ISkillMod)Activator.CreateInstance(mod);
                     RegisterMod(skillMod);
+                    numberOfModsLoadedSuccessfully++;
                 }
                 catch (Exception exception)
                     when (exception.GetType().In(typeof(ArgumentNullException), typeof(ArgumentException)))
@@ -56,7 +57,7 @@ namespace SkillPrestige.Mods
                     continue;
                 }
                 
-                Logger.LogInformation("Internally loaded mods registered.");
+                Logger.LogInformation($"Internally loaded mods registered: {numberOfModsLoadedSuccessfully}");
             }
         }
 
@@ -83,12 +84,10 @@ namespace SkillPrestige.Mods
                 var intersectingMods = GetIntersectingModProfessions(mod);
                 if (intersectingMods.Any())
                 {
-                    Logger.LogWarning(
-                        $"Cannot load skill mod: {mod.DisplayName}, as it collides with another mod's skills. Details:");
+                    Logger.LogWarning($"Cannot load skill mod: {mod.DisplayName}, as it collides with another mod's skills. Details:");
                     foreach (var intersectingMod in intersectingMods)
                     {
-                        Logger.LogWarning(
-                            $"Skill mod {mod.DisplayName} registration failed due to {intersectingMod.Key.DisplayName}, for profession ids: {string.Join(",", intersectingMod.Value)}");
+                        Logger.LogWarning($"Skill mod {mod.DisplayName} registration failed due to {intersectingMod.Key.DisplayName}, for profession ids: {string.Join(",", intersectingMod.Value)}");
                     }
                     return;
                 }

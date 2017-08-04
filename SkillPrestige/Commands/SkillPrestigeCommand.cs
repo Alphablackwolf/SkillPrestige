@@ -53,7 +53,7 @@ namespace SkillPrestige.Commands
         /// <param name="testCommands">Whether or not you wish to only register testing commands.</param>
         public static void RegisterCommands(ICommandHelper helper, bool testCommands)
         {
-            var concreteCommands = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypesSafely())
+            var concreteCommands = AppDomain.CurrentDomain.GetNonSystemAssemblies().SelectMany(x => x.GetTypesSafely())
                 .Where(x => x.IsSubclassOf(typeof(SkillPrestigeCommand)) && !x.IsAbstract);
             foreach (var commandType in concreteCommands)
             {

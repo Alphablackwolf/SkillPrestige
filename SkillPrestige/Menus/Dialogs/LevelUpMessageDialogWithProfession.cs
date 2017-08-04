@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Professions;
 using StardewValley;
-using System;
 using System.Linq;
 using SkillPrestige.Menus.Elements.Buttons;
 
@@ -41,7 +40,7 @@ namespace SkillPrestige.Menus.Dialogs
         {
             var xLocationOfProfessionBox = xPositionOnScreen + SectionWidth + TextPadding;
             var yLocationOfProfessionBox = YPostionOfHeaderPartition + spaceToClearTopBorder / 2 + TextPadding;
-            var professionBoxBounds = new Rectangle(xLocationOfProfessionBox, yLocationOfProfessionBox, SectionWidth, (int)Math.Ceiling(Game1.tileSize * 3.5));
+            var professionBoxBounds = new Rectangle(xLocationOfProfessionBox, yLocationOfProfessionBox, SectionWidth, (Game1.tileSize * 3.5).Ceiling());
             DrawProfessionBox(spriteBatch, professionBoxBounds);
         }
 

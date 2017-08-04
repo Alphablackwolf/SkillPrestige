@@ -27,10 +27,28 @@ namespace SkillPrestige.Menus.Elements.Buttons
         private Color DisplayColor => IsDisabled ? Color.Gray : Color.White;
 
 
-        protected override string HoverText => IsDisabled 
-            ? $"You must reach level 10 in this skill and then{Environment.NewLine}sleep at least once in order to prestige this skill." 
-            : $"Click to prestige your {Skill?.Type?.Name} skill.{Environment.NewLine}" +
-              $"{(PerSaveOptions.Instance.UseExperienceMultiplier ? $"Next XP Bonus: {(int)Math.Floor((PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == Skill?.Type).PrestigePoints + PerSaveOptions.Instance.PointsPerPrestige) * PerSaveOptions.Instance.ExperienceMultiplier * 100)}%" : string.Empty)}";
+        protected override string HoverText
+        {
+            get
+            {
+                if (!IsDisabled)
+                {
+                    return $"Click to prestige your {Skill?.Type?.Name} skill.{Environment.NewLine}" 
+                        + $"{(PerSaveOptions.Instance.UseExperienceMultiplier ? $"Next XP Bonus: {((PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == Skill?.Type).PrestigePoints + PerSaveOptions.Instance.PointsPerPrestige) * PerSaveOptions.Instance.ExperienceMultiplier * 100).Floor()}%" : string.Empty)}";
+                }
+                if (!PerSaveOptions.Instance.PainlessPrestigeMode)
+                {
+                    return $"You must reach level 10 in this skill and then{Environment.NewLine}sleep at least once in order to prestige this skill.";
+                }
+                var currentExperience = Game1.player.experiencePoints[Skill.Type.Ordinal];
+                var experienceNeeded = PerSaveOptions.Instance.ExperienceNeededPerPainlessPrestige;
+                var availableExperience =
+                    currentExperience - 15000; //Remove what it takes to get to level 10 in the first place.
+                var remainingExperienceNeeded = experienceNeeded - availableExperience;
+                return $"You do not have enough experience to prestige this skill.{Environment.NewLine}You need {remainingExperienceNeeded} more experience points to prestige this skill.";
+            }
+        }
+
         protected override string Text => "Prestige";
 
         public override void Draw(SpriteBatch spriteBatch)  
@@ -49,6 +67,12 @@ namespace SkillPrestige.Menus.Elements.Buttons
         {
             if (IsDisabled) return;
             Game1.playSound("bigSelect");
+            if (PerSaveOptions.Instance.PainlessPrestigeMode)
+            {
+                Game1.activeClickableMenu.exitThisMenuNoSound();
+                Prestige.PrestigeSkill(Skill);
+                return;
+            }
             //Magic numbers for tile size multipliers have been determined through trial and error.
             var dialogWidth = Game1.tileSize * 12;
             var dialogHeight = Game1.tileSize * 6;

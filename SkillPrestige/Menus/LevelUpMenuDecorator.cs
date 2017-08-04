@@ -267,7 +267,7 @@ namespace SkillPrestige.Menus
             if (_levelTenToggleButton != null) return;
             Logger.LogInformation("Level Up Menu - initiating level 10 toggle button...");
             var position = new Vector2(_internalMenu.xPositionOnScreen + _internalMenu.width + Game1.tileSize, _internalMenu.yPositionOnScreen);
-            var bounds = new Rectangle((int)Math.Floor(position.X), (int)Math.Floor(position.Y), Game1.tileSize, Game1.tileSize);
+            var bounds = new Rectangle(position.X.Floor(), position.Y.Floor(), Game1.tileSize, Game1.tileSize);
             _levelTenToggleButton = new TextureButton(bounds, Game1.mouseCursors, new Rectangle(0, 192, 64, 64), ToggleLevelTenMenu, "More professions...");
             RegisterMouseEvents();
             Logger.LogInformation("Level Up Menu - Level 10 toggle button initiated.");

@@ -1,8 +1,5 @@
-﻿using Moq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SkillPrestige;
-using SkillPrestige.Mods;
-using SkillPrestige.Mods.MyLuckSkill;
 
 
 namespace UnitTest
@@ -10,14 +7,6 @@ namespace UnitTest
     [TestFixture]
     public class ExtensionTests
     {
-        [OneTimeSetUp]
-        public void Initialize()
-        {
-            var mod = new Mock<LuckSkillMod> { CallBase = true };
-            mod.Setup(x => x.IsFound).Returns(true);
-            ModHandler.RegisterMod(mod.Object);
-        }
-
 
         [Test]
         public void SetInstanceFieldOfBase_SetsPrivateBaseClassProperty()

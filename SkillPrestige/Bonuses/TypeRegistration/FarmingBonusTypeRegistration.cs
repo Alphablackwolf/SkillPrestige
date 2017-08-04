@@ -61,7 +61,8 @@ namespace SkillPrestige.Bonuses.TypeRegistration
                 {
                     "+20% chance of receiving double animal products."
                 },
-                SkillType = SkillTypes.SkillType.Farming
+                SkillType = SkillTypes.SkillType.Farming,
+                ApplyEffect = x =>AnimalProduceHandler.QuantityIncreaseChance = x/5m
             };
             RegrowthOpportunity = new BonusType
             {
@@ -70,11 +71,20 @@ namespace SkillPrestige.Bonuses.TypeRegistration
                 MaxLevel = 5,
                 EffectDescriptions = new List<string>
                 {
-                    "+5% chance of receiving seeds with crops."
+                    "+5% chance of receiving seeds with crops.",
+                    "At max level, gives a 1/3 chance of receiving seeds from dead plants."
                 },
-                SkillType = SkillTypes.SkillType.Farming
+                SkillType = SkillTypes.SkillType.Farming,
+                ApplyEffect = x =>
+                {
+                    CropRegrowthFactor.RegrowthChance = x / 20m;
+                    if (x == MaxLevel)
+                    {
+                        CropRegrowthFactor.DeadRegrowthChance = 1 / 3m;
+                    }
+                }
             };
-            Logger.LogInformation("Farm,ing bonus types registered.");
+            Logger.LogInformation("Farming bonus types registered.");
         }
     }
 }

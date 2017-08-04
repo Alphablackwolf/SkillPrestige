@@ -26,7 +26,7 @@ namespace SkillPrestige
             //Logger.LogVerbose($"Obtaining instance field {fieldName} on object of type {instance.GetType().FullName}");
             const BindingFlags bindingAttributes = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
             var memberInfo = instance.GetType().GetField(fieldName, bindingAttributes);
-            return memberInfo != null ? memberInfo.GetValue(instance) : null;
+            return memberInfo?.GetValue(instance);
         }
 
         /// <summary>
@@ -88,6 +88,12 @@ namespace SkillPrestige
             memberInfo?.SetValue(instance, value);
         }
 
+        public static IEnumerable<Assembly> GetNonSystemAssemblies(this AppDomain appDomain)
+        {
+            return appDomain.GetAssemblies().Where(x => !x.FullName.StartsWithOneOf("mscorlib", "System", "Microsoft", "Windows", "Newtonsoft"));
+        }
+
+
         /// <summary>
         /// Gets types from an assembly as long as those types can safely be retrieved.
         /// </summary>
@@ -107,6 +113,14 @@ namespace SkillPrestige
             }
         }
 
+
+        /// <summary>
+        /// Replaces any method with another method, given that the signatures match.
+        /// </summary>
+        /// <param name="typeToReplace"></param>
+        /// <param name="methodNameToReplace"></param>
+        /// <param name="replacementType"></param>
+        /// <param name="replacementMethodName"></param>
         public static void ReplaceMethod(this Type typeToReplace, string methodNameToReplace, Type replacementType, string replacementMethodName)
         {
             var methodToReplace = typeToReplace.GetMethod(methodNameToReplace, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
@@ -192,6 +206,27 @@ namespace SkillPrestige
             return stringBuilder.ToString();
         }
 
+        public static bool IsOneOf<T>(this T item, params T[] itemsToCheck)
+        {
+            return itemsToCheck.Contains(item);
+        }
+
+        public static bool IsOneOf<T>(this T item, IEnumerable<T> itemsToCheck)
+        {
+            return itemsToCheck.Contains(item);
+        }
+
+        /// <summary>
+        /// Checks to see if the text starts with any one of the passed strings.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="stringsToCheck"></param>
+        /// <returns></returns>
+        // ReSharper disable once MemberCanBePrivate.Global - I want this to be available.
+        public static bool StartsWithOneOf(this string text, params string[] stringsToCheck)
+        {
+            return stringsToCheck.Any(text.StartsWith);
+        }
 
         /// <summary>
         /// Clamps a value within a given range.
@@ -229,6 +264,66 @@ namespace SkillPrestige
         public static bool In<T>(this T value, IEnumerable<T> items)
         {
             return items.Contains(value);
+        }
+
+        /// <summary>
+        /// Returns Math.Floor as an integer.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int Floor(this decimal value)
+        {
+            return Convert.ToInt32(Math.Floor(value));
+        }
+
+        /// <summary>
+        /// Returns Math.Floor as an integer.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int Floor(this float value)
+        {
+            return Convert.ToInt32(Math.Floor(value));
+        }
+
+        /// <summary>
+        /// Returns Math.Floor as an integer.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int Floor(this double value)
+        {
+            return Convert.ToInt32(Math.Floor(value));
+        }
+
+        /// <summary>
+        /// Returns Math.Ceiling as an integer.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int Ceiling(this decimal value)
+        {
+            return Convert.ToInt32(Math.Ceiling(value));
+        }
+
+        /// <summary>
+        /// Returns Math.Ceiling as an integer.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int Ceiling(this float value)
+        {
+            return Convert.ToInt32(Math.Ceiling(value));
+        }
+
+        /// <summary>
+        /// Returns Math.Ceiling as an integer.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static int Ceiling(this double value)
+        {
+            return Convert.ToInt32(Math.Ceiling(value));
         }
 
         /// <summary>

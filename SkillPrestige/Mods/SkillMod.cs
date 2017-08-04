@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SkillPrestige.Mods
 {
@@ -11,14 +10,9 @@ namespace SkillPrestige.Mods
         public abstract string DisplayName { get; }
 
         /// <summary>
-        /// Namespace of the mod, used to determine if the mod is loaded through SMAPI.
+        /// Unique Id of the mod, used to determine if the mod is loaded through SMAPI.
         /// </summary>
-        protected abstract string Namespace { get; }
-
-        /// <summary>
-        /// Name of the mod's entry class, the one that inherits from SMAPI's 'mod' class.
-        /// </summary>
-        protected abstract string ClassName { get; }
+        protected abstract string UniqueId { get; }
 
         /// <summary>
         /// The additional skills added by this mod.
@@ -36,6 +30,6 @@ namespace SkillPrestige.Mods
         /// but you should only do this if your mod is loaded in the same assembly as this registration.
         /// </summary>
         // ReSharper disable once VirtualMemberNeverOverridden.Global - meant to be potentially overridden in externally inherited class.
-        public virtual bool IsFound => Type.GetType($"{Namespace}.{ClassName}, {Namespace}") != null;
+        public virtual bool IsFound => SkillPrestigeMod.ModRegistry.IsLoaded(UniqueId);
     }
 }
