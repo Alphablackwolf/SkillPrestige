@@ -33,6 +33,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ExtendedMinecart">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Mods\ExtendedMinecart\ExtendedMinecart.dll</HintPath>
+    </Reference>
     <Reference Include="LuckSkill">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Mods\LuckSkill\LuckSkill.dll</HintPath>
     </Reference>

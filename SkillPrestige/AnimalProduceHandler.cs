@@ -18,7 +18,7 @@ namespace SkillPrestige
             return QuantityIncreaseChance * 10 >= randomizedValue;
         }
 
-        public static void HandleAnimalProductQuantityIncrease()
+        public static void HandleSpawnedAnimalProductQuantityIncrease()
         {
             var farmAnimalData = Game1.content.Load<Dictionary<string, string>>("Data\\FarmAnimals");
             var animalProduce = farmAnimalData.Values.Select(y => y.Split('/')[2])

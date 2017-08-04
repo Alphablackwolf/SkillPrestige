@@ -78,6 +78,7 @@ namespace SkillPrestige
             GameEvents.UpdateTick += GameUpdate;
             GameEvents.HalfSecondTick += HalfSecondTick;
             GameEvents.OneSecondTick += OneSecondTick;
+            TimeEvents.AfterDayStarted += AfterDayStarted;
             Logger.LogInformation("Game events registered.");
             SaveEvents.AfterLoad += SaveFileLoaded;
             SaveEvents.AfterReturnToTitle += ReturnToTitle;
@@ -95,6 +96,12 @@ namespace SkillPrestige
             PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
             PerSaveOptions.Instance.Check();
             Profession.AddMissingProfessions();
+        }
+
+        private static void AfterDayStarted(object sender, EventArgs args)
+        {
+            Logger.LogVerbose("New Day Started");
+            AnimalProduceHandler.HandleSpawnedAnimalProductQuantityIncrease();
         }
 
         private static void SaveFileLoaded(object sender, EventArgs args)
