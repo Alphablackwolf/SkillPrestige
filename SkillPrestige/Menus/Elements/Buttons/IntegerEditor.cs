@@ -11,8 +11,8 @@ namespace SkillPrestige.Menus.Elements.Buttons
 {
     internal class IntegerEditor : Button
     {
-        protected override string HoverText => string.Empty;
-        protected override string Text { get; }
+        public override string HoverText => string.Empty;
+        public override string Text { get; }
         private const int PixelsWide = 7;
         private const int PixelsHigh = 8;
         private readonly int _linePadding = 4 * Game1.pixelZoom;

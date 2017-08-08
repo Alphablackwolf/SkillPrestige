@@ -33,9 +33,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExtendedMinecart">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Mods\ExtendedMinecart\ExtendedMinecart.dll</HintPath>
-    </Reference>
     <Reference Include="LuckSkill">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Mods\LuckSkill\LuckSkill.dll</HintPath>
     </Reference>
@@ -62,6 +59,16 @@
     <Compile Include="Commands\SkillPrestigeCommand.cs" />
     <Compile Include="Bonuses\TypeRegistration\IBonusTypeRegistration.cs" />
     <Compile Include="CropRegrowthFactor.cs" />
+    <Compile Include="MathExtensions.cs" />
+    <Compile Include="Menus\Elements\Buttons\BonusButton.cs" />
+    <Compile Include="Menus\IMenuPage.cs" />
+    <Compile Include="Menus\PrestigeMenuButtonArranger.cs" />
+    <Compile Include="Menus\PrestigeMenuBonusPage.cs" />
+    <Compile Include="Menus\PrestigeMenuProfessionsPage.cs" />
+    <Compile Include="Menus\MenuPage.cs" />
+    <Compile Include="ReflectionExtensions.cs" />
+    <Compile Include="MilkPailReplacement.cs" />
+    <Compile Include="ShearsReplacement.cs" />
     <Compile Include="JsonNet.PrivateSettersContractResolvers\MemberInfoExtensions.cs" />
     <Compile Include="JsonNet.PrivateSettersContractResolvers\PrivateSetterContractResolver.cs" />
     <Compile Include="Logging\LogLevel.cs" />
@@ -136,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="latest-version.json" />
     <None Include="manifest.json" />
     <None Include="packages.config">
       <SubType>Designer</SubType>

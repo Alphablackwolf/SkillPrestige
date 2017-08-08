@@ -38,7 +38,7 @@ namespace SkillPrestige
         /// <summary>
         /// Bonuses that have been purchased for this prestige.
         /// </summary>
-        public IList<Bonus> Bonuses { get; set; }
+        public IList<Bonus> Bonuses { get; set; } = new List<Bonus>();
 
         /// <summary>
         /// Purchases a profession to be part of the prestige set.
@@ -72,6 +72,46 @@ namespace SkillPrestige
                 prestige.PrestigeProfessionsSelected.Add(professionId);
                 Logger.LogInformation("Profession permanently added.");
                 Profession.AddMissingProfessions();
+            }
+        }
+
+        /// <summary>
+        /// Purchases a bonus to be part of the prestige set.
+        /// </summary>
+        /// <param name="bonusType"></param>
+        public static void AddPrestigeBonus(BonusType bonusType)
+        {
+            var skillType = bonusType.SkillType;
+            var prestige = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == skillType);
+            var originalPrestigePointsForSkill = prestige.PrestigePoints;
+            prestige.PrestigePoints -= PerSaveOptions.Instance.CostOfBonuses;
+            Logger.LogInformation($"Spent prestige point on {skillType.Name} skill for a bonus.");
+
+            if (prestige.PrestigePoints < 0)
+            {
+                prestige.PrestigePoints = originalPrestigePointsForSkill;
+                Logger.LogCritical($"Prestige amount for {skillType.Name} skill would have gone negative, unable to grant bonus {bonusType.Name}. Prestige values reset.");
+            }
+            else
+            {
+                var bonus = prestige.Bonuses.FirstOrDefault(x => x.Type == bonusType);
+                if (bonus == null)
+                {
+                    bonus = new Bonus
+                    {
+                        BonusTypeCode = bonusType.Code,
+                        Level = 1
+                    };
+                    prestige.Bonuses.Add(bonus);
+                    Logger.LogInformation($"Added new bonus {bonusType.Name} for skill {bonusType.SkillType.Name}");
+                }
+                else
+                {
+                    bonus.Level++;
+                    Logger.LogInformation($"Increased {bonusType.SkillType.Name} bonus {bonusType.Name} level to {bonus.Level}.");
+                }
+                bonus.ApplyEffect();
+                Logger.LogInformation($"Applied effect for {bonusType.Name}.");
             }
         }
 

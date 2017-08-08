@@ -27,7 +27,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
         private Color DisplayColor => IsDisabled ? Color.Gray : Color.White;
 
 
-        protected override string HoverText
+        public override string HoverText
         {
             get
             {
@@ -49,7 +49,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
             }
         }
 
-        protected override string Text => "Prestige";
+        public override string Text => "Prestige";
 
         public override void Draw(SpriteBatch spriteBatch)  
         {

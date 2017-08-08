@@ -59,7 +59,8 @@ namespace SkillPrestige.Bonuses.TypeRegistration
                 MaxLevel = 5,
                 EffectDescriptions = new List<string>
                 {
-                    "+20% chance of receiving double animal products."
+                    "+20% chance of receiving double animal products.",
+                    "(This does not affect truffles, which count as foraged items)"
                 },
                 SkillType = SkillTypes.SkillType.Farming,
                 ApplyEffect = x =>AnimalProduceHandler.QuantityIncreaseChance = x/5m

@@ -10,8 +10,8 @@ namespace SkillPrestige.Menus.Elements.Buttons
         private const int PixelsWide = 9;
         private static int Width => PixelsWide*Game1.pixelZoom;
         private bool _isChecked;
-        protected override string HoverText => string.Empty;
-        protected override string Text { get; }
+        public override string HoverText => string.Empty;
+        public override string Text { get; }
 
         public delegate void ClickCallback(bool isChecked);
 

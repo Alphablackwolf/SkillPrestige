@@ -27,9 +27,9 @@ namespace SkillPrestige.Menus.Elements.Buttons
 
         public Rectangle SourceRectangle;
 
-        protected override string HoverText { get; }
+        public override string HoverText { get; }
 
-        protected override string Text => string.Empty;
+        public override string Text => string.Empty;
 
         protected override void OnMouseHover()
         {

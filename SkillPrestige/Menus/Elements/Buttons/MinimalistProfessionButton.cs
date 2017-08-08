@@ -20,8 +20,8 @@ namespace SkillPrestige.Menus.Elements.Buttons
 
         protected override Texture2D ButtonTexture
         {
-            get { return ProfessionButtonTexture; }
-            set { ProfessionButtonTexture = value; }
+            get => ProfessionButtonTexture;
+            set => ProfessionButtonTexture = value;
         }
 
         public static Texture2D ProfessionButtonTexture { get; set; }
@@ -37,7 +37,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
         private static int TextYOffset => 4 * Game1.pixelZoom;
         private Vector2 _iconLocation;
 
-        protected override string HoverText => $"{HoverTextPrefix}{Environment.NewLine}{Environment.NewLine}{(Profession?.EffectText == null ? string.Empty : string.Join(Environment.NewLine, Profession.EffectText))}";
+        public override string HoverText => $"{HoverTextPrefix}{Environment.NewLine}{Environment.NewLine}{(Profession?.EffectText == null ? string.Empty : string.Join(Environment.NewLine, Profession.EffectText))}";
 
         private string HoverTextPrefix => Selected
                                             ? $"You already permanently have the {Profession.DisplayName} profession."
@@ -47,7 +47,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
                                                     : $"You cannot afford this profession,{Environment.NewLine}you need {GetPrestigeCost()} prestige point(s) in this skill to purchase it."
                                                 : $"This profession is not available to obtain permanently until the {Environment.NewLine}{(Profession as TierTwoProfession)?.TierOneProfession.DisplayName} profession has been permanently obtained.";
 
-        protected override string Text => string.Join(Environment.NewLine,Profession.DisplayName.Split(' '));
+        public override string Text => string.Join(Environment.NewLine,Profession.DisplayName.Split(' '));
 
         public override void Draw(SpriteBatch spriteBatch)
         {

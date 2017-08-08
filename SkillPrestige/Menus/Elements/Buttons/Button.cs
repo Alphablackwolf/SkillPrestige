@@ -17,11 +17,8 @@ namespace SkillPrestige.Menus.Elements.Buttons
         /// </summary>
         protected virtual Texture2D ButtonTexture
         {
-            get
-            {
-                return _buttonTexture ?? DefaultButtonTexture;
-            }
-            set { _buttonTexture = value; }
+            get => _buttonTexture ?? DefaultButtonTexture;
+            set => _buttonTexture = value;
         }
 
         private Texture2D _buttonTexture;
@@ -33,10 +30,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
 
         public Rectangle Bounds
         {
-            get
-            {
-                return _bounds;
-            }
+            get => _bounds;
             set
             {
                 _bounds = value;
@@ -48,8 +42,8 @@ namespace SkillPrestige.Menus.Elements.Buttons
 
         private bool IsHovered { get; set; }
         protected SpriteFont TitleTextFont { get; set; }
-        protected abstract string HoverText { get; }
-        protected abstract string Text { get; }
+        public abstract string HoverText { get; }
+        public abstract string Text { get; }
 
         protected virtual void OnMouseHover()
         {

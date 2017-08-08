@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.InputHandling;
 using SkillPrestige.Logging;
 using SkillPrestige.Menus.Elements.Buttons;
-using SkillPrestige.Professions;
 using StardewValley;
 using StardewValley.Menus;
 
@@ -19,46 +17,45 @@ namespace SkillPrestige.Menus
     {
         private readonly Skill _skill;
         private readonly Prestige _prestige;
+        private Vector2 _prestigePointBonusLocation;
+        private Vector2 _prestigePointsNumberLocation;
+        private Vector2 _prestigePointTextLocation;
+        private const string PointText = "Prestige Points:";
+        private readonly IEnumerable<IMenuPage> _pages;
+        private int _currentPageIndex;
+        private IMenuPage CurrentPage => _pages.Single(x => x.PageIndex == _currentPageIndex);
+        private int _debouceWaitTime;
         private PrestigeButton _prestigeButton;
         private TextureButton _settingsButton;
-        private Vector2 _professionButtonRowStartLocation;
-        private Vector2 _prestigePointBonusLocation;
-        private readonly int _rowPadding = Game1.tileSize / 3;
-        private int _leftProfessionStartingXLocation;
-        private readonly IList<MinimalistProfessionButton> _professionButtons;
-        private static int Offset => 4*Game1.pixelZoom;
-
-        private static int ProfessionButtonHeight(Profession profession)
-        {
-                var iconHeight = profession.IconSourceRectangle.Height*Game1.pixelZoom;
-                var textHeight = (Game1.dialogueFont.MeasureString(string.Join(Environment.NewLine, profession.DisplayName.Split(' '))).Y).Ceiling();
-                return Offset*3 + iconHeight + textHeight;
-        }
-
-        private int GetRowHeight<T>() where T : Profession
-        {
-            return _skill.Professions.Where(x => x is T).Select(ProfessionButtonHeight).Max();
-        }
-
-        private int CostTextYOffset<T>() where T : Profession
-        {
-            return ((double)GetRowHeight<T>() / 2 - Game1.dialogueFont.MeasureString(CostText).Y / 2).Floor();
-        } 
-
-        private const string CostText = "Cost:";
-        private int _debouceWaitTime;
-        private int _xSpaceAvailableForProfessionButtons;
-        private static bool _buttonClickRegistered;
+        private TextureButton _nextPageButton;
+        private bool _menuLevelButtonsMouseEventRegistered;
 
         public PrestigeMenu(Rectangle bounds, Skill skill, Prestige prestige) : base(bounds.X, bounds.Y, bounds.Width, bounds.Height, true)
         {
             Logger.LogVerbose($"New {skill.Type.Name} Prestige Menu created.");
             _skill = skill;
             _prestige = prestige;
-            InitiatePrestigeButton();
+            _pages = new List<IMenuPage>
+            {
+                new PrestigeMenuProfessionsPage(skill, prestige, bounds),
+                new PrestigeMenuBonusPage(skill, prestige, bounds)
+            };
+            SetPrestigePointLocation();
             InitiateSettingsButton();
-            _professionButtons = new List<MinimalistProfessionButton>();
+            InitiatePrestigeButton();
+            InitiateNextPageButton();
             exitFunction = DeregisterMouseEvents;
+        }
+
+        private void SetPrestigePointLocation()
+        {
+            var yOffset = 5 * Game1.pixelZoom;
+            var yLocation = yPositionOnScreen + yOffset + (Game1.tileSize * 3.15).Floor();
+            var xPadding = (Game1.pixelZoom * 4.25).Floor();
+            _prestigePointTextLocation = new Vector2(xPositionOnScreen + spaceToClearSideBorder / 2 + borderWidth, yLocation);
+            var prestigePointWidth = (NumberSprite.getWidth(PerSaveOptions.Instance.CostOfTierTwoPrestige) * 3.0).Ceiling();
+            _prestigePointsNumberLocation = new Vector2(_prestigePointTextLocation.X + Game1.dialogueFont.MeasureString(PointText).X + xPadding + prestigePointWidth, _prestigePointTextLocation.Y + Game1.pixelZoom * 5);
+            _prestigePointBonusLocation = new Vector2(_prestigePointsNumberLocation.X + prestigePointWidth + xPadding, yLocation);
         }
 
         private void InitiatePrestigeButton()
@@ -106,7 +103,6 @@ namespace SkillPrestige.Menus
             var rightEdgeOfDialog = xPositionOnScreen + width;
             var bounds = new Rectangle(rightEdgeOfDialog - buttonWidth - Game1.tileSize, yPositionOnScreen, buttonWidth, buttonHeight);
             _settingsButton = new TextureButton(bounds, Game1.mouseCursors, new Rectangle(96, 368, 16, 16), OpenSettingsMenu, "Open Settings Menu");
-            
             Logger.LogVerbose("Prestige menu - Settings button initiated.");
         }
 
@@ -121,121 +117,78 @@ namespace SkillPrestige.Menus
             var screenXCenter = (int)(viewport.Width * (1.0 / Game1.options.zoomLevel)) / 2;
             var screenYCenter = (int)(viewport.Height * (1.0 / Game1.options.zoomLevel)) / 2;
             var bounds = new Rectangle(screenXCenter - menuXCenter, screenYCenter - menuYCenter,
-                menuWidth + borderWidth*2, menuHeight + borderWidth*2);
+                menuWidth + borderWidth * 2, menuHeight + borderWidth * 2);
             Game1.playSound("bigSelect");
             exitThisMenu(false);
             Game1.activeClickableMenu = new SettingsMenu(bounds);
             Logger.LogVerbose("Prestige Menu - Loaded Settings Menu.");
         }
 
-        private void InitiateProfessionButtons()
+        private void InitiateNextPageButton()
         {
-            Logger.LogVerbose("Prestige menu - Initiating profession buttons...");
-            _xSpaceAvailableForProfessionButtons = xPositionOnScreen + width - spaceToClearSideBorder * 2 - _leftProfessionStartingXLocation;
-            InitiateLevelFiveProfessionButtons();
-            InitiateLevelTenProfessionButtons();
-            Logger.LogVerbose("Prestige menu - Profession button initiated.");
+            Logger.LogVerbose("Prestige menu - Initiating next page button...");
+            var buttonWidth = 16 * Game1.pixelZoom;
+            var buttonHeight = 16 * Game1.pixelZoom;
+            var rightEdgeOfDialog = xPositionOnScreen + width;
+            var yOffset = 5 * Game1.pixelZoom;
+            var yPositon = yPositionOnScreen + yOffset + (Game1.tileSize * 3.15).Floor();
+            var bounds = new Rectangle(rightEdgeOfDialog + Game1.tileSize, yPositon, buttonWidth, buttonHeight);
+            _nextPageButton = new TextureButton(bounds, Game1.mouseCursors, new Rectangle(0, 192, 64, 64), MoveToNextPage, "Next Page");
+            Logger.LogVerbose("Prestige menu - Next page button initiated.");
+        }
+
+        private void MoveToNextPage()
+        {
+            CurrentPage.DeegisterControls();
+            if (_currentPageIndex >= _pages.Count() - 1)
+            {
+                _currentPageIndex = 0;
+            }
+            else
+            {
+                _currentPageIndex++;
+            }
+            CurrentPage.RegisterControls();
         }
 
         private void RegisterMouseEvents()
         {
-            if (_buttonClickRegistered) return;
-            _buttonClickRegistered = true;
-            Logger.LogVerbose("Prestige menu - Registering mouse events...");
-            foreach (var button in _professionButtons)
+            if (!_menuLevelButtonsMouseEventRegistered)
             {
-                Mouse.MouseMoved += button.CheckForMouseHover;
-                Mouse.MouseClicked += button.CheckForMouseClick;
+                _menuLevelButtonsMouseEventRegistered = true;
+                Logger.LogVerbose("Prestige menu - Registering mouse events...");
+                Mouse.MouseMoved += _prestigeButton.CheckForMouseHover;
+                Mouse.MouseMoved += _settingsButton.CheckForMouseHover;
+                Mouse.MouseMoved += _nextPageButton.CheckForMouseHover;
+                Mouse.MouseClicked += _prestigeButton.CheckForMouseClick;
+                Mouse.MouseClicked += _settingsButton.CheckForMouseClick;
+                Mouse.MouseClicked += _nextPageButton.CheckForMouseClick;
+                Logger.LogVerbose("Prestige menu - Mouse events registered.");
             }
-            Mouse.MouseMoved += _prestigeButton.CheckForMouseHover;
-            Mouse.MouseMoved += _settingsButton.CheckForMouseHover;
-            Mouse.MouseClicked += _prestigeButton.CheckForMouseClick;
-            Mouse.MouseClicked += _settingsButton.CheckForMouseClick;
-            Logger.LogVerbose("Prestige menu - Mouse events registered.");
+            CurrentPage.RegisterControls();
         }
 
         private void DeregisterMouseEvents()
         {
             Logger.LogVerbose("Prestige menu - Deregistering mouse events...");
-            if (!_buttonClickRegistered) return;
-            foreach (var button in _professionButtons)
+            if (_menuLevelButtonsMouseEventRegistered)
             {
-                Mouse.MouseMoved -= button.CheckForMouseHover;
-                Mouse.MouseClicked -= button.CheckForMouseClick;
+                Mouse.MouseMoved -= _prestigeButton.CheckForMouseHover;
+                Mouse.MouseMoved -= _settingsButton.CheckForMouseHover;
+                Mouse.MouseMoved -= _nextPageButton.CheckForMouseHover;
+                Mouse.MouseClicked -= _prestigeButton.CheckForMouseClick;
+                Mouse.MouseClicked -= _settingsButton.CheckForMouseClick;
+                Mouse.MouseClicked -= _nextPageButton.CheckForMouseClick;
+                _menuLevelButtonsMouseEventRegistered = false;
             }
-            Mouse.MouseMoved -= _prestigeButton.CheckForMouseHover;
-            Mouse.MouseMoved -= _settingsButton.CheckForMouseHover;
-            Mouse.MouseClicked -= _prestigeButton.CheckForMouseClick;
-            Mouse.MouseClicked -= _settingsButton.CheckForMouseClick;
-            _buttonClickRegistered = false;
             Logger.LogVerbose("Prestige menu - Mouse events deregistered.");
-        }
 
-        private static int ProfessionButtonWidth(Profession profession)
-        {
-            return Game1.dialogueFont.MeasureString(string.Join(Environment.NewLine, profession.DisplayName.Split(' '))).X.Ceiling() + Offset * 2;
-        }
-
-        private void InitiateLevelFiveProfessionButtons()
-        {
-            Logger.LogVerbose("Prestige menu - Initiating level 5 profession buttons...");
-            var leftProfessionButtonXCenter = _leftProfessionStartingXLocation + _xSpaceAvailableForProfessionButtons / 4;
-            var rightProfessionButtonXCenter = _leftProfessionStartingXLocation + (_xSpaceAvailableForProfessionButtons * .75d).Floor();
-            var firstProfession = _skill.Professions.OrderBy(x => x.Id).First(x => x is TierOneProfession);
-
-            _professionButtons.Add(new MinimalistProfessionButton
+            foreach (var page in _pages)
             {
-
-                Bounds = new Rectangle(leftProfessionButtonXCenter - ProfessionButtonWidth(firstProfession) / 2, (int)_professionButtonRowStartLocation.Y, ProfessionButtonWidth(firstProfession), ProfessionButtonHeight(firstProfession)),
-                CanBeAfforded = _prestige.PrestigePoints >= PerSaveOptions.Instance.CostOfTierOnePrestige,
-                IsObtainable = true,
-                Selected = _prestige.PrestigeProfessionsSelected.Contains(firstProfession.Id),
-                Profession = firstProfession
-            });
-            var secondProfession = _skill.Professions.OrderBy(x => x.Id).Skip(1).First(x => x is TierOneProfession);
-            _professionButtons.Add(new MinimalistProfessionButton
-            {
-
-                Bounds = new Rectangle(rightProfessionButtonXCenter - ProfessionButtonWidth(secondProfession) / 2, (int)_professionButtonRowStartLocation.Y, ProfessionButtonWidth(secondProfession), ProfessionButtonHeight(secondProfession)),
-                CanBeAfforded = _prestige.PrestigePoints >= PerSaveOptions.Instance.CostOfTierOnePrestige,
-                IsObtainable = true,
-                Selected = _prestige.PrestigeProfessionsSelected.Contains(secondProfession.Id),
-                Profession = secondProfession
-            });
-            Logger.LogVerbose("Prestige menu - Level 5 profession buttons initiated.");
-        }
-
-        private void InitiateLevelTenProfessionButtons()
-        {
-            Logger.LogVerbose("Prestige menu - Initiating level 10 profession buttons...");
-            var buttonCenterIndex = 1;
-            var canBeAfforded = _prestige.PrestigePoints >= PerSaveOptions.Instance.CostOfTierTwoPrestige;
-            foreach (var profession in _skill.Professions.OrderBy(x => x.Id).Where(x => x is TierTwoProfession)
-            )
-            {
-                var tierTwoProfession = (TierTwoProfession)profession;
-                _professionButtons.Add(new MinimalistProfessionButton
-                {
-                    Bounds = new Rectangle(_leftProfessionStartingXLocation + (_xSpaceAvailableForProfessionButtons * (buttonCenterIndex / 8d)).Floor() - ProfessionButtonWidth(profession) / 2, (int)_professionButtonRowStartLocation.Y + GetRowHeight<TierOneProfession>() + _rowPadding, ProfessionButtonWidth(profession), ProfessionButtonHeight(profession)),
-                    CanBeAfforded = canBeAfforded,
-                    IsObtainable = _prestige.PrestigeProfessionsSelected.Contains(tierTwoProfession.TierOneProfession.Id),
-                    Selected = _prestige.PrestigeProfessionsSelected.Contains(tierTwoProfession.Id),
-                    Profession = tierTwoProfession
-                });
-                buttonCenterIndex += 2;
-            }
-            Logger.LogVerbose("Prestige menu - Level 10 profession buttons initiated.");
-        }
-
-        private void UpdateProfessionButtonAvailability()
-        {
-            foreach (var button in _professionButtons)
-            {
-                button.CanBeAfforded = _prestige.PrestigePoints >= PerSaveOptions.Instance.CostOfTierTwoPrestige || button.Profession is TierOneProfession && _prestige.PrestigePoints >= PerSaveOptions.Instance.CostOfTierOnePrestige;
-                button.IsObtainable = button.Profession is TierOneProfession || _prestige.PrestigeProfessionsSelected.Contains(((TierTwoProfession)button.Profession).TierOneProfession.Id);
+                page.DeegisterControls();
             }
         }
-
+        
         public override void receiveRightClick(int x, int y, bool playSound = true) { }
 
         public override void draw(SpriteBatch spriteBatch)
@@ -251,24 +204,13 @@ namespace SkillPrestige.Menus
 
             Game1.drawDialogueBox(xPositionOnScreen, yPositionOnScreen, width, height, false, true);
             upperRightCloseButton?.draw(spriteBatch);
-            DrawSettingsButton(spriteBatch);
             DrawHeader(spriteBatch);
             DrawPrestigePoints(spriteBatch);
             DrawPrestigePointBonus(spriteBatch);
             _prestigeButton.Draw(spriteBatch);
-            DrawLevelFiveProfessionCost(spriteBatch);
-            if (!_professionButtons.Any()) InitiateProfessionButtons();
-            UpdateProfessionButtonAvailability();
-            DrawProfessionButtons(spriteBatch);
-            DrawLevelTenProfessionCost(spriteBatch);
-            DrawButtonHoverText(spriteBatch);
-            Mouse.DrawCursor(spriteBatch);
-        }
-
-        private void DrawSettingsButton(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(Game1.mouseCursors, new Vector2(_settingsButton.Bounds.X, _settingsButton.Bounds.Y), _settingsButton.SourceRectangle, Color.White, 0.0f, Vector2.Zero, Game1.pixelZoom, SpriteEffects.None, 0.0001f);
-
+            DrawSettingsButton(spriteBatch);
+            _nextPageButton.Draw(spriteBatch);
+            CurrentPage.Draw(spriteBatch);
         }
 
         private void DrawHeader(SpriteBatch spriteBatch)
@@ -280,6 +222,12 @@ namespace SkillPrestige.Menus
             drawHorizontalPartition(spriteBatch, yPositionOnScreen + (Game1.tileSize * 2.5).Floor());
         }
 
+        private void DrawSettingsButton(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Game1.mouseCursors, new Vector2(_settingsButton.Bounds.X, _settingsButton.Bounds.Y), _settingsButton.SourceRectangle, Color.White, 0.0f, Vector2.Zero, Game1.pixelZoom, SpriteEffects.None, 0.0001f);
+
+        }
+
         private void DrawSkillIcon(SpriteBatch spriteBatch, Vector2 location)
         {
             Utility.drawWithShadow(spriteBatch, _skill.SkillIconTexture, location, _skill.SourceRectangleForSkillIcon, Color.White, 0.0f, Vector2.Zero, Game1.pixelZoom, false, 0.88f);
@@ -287,59 +235,13 @@ namespace SkillPrestige.Menus
 
         private void DrawPrestigePoints(SpriteBatch spriteBatch)
         {
-            const string pointText = "Prestige Points:";
-            var yOffset = 5 * Game1.pixelZoom;
-            var yLocation = yPositionOnScreen + yOffset + (Game1.tileSize*3.15).Floor();
-            var textLocation = new Vector2(xPositionOnScreen + spaceToClearSideBorder / 2 + borderWidth, yLocation);
-            spriteBatch.DrawString(Game1.dialogueFont, pointText, textLocation, Game1.textColor);
-            var xPadding = (Game1.pixelZoom*4.25).Floor();
-            var prestigePointWidth = (NumberSprite.getWidth(PerSaveOptions.Instance.CostOfTierTwoPrestige) * 3.0).Ceiling();
-            var pointNumberLocation = new Vector2(textLocation.X + Game1.dialogueFont.MeasureString(pointText).X + xPadding + prestigePointWidth, textLocation.Y + Game1.pixelZoom * 5);
-            NumberSprite.draw(_prestige.PrestigePoints, spriteBatch, pointNumberLocation, Color.SandyBrown, 1f, .85f, 1f, 0);
-            _professionButtonRowStartLocation = new Vector2(textLocation.X, textLocation.Y + Game1.dialogueFont.MeasureString(pointText).Y + _rowPadding);
-            _prestigePointBonusLocation = new Vector2(pointNumberLocation.X + prestigePointWidth + xPadding, yLocation);
+            spriteBatch.DrawString(Game1.dialogueFont, PointText, _prestigePointTextLocation, Game1.textColor);
+            NumberSprite.draw(_prestige.PrestigePoints, spriteBatch, _prestigePointsNumberLocation, Color.SandyBrown, 1f, .85f, 1f, 0);
         }
 
         private void DrawPrestigePointBonus(SpriteBatch spriteBatch)
         {
             if(PerSaveOptions.Instance.UseExperienceMultiplier) spriteBatch.DrawString(Game1.dialogueFont, $"({(_prestige.PrestigePoints * PerSaveOptions.Instance.ExperienceMultiplier * 100).Floor()}% XP bonus)", _prestigePointBonusLocation, Game1.textColor);
-        }
-
-        private void DrawLevelFiveProfessionCost(SpriteBatch spriteBatch)
-        {
-            var costTextLocation = _professionButtonRowStartLocation;
-            costTextLocation.Y += CostTextYOffset<TierOneProfession>();
-            spriteBatch.DrawString(Game1.dialogueFont, CostText, costTextLocation, Game1.textColor);
-            var pointNumberLocation = new Vector2(costTextLocation.X + Game1.dialogueFont.MeasureString(CostText).X + (NumberSprite.getWidth(PerSaveOptions.Instance.CostOfTierOnePrestige) * 3.0).Ceiling(), costTextLocation.Y + Game1.pixelZoom * 5);
-            NumberSprite.draw(PerSaveOptions.Instance.CostOfTierOnePrestige, spriteBatch, pointNumberLocation, Color.SandyBrown, 1f, .85f, 1f, 0);
-            if (_leftProfessionStartingXLocation == 0) _leftProfessionStartingXLocation = pointNumberLocation.X.Ceiling() + NumberSprite.digitWidth;
-        }
-
-        private void DrawLevelTenProfessionCost(SpriteBatch spriteBatch)
-        {
-            var firstRowBottomLocation = _professionButtonRowStartLocation.Y + GetRowHeight<TierOneProfession>();
-            var costTextLocation = new Vector2(_professionButtonRowStartLocation.X, firstRowBottomLocation + CostTextYOffset<TierTwoProfession>() + _rowPadding);
-            spriteBatch.DrawString(Game1.dialogueFont, CostText, costTextLocation, Game1.textColor);
-            var pointNumberLocation = new Vector2(costTextLocation.X + Game1.dialogueFont.MeasureString(CostText).X + (NumberSprite.getWidth(PerSaveOptions.Instance.CostOfTierTwoPrestige) *3.0).Ceiling(), costTextLocation.Y + Game1.pixelZoom * 5);
-            NumberSprite.draw(PerSaveOptions.Instance.CostOfTierTwoPrestige, spriteBatch, pointNumberLocation, Color.SandyBrown, 1f, .85f, 1f, 0);
-        }
-
-        private void DrawProfessionButtons(SpriteBatch spriteBatch)
-        {
-            foreach (var button in _professionButtons)
-            {
-                button.Draw(spriteBatch);
-            }
-        }
-
-        private void DrawButtonHoverText(SpriteBatch spriteBatch)
-        {
-            foreach (var button in _professionButtons)
-            {
-                button.DrawHoverText(spriteBatch);
-            }
-            _prestigeButton.DrawHoverText(spriteBatch);
-            _settingsButton.DrawHoverText(spriteBatch);
         }
     }
 }

@@ -59,6 +59,8 @@ namespace SkillPrestige.Bonuses
         /// </summary>
         public Action<int> ApplyEffect { get; set; }
 
+        public Func<int, string> GetNextLevelEffect { get; set; }
+
         public static IEnumerable<BonusType> AllBonusTypes
         {
             get { return Skill.AllSkills.SelectMany(x => x.AvailableBonusTypes); }

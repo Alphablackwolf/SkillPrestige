@@ -11,6 +11,7 @@ using SkillPrestige.Menus;
 using SkillPrestige.Menus.Elements.Buttons;
 using SkillPrestige.Mods;
 using SkillPrestige.Professions;
+using StardewValley.Tools;
 using static SkillPrestige.InputHandling.Mouse;
 
 namespace SkillPrestige
@@ -128,6 +129,7 @@ namespace SkillPrestige
             Logger.LogInformation("Loading sprites...");
             Button.DefaultButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\DialogBoxGreen");
             MinimalistProfessionButton.ProfessionButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\boardGameBorder");
+            BonusButton.BonusButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\boardGameBorder");
 
             var prestigeIconFilePath = Path.Combine(ModPath, @"PrestigeIcon.png");
             Logger.LogInformation($"Prestige Icon Path: {prestigeIconFilePath}");
@@ -211,8 +213,12 @@ namespace SkillPrestige
         {
             Logger.LogInformation("Hijacking Methods...");
             Logger.LogInformation("Hijacking Crop Harvest method...");
-            typeof(Crop).ReplaceMethod("harvest", typeof(CropReplacement), "HarvestReplacement");
-            Logger.LogInformation("Crop Harvest method hijacked!");
+            if(!typeof(Crop).HookToMethod("harvest").ReplaceWith<CropReplacement>("HarvestReplacement")) Logger.LogCriticalWarning("Harvest replacement failed!");
+            Logger.LogInformation("Hijacking Shears DoFunction method...");
+            if(!typeof(Shears).HookToMethod("DoFunction").Replace<ShearsReplacement>()) Logger.LogCriticalWarning("Shears DoFunction replacement failed!");
+            Logger.LogInformation("Hijacking Milk Pail DoFunction method...");
+            if(!typeof(Shears).HookToMethod("DoFunction").Replace<MilkPailReplacement>()) Logger.LogCriticalWarning("Milk Pail DoFunction replacement failed!");
+            Logger.LogInformation("Hijack attempts complete.");
         }
     }
 }
