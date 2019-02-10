@@ -40,10 +40,10 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ExtendedMinecart">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Mods\ExtendedMinecart\ExtendedMinecart.dll</HintPath>
+      <HintPath>$(GamePath)\Mods\ExtendedMinecart\ExtendedMinecart.dll</HintPath>
     </Reference>
     <Reference Include="LuckSkill">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Stardew Valley\Mods\LuckSkill\LuckSkill.dll</HintPath>
+      <HintPath>$(GamePath)\Mods\LuckSkill\LuckSkill.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
