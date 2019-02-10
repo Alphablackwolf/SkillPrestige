@@ -102,8 +102,8 @@ namespace SkillPrestige
                 SkillScreenPosition = 1,
                 SourceRectangleForSkillIcon = new Rectangle(0, 0, 16, 16),
                 Professions = Profession.FarmingProfessions,
-                SetSkillLevel = x => Game1.player.farmingLevel = x,
-                GetSkillLevel = () => Game1.player.farmingLevel,
+                SetSkillLevel = x => Game1.player.farmingLevel.Value = x,
+                GetSkillLevel = () => Game1.player.farmingLevel.Value,
                 AvailableBonusTypes = BonusType.FarmingBonusTypes
             },
             new Skill
@@ -112,8 +112,8 @@ namespace SkillPrestige
                 SkillScreenPosition = 4,
                 SourceRectangleForSkillIcon = new Rectangle(16, 0, 16, 16),
                 Professions = Profession.FishingProfessions,
-                SetSkillLevel = x => Game1.player.fishingLevel = x,
-                GetSkillLevel = () => Game1.player.fishingLevel
+                SetSkillLevel = x => Game1.player.fishingLevel.Value = x,
+                GetSkillLevel = () => Game1.player.fishingLevel.Value
             },
             new Skill
             {
@@ -121,8 +121,8 @@ namespace SkillPrestige
                 SkillScreenPosition = 3,
                 SourceRectangleForSkillIcon = new Rectangle(80, 0, 16, 16),
                 Professions = Profession.ForagingProfessions,
-                SetSkillLevel = x => Game1.player.foragingLevel = x,
-                GetSkillLevel = () => Game1.player.foragingLevel
+                SetSkillLevel = x => Game1.player.foragingLevel.Value = x,
+                GetSkillLevel = () => Game1.player.foragingLevel.Value
             },
             new Skill
             {
@@ -130,8 +130,8 @@ namespace SkillPrestige
                 SkillScreenPosition = 2,
                 SourceRectangleForSkillIcon = new Rectangle(32, 0, 16, 16),
                 Professions = Profession.MiningProfessions,
-                SetSkillLevel = x => Game1.player.miningLevel = x,
-                GetSkillLevel = () => Game1.player.miningLevel
+                SetSkillLevel = x => Game1.player.miningLevel.Value = x,
+                GetSkillLevel = () => Game1.player.miningLevel.Value
             },
             new Skill
             {
@@ -139,8 +139,8 @@ namespace SkillPrestige
                 SkillScreenPosition = 5,
                 SourceRectangleForSkillIcon = new Rectangle(128, 16, 16, 16),
                 Professions = Profession.CombatProfessions,
-                SetSkillLevel = x => Game1.player.combatLevel = x,
-                GetSkillLevel = () => Game1.player.combatLevel
+                SetSkillLevel = x => Game1.player.combatLevel.Value = x,
+                GetSkillLevel = () => Game1.player.combatLevel.Value
             }
         };
 

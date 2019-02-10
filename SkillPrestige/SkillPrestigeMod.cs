@@ -92,7 +92,7 @@ namespace SkillPrestige
         private static void LocationChanged(object sender, EventArgs args)
         {
             Logger.LogVerbose("Location change detected.");
-            CurrentSaveOptionsPath = Path.Combine(ModPath, "psconfigs/", $@"{Game1.player.name.RemoveNonAlphanumerics()}_{Game1.uniqueIDForThisGame}.json");
+            CurrentSaveOptionsPath = Path.Combine(ModPath, "psconfigs/", $@"{Game1.player.Name.RemoveNonAlphanumerics()}_{Game1.uniqueIDForThisGame}.json");
             PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
             PerSaveOptions.Instance.Check();
             Profession.AddMissingProfessions();
