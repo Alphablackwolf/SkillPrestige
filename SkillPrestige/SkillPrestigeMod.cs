@@ -28,7 +28,7 @@ namespace SkillPrestige
 
         public static IMonitor LogMonitor { get; private set; }
 
-        public static string CurrentSaveOptionsPath { get; private set; }
+        public static string CurrentSaveOptionsPath => Path.Combine(ModPath, "psconfigs/", Constants.SaveFolderName);
 
         public static string PerSaveOptionsDirectory { get; private set; }
 
@@ -41,8 +41,6 @@ namespace SkillPrestige
         private static bool SaveIsLoaded { get; set; }
 
         private IModHelper ModHelper { get; set; }
-
-        private static bool _isFirstUpdate = true;
 
         #endregion
 
@@ -73,18 +71,14 @@ namespace SkillPrestige
 
         private void RegisterGameEvents(IModEvents events)
         {
-            Logger.LogInformation("Registering game events...");
             events.Input.ButtonPressed += OnButtonPressed;
             events.Input.CursorMoved += OnCursorMoved;
-            LocationEvents.CurrentLocationChanged += LocationChanged;
-            GraphicsEvents.OnPostRenderGuiEvent += PostRenderGuiEvent;
-            GameEvents.UpdateTick += GameUpdate;
-            GameEvents.HalfSecondTick += HalfSecondTick;
-            GameEvents.OneSecondTick += OneSecondTick;
-            TimeEvents.AfterDayStarted += AfterDayStarted;
-            Logger.LogInformation("Game events registered.");
-            SaveEvents.AfterLoad += SaveFileLoaded;
-            SaveEvents.AfterReturnToTitle += ReturnToTitle;
+            events.Display.RenderedActiveMenu += OnRenderedActiveMenu;
+            events.GameLoop.GameLaunched += OnGameLaunched;
+            events.GameLoop.UpdateTicked += OnUpdateTicked;
+            events.GameLoop.DayStarted += OnDayStarted;
+            events.GameLoop.SaveLoaded += OnSaveLoaded;
+            events.GameLoop.ReturnedToTitle += OnReturnedToTitle;
         }
 
         /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
@@ -109,28 +103,30 @@ namespace SkillPrestige
                 handler.OnCursorMoved(e);
         }
 
-        private static void LocationChanged(object sender, EventArgs args)
-        {
-            Logger.LogVerbose("Location change detected.");
-            CurrentSaveOptionsPath = Path.Combine(ModPath, "psconfigs/", $@"{Game1.player.Name.RemoveNonAlphanumerics()}_{Game1.uniqueIDForThisGame}.json");
-            PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
-            PerSaveOptions.Instance.Check();
-            Profession.AddMissingProfessions();
-        }
-
-        private static void AfterDayStarted(object sender, EventArgs args)
+        /// <summary>Raised after the game begins a new day (including when the player loads a save).</summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
+        private static void OnDayStarted(object sender, DayStartedEventArgs e)
         {
             Logger.LogVerbose("New Day Started");
             AnimalProduceHandler.HandleSpawnedAnimalProductQuantityIncrease();
         }
 
-        private static void SaveFileLoaded(object sender, EventArgs args)
+        /// <summary>Raised after the player loads a save slot and the world is initialised.</summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
+        private static void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
         {
             PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
+            PerSaveOptions.Instance.Check();
+            Profession.AddMissingProfessions();
             SaveIsLoaded = true;
         }
 
-        private static void ReturnToTitle(object sender, EventArgs args)
+        /// <summary>Raised after the game returns to the title screen.</summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
+        private static void OnReturnedToTitle(object sender, ReturnedToTitleEventArgs e)
         {
             PrestigeSaveData.Instance.Read();
             SaveIsLoaded = false;
@@ -138,7 +134,11 @@ namespace SkillPrestige
             PerSaveOptions.ClearLoadedPerSaveOptionsFile();
             ExperienceHandler.ResetExperience();
         }
-        private static void PostRenderGuiEvent(object sender, EventArgs args)
+
+        /// <summary>When a menu is open (<see cref="Game1.activeClickableMenu"/> isn't null), raised after that menu is drawn to the sprite batch but before it's rendered to the screen.</summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
+        private static void OnRenderedActiveMenu(object sender, RenderedActiveMenuEventArgs e)
         {
             SkillsMenuExtension.AddPrestigeButtonsToMenu();
         }
@@ -161,30 +161,28 @@ namespace SkillPrestige
             Logger.LogInformation("Sprites loaded.");
         }
 
-        private void GameUpdate(object sender, EventArgs args)
+        /// <summary>Raised after the game is launched, right before the first update tick. This happens once per game session (unrelated to loading saves). All mods are loaded and initialised at this point, so this is a good time to set up mod integrations.</summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
+        private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            if (_isFirstUpdate)
-            {
-                ModHandler.RegisterLoadedMods();
-                if (Options.Instance.TestingMode) RegisterTestingCommands();
-                RegisterCommands();
-                _isFirstUpdate = false;
-            }
+            ModHandler.RegisterLoadedMods();
+            if (Options.Instance.TestingMode) RegisterTestingCommands();
+            RegisterCommands();
+        }
+
+        /// <summary>Raised after the game state is updated (≈60 times per second).</summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
+        private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
+        {
             CheckForGameSave();
             CheckForLevelUpMenu();
-        }
 
-
-        private static void OneSecondTick(object sender, EventArgs args)
-        {
-            //one second tick for this, as the detection of changed experience can happen as infrequently as possible. a 10 second tick would be well within tolerance.
-            UpdateExperience();
-        }
-
-        private static void HalfSecondTick(object sender, EventArgs args)
-        {
-            //from what I can tell of the original game code, tools cannot be used quicker than 600ms, so a half second tick is the largest tick that will always catch that the tool was used.
-            ToolProficiencyHandler.HandleToolProficiency();
+            if (e.IsMultipleOf(30)) // half-second
+                ToolProficiencyHandler.HandleToolProficiency(); //from what I can tell of the original game code, tools cannot be used quicker than 600ms, so a half second tick is the largest tick that will always catch that the tool was used.
+            if (e.IsOneSecond)
+                UpdateExperience(); //one second tick for this, as the detection of changed experience can happen as infrequently as possible. a 10 second tick would be well within tolerance.
         }
 
         private static void UpdateExperience()
