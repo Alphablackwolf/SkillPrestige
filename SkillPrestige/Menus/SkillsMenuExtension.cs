@@ -19,8 +19,17 @@ namespace SkillPrestige.Menus
         private static bool _skillsMenuInitialized;
         private static readonly IList<TextureButton> PrestigeButtons = new List<TextureButton>();
 
+        /// <summary>Get whether a skills page is supported for extension.</summary>
+        /// <param name="skillsPage">The skills page to check.</param>
+        private static bool IsSupportedSkillsPage(IClickableMenu skillsPage)
+        {
+            return
+                skillsPage is SkillsPage // vanilla menu
+                || skillsPage?.GetType().FullName == "SpaceCore.Interface.NewSkillsPage"; // SpaceCore (e.g. Luck Skill)
+        }
+
         // ReSharper disable once SuggestBaseTypeForParameter - we specifically want the skills page here, even if our usage could work against IClickableMenu.
-        private static void IntializeSkillsMenu(SkillsPage skillsPage)
+        private static void IntializeSkillsMenu(IClickableMenu skillsPage)
         {
             Logger.LogVerbose("Initializing Skills Menu...");
             _skillsMenuInitialized = true;
@@ -75,13 +84,17 @@ namespace SkillPrestige.Menus
             }
             else
             {
-                var skillsPage = (SkillsPage)((List<IClickableMenu>)activeClickableMenu.GetInstanceField("pages"))[1];
-                if (!_skillsMenuInitialized) IntializeSkillsMenu(skillsPage);
-                var spriteBatch = Game1.spriteBatch;
-                DrawPrestigeButtons(spriteBatch);
-                DrawProfessionHoverText(spriteBatch, skillsPage);
-                DrawPrestigeButtonsHoverText(spriteBatch);
-                Mouse.DrawCursor(spriteBatch);
+                IClickableMenu skillsPage = ((List<IClickableMenu>)activeClickableMenu.GetInstanceField("pages"))[1];
+                if (IsSupportedSkillsPage(skillsPage))
+                {
+                    if (!_skillsMenuInitialized)
+                        IntializeSkillsMenu(skillsPage);
+                    var spriteBatch = Game1.spriteBatch;
+                    DrawPrestigeButtons(spriteBatch);
+                    DrawProfessionHoverText(spriteBatch, skillsPage);
+                    DrawPrestigeButtonsHoverText(spriteBatch);
+                    Mouse.DrawCursor(spriteBatch);
+                }
             }
         }
 
@@ -101,7 +114,7 @@ namespace SkillPrestige.Menus
             }
         }
 
-        private static void DrawProfessionHoverText(SpriteBatch spriteBatch, SkillsPage skillsPage)
+        private static void DrawProfessionHoverText(SpriteBatch spriteBatch, IClickableMenu skillsPage)
         {
             var hoverText = (string) skillsPage.GetInstanceField("hoverText");
             if (hoverText.Length <= 0) return;
