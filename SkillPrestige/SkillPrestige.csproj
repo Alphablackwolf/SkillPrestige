@@ -36,8 +36,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
-    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="1.6.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LuckSkill">
@@ -62,6 +62,7 @@
     <Compile Include="Commands\SkillPrestigeCommand.cs" />
     <Compile Include="Bonuses\TypeRegistration\IBonusTypeRegistration.cs" />
     <Compile Include="CropRegrowthFactor.cs" />
+    <Compile Include="InputHandling\IInputHandler.cs" />
     <Compile Include="JsonNet.PrivateSettersContractResolvers\MemberInfoExtensions.cs" />
     <Compile Include="JsonNet.PrivateSettersContractResolvers\PrivateSetterContractResolver.cs" />
     <Compile Include="Logging\LogLevel.cs" />
@@ -99,12 +100,10 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Professions\DefenderSpecialHandling.cs" />
     <Compile Include="Professions\FighterSpecialHandling.cs" />
-    <Compile Include="InputHandling\MouseMoveEventArguments.cs" />
     <Compile Include="Mods\ISkillMod.cs" />
     <Compile Include="Mods\MyLuckSkill\SpecialCharmSpecialHandling.cs" />
     <Compile Include="Mods\MyLuckSkill\LuckSkillMod.cs" />
     <Compile Include="Mods\SkillMod.cs" />
-    <Compile Include="InputHandling\MouseClickEventArguments.cs" />
     <Compile Include="InputHandling\Mouse.cs" />
     <Compile Include="Professions\IProfessionSpecialHandling.cs" />
     <Compile Include="Menus\SkillsMenuExtension.cs" />

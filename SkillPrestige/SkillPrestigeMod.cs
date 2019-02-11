@@ -6,12 +6,12 @@ using System;
 using System.IO;
 using System.Linq;
 using SkillPrestige.Commands;
+using SkillPrestige.InputHandling;
 using SkillPrestige.Logging;
 using SkillPrestige.Menus;
 using SkillPrestige.Menus.Elements.Buttons;
 using SkillPrestige.Mods;
 using SkillPrestige.Professions;
-using static SkillPrestige.InputHandling.Mouse;
 
 namespace SkillPrestige
 {
@@ -46,6 +46,8 @@ namespace SkillPrestige
 
         #endregion
 
+        /// <summary>The mod entry point, called after the mod is first loaded.</summary>
+        /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
         {
             ModHelper = helper;
@@ -64,15 +66,16 @@ namespace SkillPrestige
                 return;
             }
             LoadSprites();
-            RegisterGameEvents();
+            RegisterGameEvents(helper.Events);
             //ReplaceStardewValleyCode();
             Logger.LogDisplay($"{ModManifest.Name} version {ModManifest.Version} by {ModManifest.Author} Initialized.");
         }
 
-        private void RegisterGameEvents()
+        private void RegisterGameEvents(IModEvents events)
         {
             Logger.LogInformation("Registering game events...");
-            ControlEvents.MouseChanged += MouseChanged;
+            events.Input.ButtonPressed += OnButtonPressed;
+            events.Input.CursorMoved += OnCursorMoved;
             LocationEvents.CurrentLocationChanged += LocationChanged;
             GraphicsEvents.OnPostRenderGuiEvent += PostRenderGuiEvent;
             GameEvents.UpdateTick += GameUpdate;
@@ -84,9 +87,26 @@ namespace SkillPrestige
             SaveEvents.AfterReturnToTitle += ReturnToTitle;
         }
 
-        private static void MouseChanged(object sender, EventArgsMouseStateChanged args)
+        /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
+        private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-            HandleState(args);
+            bool isClick = e.Button == SButton.MouseLeft;
+
+            SkillsMenuExtension.OnButtonPressed(e, isClick);
+            if (Game1.activeClickableMenu is IInputHandler handler)
+                handler.OnButtonPressed(e, isClick);
+        }
+
+        /// <summary>Raised after the player moves the in-game cursor.</summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event data.</param>
+        private static void OnCursorMoved(object sender, CursorMovedEventArgs e)
+        {
+            SkillsMenuExtension.OnCursorMoved(e);
+            if (Game1.activeClickableMenu is IInputHandler handler)
+                handler.OnCursorMoved(e);
         }
 
         private static void LocationChanged(object sender, EventArgs args)
