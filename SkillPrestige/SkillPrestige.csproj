@@ -40,9 +40,6 @@
     <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="1.6.0" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="ExtendedMinecart">
-      <HintPath>$(GamePath)\Mods\ExtendedMinecart\ExtendedMinecart.dll</HintPath>
-    </Reference>
     <Reference Include="LuckSkill">
       <HintPath>$(GamePath)\Mods\LuckSkill\LuckSkill.dll</HintPath>
     </Reference>
