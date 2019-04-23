@@ -9,5 +9,6 @@
   "Dependencies": [
     { "UniqueID": "alphablackwolf.skillPrestige" },
     { "UniqueID": "spacechase0.CookingSkill" }
-  ]
+  ],
+  "UpdateKeys": [ "Nexus:569" ]
 }
