@@ -40,10 +40,6 @@
     <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="LuckSkill">
-      <HintPath>$(GamePath)\Mods\LuckSkill\LuckSkill.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -77,9 +73,6 @@
     <Compile Include="Menus\Dialogs\MessageDialog.cs" />
     <Compile Include="Menus\Dialogs\WarningDialog.cs" />
     <Compile Include="Menus\SettingsMenu.cs" />
-    <Compile Include="Mods\MyLuckSkill\LuckSkillTypeRegistration.cs" />
-    <Compile Include="Mods\MyLuckSkill\LuckRegistration.cs" />
-    <Compile Include="Mods\MyLuckSkill\LuckProfessions.cs" />
     <Compile Include="PerSaveOptions.cs" />
     <Compile Include="PlayerManager.cs" />
     <Compile Include="Professions\CombatProfessions.cs" />
@@ -102,8 +95,6 @@
     <Compile Include="Professions\DefenderSpecialHandling.cs" />
     <Compile Include="Professions\FighterSpecialHandling.cs" />
     <Compile Include="Mods\ISkillMod.cs" />
-    <Compile Include="Mods\MyLuckSkill\SpecialCharmSpecialHandling.cs" />
-    <Compile Include="Mods\MyLuckSkill\LuckSkillMod.cs" />
     <Compile Include="Mods\SkillMod.cs" />
     <Compile Include="InputHandling\Mouse.cs" />
     <Compile Include="Professions\IProfessionSpecialHandling.cs" />
@@ -125,7 +116,6 @@
     <Compile Include="ToolType.cs" />
     <Compile Include="ToolProficiencyHandler.cs" />
     <Compile Include="SkillPrestigeMod.cs" />
-    <Compile Include="Mods\MyLuckSkill\LuckSkillType.cs" />
     <Compile Include="SkillTypes\DefaultSkillTypeRegistration.cs" />
     <Compile Include="SkillTypes\DefaultSkillTypes.cs" />
     <Compile Include="SkillTypes\ISkillTypeRegistration.cs" />
