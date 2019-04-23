@@ -1,17 +1,15 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StardewModdingAPI;
-using StardewModdingAPI.Events;
-using StardewValley;
-using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
+using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Commands;
 using SkillPrestige.InputHandling;
 using SkillPrestige.Logging;
 using SkillPrestige.Menus;
 using SkillPrestige.Menus.Elements.Buttons;
-using SkillPrestige.Mods;
 using SkillPrestige.Professions;
+using StardewModdingAPI;
+using StardewModdingAPI.Events;
+using StardewValley;
 
 namespace SkillPrestige
 {
@@ -56,7 +54,7 @@ namespace SkillPrestige
             OptionsPath = Path.Combine(ModPath, "config.json");
             Logger.LogInformation("Detected game entry.");
             PrestigeSaveData.Instance.Read();
-            
+
             if (ModHelper.ModRegistry.IsLoaded("community.AllProfessions"))
             {
                 Logger.LogCriticalWarning("Conflict Detected. This mod cannot work with AllProfessions. Skill Prestige disabled.");
@@ -166,8 +164,8 @@ namespace SkillPrestige
         /// <param name="e">The event data.</param>
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
-            ModHandler.RegisterLoadedMods();
-            if (Options.Instance.TestingMode) RegisterTestingCommands();
+            if (Options.Instance.TestingMode)
+                RegisterTestingCommands();
             RegisterCommands();
         }
 

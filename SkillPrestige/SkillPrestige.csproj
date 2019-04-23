@@ -95,7 +95,6 @@
     <Compile Include="Professions\DefenderSpecialHandling.cs" />
     <Compile Include="Professions\FighterSpecialHandling.cs" />
     <Compile Include="Mods\ISkillMod.cs" />
-    <Compile Include="Mods\SkillMod.cs" />
     <Compile Include="InputHandling\Mouse.cs" />
     <Compile Include="Professions\IProfessionSpecialHandling.cs" />
     <Compile Include="Menus\SkillsMenuExtension.cs" />
