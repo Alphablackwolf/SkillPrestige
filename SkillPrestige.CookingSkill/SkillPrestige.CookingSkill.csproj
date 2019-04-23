@@ -37,10 +37,12 @@
     <Reference Include="CookingSkill">
       <HintPath>$(GamePath)\Mods\CookingSkill\CookingSkill.dll</HintPath>
     </Reference>
+    <Reference Include="SpaceCore">
+      <HintPath>$(GamePath)\Mods\SpaceCore\SpaceCore.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CookingSkillMod.cs" />
     <Compile Include="ModEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
