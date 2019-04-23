@@ -47,9 +47,9 @@ namespace SkillPrestigeCookingAdapter
 
                     {
                         Type = CookingSkillType,
-                        SkillScreenPosition = SkillPrestigeCookingAdapterMod.IsLuckSkillModLoaded ? 7 : 6, // fix potential conflict with order due to luck skill mod
+                        SkillScreenPosition = ModEntry.IsLuckSkillModLoaded ? 7 : 6, // fix potential conflict with order due to luck skill mod
                         SourceRectangleForSkillIcon = new Rectangle(0, 0, 16, 16),
-                        SkillIconTexture = SkillPrestigeCookingAdapterMod.IconTexture,
+                        SkillIconTexture = ModEntry.IconTexture,
                         Professions = GetCookingProfessions(),
                         SetSkillLevel = x => { }, // no set necessary, as the level isn't stored independently from the experience
                         GetSkillLevel = GetCookingLevel,

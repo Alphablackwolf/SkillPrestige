@@ -4,7 +4,7 @@ using StardewModdingAPI;
 namespace SkillPrestigeCookingAdapter
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-    public class SkillPrestigeCookingAdapterMod : Mod
+    public class ModEntry : Mod
     {
         /// <summary>
         /// The cooking skill icon.
