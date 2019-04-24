@@ -1,7 +1,7 @@
 {
   "Name": "Skill Prestige for Luck Skill",
   "Author": "Alphablackwolf",
-  "Version": "1.2.3",
+  "Version": "1.2.4",
   "Description": "Adds Luck Skill support to Skill Prestige.",
   "UniqueID": "alphablackwolf.LuckSkillPrestigeAdapter",
   "EntryDll": "SkillPrestige.LuckSkill.dll",
