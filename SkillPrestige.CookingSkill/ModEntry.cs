@@ -2,7 +2,6 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SkillPrestige;
 using SkillPrestige.Menus;
 using SkillPrestige.Mods;
 using SkillPrestige.Professions;
@@ -12,7 +11,7 @@ using SpaceCore.Interface;
 using StardewModdingAPI;
 using StardewValley;
 
-namespace SkillPrestigeCookingAdapter
+namespace SkillPrestige.CookingSkill
 {
     /// <summary>The mod entry class.</summary>
     public class ModEntry : Mod, ISkillMod
