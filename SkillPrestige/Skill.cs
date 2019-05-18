@@ -27,7 +27,7 @@ namespace SkillPrestige
             };
             LevelUpManager = new LevelUpManager
             {
-                MenuType = typeof(LevelUpMenu),
+                IsMenu = menu => menu.GetType() == typeof(LevelUpMenu),
                 GetLevel = () => (int)(Game1.activeClickableMenu as LevelUpMenu).GetInstanceField("currentLevel"),
                 GetSkill = () => AllSkills.Single(y => y.Type.Ordinal == (int?)(Game1.activeClickableMenu as LevelUpMenu)?.GetInstanceField("currentSkill")),
                 CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<LevelUpMenu>(skill, level, new LevelUpMenu(skill.Type.Ordinal, level), 

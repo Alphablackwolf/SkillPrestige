@@ -9,9 +9,9 @@ namespace SkillPrestige
     public class LevelUpManager
     {
         /// <summary>
-        /// The type of the level up menu.
+        /// Returns if a given menu is their level up menu.
         /// </summary>
-        public Type MenuType { get; set; } 
+        public Func<IClickableMenu, bool> IsMenu { get; set; } 
 
         /// <summary>
         /// Returns the skill being levelled up.

@@ -96,7 +96,7 @@ namespace SkillPrestige.MagicSkill
                 OnPrestige = OnPrestige,
                 LevelUpManager = new LevelUpManager
                 {
-                    MenuType = typeof(SkillLevelUpMenu),
+                    IsMenu = menu => menu is SkillLevelUpMenu && Helper.Reflection.GetField<string>(menu, "currentSkill").GetValue() == "spacechase0.Cooking",
                     GetLevel = () => Game1.player.GetCustomSkillLevel(SpaceCore.Skills.GetSkill("spacechase0.Magic")),
                     GetSkill = () => Skill.AllSkills.Single(x => x.Type == this.MagicSkillType),
                     CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<SkillLevelUpMenu>(skill, level, new SkillLevelUpMenu("spacechase0.Magic", level),
