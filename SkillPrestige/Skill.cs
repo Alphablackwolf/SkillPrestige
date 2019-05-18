@@ -82,6 +82,11 @@ namespace SkillPrestige
         public Action<int> SetSkillExperience { get; set; }
 
         /// <summary>
+        /// An action triggered when prestiging is done. This allows extra handling if something else needs to be reset.
+        /// </summary>
+        public Action OnPrestige { get; set; }
+
+        /// <summary>
         /// The management class for any level up menu.
         /// </summary>
         public LevelUpManager LevelUpManager { get; set; }
