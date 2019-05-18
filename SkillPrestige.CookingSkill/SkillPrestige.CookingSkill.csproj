@@ -35,9 +35,11 @@
   <ItemGroup>
     <Reference Include="CookingSkill">
       <HintPath>$(GamePath)\Mods\CookingSkill\CookingSkill.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SpaceCore">
       <HintPath>$(GamePath)\Mods\SpaceCore\SpaceCore.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
@@ -57,6 +59,7 @@
     <ProjectReference Include="..\SkillPrestige\SkillPrestige.csproj">
       <Project>{d444ac8a-8d4c-4256-94bb-b075b717feff}</Project>
       <Name>SkillPrestige</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

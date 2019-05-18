@@ -53,6 +53,7 @@
     <ProjectReference Include="..\SkillPrestige\SkillPrestige.csproj">
       <Project>{d444ac8a-8d4c-4256-94bb-b075b717feff}</Project>
       <Name>SkillPrestige</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
