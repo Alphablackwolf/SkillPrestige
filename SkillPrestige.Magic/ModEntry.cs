@@ -4,7 +4,7 @@ using System.Linq;
 using Magic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SkillPrestige.MagicSkill.Framework;
+using SkillPrestige.Magic.Framework;
 using SkillPrestige.Menus;
 using SkillPrestige.Mods;
 using SkillPrestige.Professions;
@@ -14,7 +14,7 @@ using SpaceCore.Interface;
 using StardewModdingAPI;
 using StardewValley;
 
-namespace SkillPrestige.MagicSkill
+namespace SkillPrestige.Magic
 {
     /// <summary>The mod entry class.</summary>
     public class ModEntry : StardewModdingAPI.Mod, ISkillMod
