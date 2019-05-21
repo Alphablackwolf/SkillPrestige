@@ -55,7 +55,7 @@ namespace SkillPrestige.CookingSkill
             this.IconTexture = helper.Content.Load<Texture2D>("icon.png");
             this.CookingSkillType = new SkillType("Cooking", 6);
             this.IsFound = helper.ModRegistry.IsLoaded("spacechase0.LuckSkill");
-            this.IsLuckSkillModLoaded = helper.ModRegistry.IsLoaded("alphablackwolf.skillPrestigeLuckSkill");
+            this.IsLuckSkillModLoaded = helper.ModRegistry.IsLoaded("alphablackwolf.LuckSkillPrestigeAdapter");
 
             ModHandler.RegisterMod(this);
         }
@@ -182,13 +182,8 @@ namespace SkillPrestige.CookingSkill
         /// <param name="amount">The amount to set.</param>
         private static void SetCookingExperience(int amount)
         {
-            if (amount <= Game1.player.experiencePoints[6])
-                Game1.player.experiencePoints[6] = amount;
-            else
-            {
-                var addedExperience = amount - Game1.player.experiencePoints[6];
-                Game1.player.AddCustomSkillExperience("spacechase0.Cooking", addedExperience);
-            }
+            var addedExperience = amount - Game1.player.GetCustomSkillExperience("spacechase0.Cooking");
+            Game1.player.AddCustomSkillExperience("spacechase0.Cooking", addedExperience);
         }
     }
 }
