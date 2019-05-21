@@ -9,7 +9,7 @@ namespace SkillPrestige
     public class LevelUpManager
     {
         /// <summary>
-        /// Returns if a given menu is their level up menu.
+        /// Returns whether a given menu is the relevant level up menu.
         /// </summary>
         public Func<IClickableMenu, bool> IsMenu { get; set; } 
 

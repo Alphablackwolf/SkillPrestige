@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Magic;
 using Microsoft.Xna.Framework;
@@ -82,7 +81,7 @@ namespace SkillPrestige.Magic
                 ++skillPos;
             if (this.IsCookingSkillModLoaded)
                 ++skillPos;
-            
+
             yield return new Skill
             {
                 Type = this.MagicSkillType,
@@ -92,11 +91,11 @@ namespace SkillPrestige.Magic
                 Professions = this.GetAddedProfessions(),
                 SetSkillLevel = x => { }, // no set necessary, as the level isn't stored independently from the experience
                 GetSkillLevel = this.GetMagicLevel,
-                SetSkillExperience = SetMagicExperience,
-                OnPrestige = OnPrestige,
+                SetSkillExperience = this.SetMagicExperience,
+                OnPrestige = this.OnPrestige,
                 LevelUpManager = new LevelUpManager
                 {
-                    IsMenu = menu => menu is SkillLevelUpMenu && Helper.Reflection.GetField<string>(menu, "currentSkill").GetValue() == "spacechase0.Cooking",
+                    IsMenu = menu => menu is SkillLevelUpMenu && this.Helper.Reflection.GetField<string>(menu, "currentSkill").GetValue() == "spacechase0.Cooking",
                     GetLevel = () => Game1.player.GetCustomSkillLevel(SpaceCore.Skills.GetSkill("spacechase0.Magic")),
                     GetSkill = () => Skill.AllSkills.Single(x => x.Type == this.MagicSkillType),
                     CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<SkillLevelUpMenu>(skill, level, new SkillLevelUpMenu("spacechase0.Magic", level),
@@ -122,73 +121,65 @@ namespace SkillPrestige.Magic
         {
             var skill = SpaceCore.Skills.GetSkill("spacechase0.Magic");
 
-            List<Profession> profs = new List<Profession>();
-            List<TierOneProfession> tier1 = new List<TierOneProfession>();
-            foreach ( var sprofLevel in skill.ProfessionsForLevels )
+            IList<Profession> professions = new List<Profession>();
+            IList<TierOneProfession> tierOne = new List<TierOneProfession>();
+            foreach (var professionGroup in skill.ProfessionsForLevels)
             {
-                if (sprofLevel.Level == 5)
+                if (professionGroup.Level == 5)
                 {
-                    var a = new TierOneProfession()
+                    var professionA = new TierOneProfession
                     {
-                        DisplayName = sprofLevel.First.GetName(),
-                        Id = sprofLevel.First.GetVanillaId(),
-                        EffectText = new[] { sprofLevel.First.GetDescription() },
+                        DisplayName = professionGroup.First.GetName(),
+                        Id = professionGroup.First.GetVanillaId(),
+                        EffectText = new[] { professionGroup.First.GetDescription() },
                     };
-                    profs.Add(a);
-                    tier1.Add(a);
+                    var professionB = new TierOneProfession
+                    {
+                        DisplayName = professionGroup.Second.GetName(),
+                        Id = professionGroup.Second.GetVanillaId(),
+                        EffectText = new[] { professionGroup.Second.GetDescription() },
+                    };
 
-                    var b = new TierOneProfession()
-                    {
-                        DisplayName = sprofLevel.Second.GetName(),
-                        Id = sprofLevel.Second.GetVanillaId(),
-                        EffectText = new[] { sprofLevel.Second.GetDescription() },
-                    };
-                    profs.Add(b);
-                    tier1.Add(b);
+                    professions.Add(professionA);
+                    professions.Add(professionB);
+                    tierOne.Add(professionA);
+                    tierOne.Add(professionB);
                 }
-                else if ( sprofLevel.Level == 10 )
+                else if (professionGroup.Level == 10)
                 {
-                    TierOneProfession req = null;
-                    foreach ( var t1 in tier1 )
-                    {
-                        if ( t1.DisplayName == sprofLevel.Requires.GetName() )
-                        {
-                            req = t1;
-                            break;
-                        }
-                    }
+                    TierOneProfession requiredProfession = tierOne.First(p => p.DisplayName == professionGroup.Requires.GetName());
 
-                    var a = new TierTwoProfession()
+                    var professionA = new TierTwoProfession
                     {
-                        DisplayName = sprofLevel.First.GetName(),
-                        Id = sprofLevel.First.GetVanillaId(),
-                        EffectText = new[] { sprofLevel.First.GetDescription() },
-                        TierOneProfession = req,
+                        DisplayName = professionGroup.First.GetName(),
+                        Id = professionGroup.First.GetVanillaId(),
+                        EffectText = new[] { professionGroup.First.GetDescription() },
+                        TierOneProfession = requiredProfession,
                     };
-                    profs.Add(a);
-
-                    var b = new TierTwoProfession()
+                    var professionB = new TierTwoProfession
                     {
-                        DisplayName = sprofLevel.Second.GetName(),
-                        Id = sprofLevel.Second.GetVanillaId(),
-                        EffectText = new[] { sprofLevel.Second.GetDescription() },
-                        TierOneProfession = req,
+                        DisplayName = professionGroup.Second.GetName(),
+                        Id = professionGroup.Second.GetVanillaId(),
+                        EffectText = new[] { professionGroup.Second.GetDescription() },
+                        TierOneProfession = requiredProfession,
                     };
-                    profs.Add(b);
 
-                    req.TierTwoProfessions = new[] { a, b };
+                    professions.Add(professionA);
+                    professions.Add(professionB);
+
+                    requiredProfession.TierTwoProfessions = new[] { professionA, professionB };
                 }
             }
 
-            foreach ( var prof in profs )
+            foreach (var profession in professions)
             {
-                if (prof.DisplayName == "Mana Reserve")
-                    prof.SpecialHandling = new ManaCapSpecialHandling(500);
-                else if (prof.DisplayName == "Potential" || prof.DisplayName == "Prodigy")
-                    prof.SpecialHandling = new UpgradePointSpecialHandling(2);
+                if (profession.DisplayName == "Mana Reserve")
+                    profession.SpecialHandling = new ManaCapSpecialHandling(500);
+                else if (profession.DisplayName == "Potential" || profession.DisplayName == "Prodigy")
+                    profession.SpecialHandling = new UpgradePointSpecialHandling(2);
             }
 
-            return profs;
+            return professions;
         }
 
         /// <summary>Get the current cooking skill level.</summary>
@@ -200,25 +191,20 @@ namespace SkillPrestige.Magic
 
         /// <summary>Set the current cooking skill XP.</summary>
         /// <param name="amount">The amount to set.</param>
-        private static void SetMagicExperience(int amount)
+        private void SetMagicExperience(int amount)
         {
-            var addedExperience = amount - Game1.player.GetCustomSkillExperience("spacechase0.Magic");
+            int addedExperience = amount - Game1.player.GetCustomSkillExperience("spacechase0.Magic");
             Game1.player.AddCustomSkillExperience("spacechase0.Magic", addedExperience);
         }
 
-        /// <summary>
-        /// Reset the upgrade points of the player on prestige.
-        /// Points from professions are handled in UpgradePointSpecialHandling.
-        /// </summary>
-        private static void OnPrestige()
+        /// <summary>Reset the upgrade points of the player on prestige. Points from professions are handled in <see cref="UpgradePointSpecialHandling"/>.</summary>
+        private void OnPrestige()
         {
-            var spells = Game1.player.getSpellBook();
-            foreach ( var spell in new Dictionary<string, int>(spells.knownSpells) )
+            SpellBook spells = Game1.player.getSpellBook();
+            foreach (var spell in new Dictionary<string, int>(spells.knownSpells))
             {
-                if ( spell.Value > 0 )
-                {
+                if (spell.Value > 0)
                     Game1.player.forgetSpell(spell.Key, 1, sync: false);
-                }
             }
             Game1.player.useSpellPoints(10, sync: true);
         }
