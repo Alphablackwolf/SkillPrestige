@@ -197,9 +197,9 @@ namespace SkillPrestige
 
         private static void CheckForLevelUpMenu()
         {
-            foreach (var levelUpManager in Skill.AllSkills.Select(x => x.LevelUpManager).GroupBy(x => x.MenuType).Select(g => g.First()))
+            foreach (var levelUpManager in Skill.AllSkills.Select(x => x.LevelUpManager))
             {
-                if (Game1.activeClickableMenu == null || Game1.activeClickableMenu.GetType() != levelUpManager.MenuType) continue;
+                if (Game1.activeClickableMenu == null || !levelUpManager.IsMenu(Game1.activeClickableMenu)) continue;
                 var currentLevel = levelUpManager.GetLevel.Invoke();
                 if (currentLevel % 5 != 0) return;
                 Logger.LogInformation("Level up menu as profession chooser detected.");

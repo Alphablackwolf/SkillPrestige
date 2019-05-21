@@ -72,7 +72,7 @@ namespace SkillPrestige.LuckSkill
                 SetSkillExperience = this.SetLuckExperience,
                 LevelUpManager = new LevelUpManager
                 {
-                    MenuType = typeof(OriginalMod.LuckLevelUpMenu),
+                    IsMenu = menu => menu is OriginalMod.LuckLevelUpMenu,
                     GetLevel = () => (int)(Game1.activeClickableMenu as OriginalMod.LuckLevelUpMenu).GetInstanceField("currentLevel"),
                     GetSkill = () => Skill.AllSkills.Single(x => x.Type == this.LuckSkillType),
                     CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<OriginalMod.LuckLevelUpMenu>(skill, level, new OriginalMod.LuckLevelUpMenu(skill.Type.Ordinal, level),

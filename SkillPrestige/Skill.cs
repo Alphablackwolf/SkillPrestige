@@ -27,10 +27,10 @@ namespace SkillPrestige
             };
             LevelUpManager = new LevelUpManager
             {
-                MenuType = typeof(LevelUpMenu),
+                IsMenu = menu => menu.GetType() == typeof(LevelUpMenu),
                 GetLevel = () => (int)(Game1.activeClickableMenu as LevelUpMenu).GetInstanceField("currentLevel"),
                 GetSkill = () => AllSkills.Single(y => y.Type.Ordinal == (int?)(Game1.activeClickableMenu as LevelUpMenu)?.GetInstanceField("currentSkill")),
-                CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<LevelUpMenu>(skill, level, new LevelUpMenu(skill.Type.Ordinal, level), 
+                CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<LevelUpMenu>(skill, level, new LevelUpMenu(skill.Type.Ordinal, level),
                 "professionsToChoose", "leftProfessionDescription", "rightProfessionDescription", LevelUpMenu.getProfessionDescription)
             };
         }
@@ -80,6 +80,11 @@ namespace SkillPrestige
         // ReSharper disable once MemberCanBePrivate.Global used by other mods.
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
         public Action<int> SetSkillExperience { get; set; }
+
+        /// <summary>
+        /// An action triggered when prestiging is done. This allows extra handling if something else needs to be reset.
+        /// </summary>
+        public Action OnPrestige { get; set; }
 
         /// <summary>
         /// The management class for any level up menu.
