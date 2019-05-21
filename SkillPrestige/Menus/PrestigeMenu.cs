@@ -173,7 +173,7 @@ namespace SkillPrestige.Menus
             Logger.LogVerbose("Prestige menu - Initiating level 5 profession buttons...");
             var leftProfessionButtonXCenter = _leftProfessionStartingXLocation + _xSpaceAvailableForProfessionButtons / 4;
             var rightProfessionButtonXCenter = _leftProfessionStartingXLocation + (_xSpaceAvailableForProfessionButtons * .75d).Floor();
-            var firstProfession = _skill.Professions.OrderBy(x => x.Id).First(x => x is TierOneProfession);
+            var firstProfession = _skill.Professions.Where(x => x is TierOneProfession).First();
 
             _professionButtons.Add(new MinimalistProfessionButton
             {
@@ -184,7 +184,7 @@ namespace SkillPrestige.Menus
                 Selected = _prestige.PrestigeProfessionsSelected.Contains(firstProfession.Id),
                 Profession = firstProfession
             });
-            var secondProfession = _skill.Professions.OrderBy(x => x.Id).Skip(1).First(x => x is TierOneProfession);
+            var secondProfession = _skill.Professions.Where(x => x is TierOneProfession).Skip(1).First();
             _professionButtons.Add(new MinimalistProfessionButton
             {
 
@@ -202,7 +202,7 @@ namespace SkillPrestige.Menus
             Logger.LogVerbose("Prestige menu - Initiating level 10 profession buttons...");
             var buttonCenterIndex = 1;
             var canBeAfforded = _prestige.PrestigePoints >= PerSaveOptions.Instance.CostOfTierTwoPrestige;
-            foreach (var profession in _skill.Professions.OrderBy(x => x.Id).Where(x => x is TierTwoProfession)
+            foreach (var profession in _skill.Professions.Where(x => x is TierTwoProfession)
             )
             {
                 var tierTwoProfession = (TierTwoProfession)profession;
