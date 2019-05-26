@@ -54,7 +54,7 @@ namespace SkillPrestige.Commands
             Logger.LogVerbose($"experience used: {experienceArgument}");
             var skill = Skill.AllSkills.Single(x => x.Type.Name.Equals(skillArgument, StringComparison.InvariantCultureIgnoreCase));
            
-            var playerSkillExperience = Game1.player.experiencePoints[skill.Type.Ordinal];
+            var playerSkillExperience = skill.GetSkillExperience();
             Logger.LogVerbose($"Current experience level for {skill.Type.Name} skill: {playerSkillExperience}");
             Logger.LogVerbose($"Setting {skill.Type.Name} skill to {experienceArgument} experience.");
             ExperienceHandler.DisableExperienceGains = true;

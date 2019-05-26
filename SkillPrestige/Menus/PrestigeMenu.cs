@@ -100,10 +100,8 @@ namespace SkillPrestige.Menus
             var prestigeButtonDisabled = true;
             if (PerSaveOptions.Instance.PainlessPrestigeMode)
             {
-                if (Game1.player.experiencePoints[_skill.Type.Ordinal] >= 15000 + PerSaveOptions.Instance.ExperienceNeededPerPainlessPrestige)
-                {
+                if (_skill.GetSkillExperience() >= 15000 + PerSaveOptions.Instance.ExperienceNeededPerPainlessPrestige)
                     prestigeButtonDisabled = false;
-                }
             }
             else
             {

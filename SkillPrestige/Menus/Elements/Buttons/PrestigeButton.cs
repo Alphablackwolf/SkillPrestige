@@ -41,7 +41,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
                 {
                     return $"You must reach level 10 in this skill and then{Environment.NewLine}sleep at least once in order to prestige this skill.";
                 }
-                var currentExperience = Game1.player.experiencePoints[Skill.Type.Ordinal];
+                var currentExperience = Skill.GetSkillExperience();
                 var experienceNeeded = PerSaveOptions.Instance.ExperienceNeededPerPainlessPrestige;
                 var availableExperience =
                     currentExperience - 15000; //Remove what it takes to get to level 10 in the first place.

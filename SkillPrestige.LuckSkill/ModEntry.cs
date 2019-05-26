@@ -67,9 +67,9 @@ namespace SkillPrestige.LuckSkill
                 SkillScreenPosition = 6,
                 SourceRectangleForSkillIcon = new Rectangle(64, 0, 16, 16),
                 Professions = this.GetAddedProfessions(),
-                SetSkillLevel = level => Game1.player.luckLevel.Value = level,
                 GetSkillLevel = () => Game1.player.luckLevel.Value,
-                SetSkillExperience = this.SetLuckExperience,
+                SetSkillLevel = level => Game1.player.luckLevel.Value = level,
+                SetSkillExperience = this.SetExperience,
                 LevelUpManager = new LevelUpManager
                 {
                     IsMenu = menu => menu is OriginalMod.LuckLevelUpMenu,
@@ -159,9 +159,9 @@ namespace SkillPrestige.LuckSkill
             };
         }
 
-        /// <summary>Set the current luck skill XP.</summary>
+        /// <summary>Set the current skill XP.</summary>
         /// <param name="amount">The amount to set.</param>
-        private void SetLuckExperience(int amount)
+        private void SetExperience(int amount)
         {
             int skillId = this.LuckSkillType.Ordinal;
             if (amount <= Game1.player.experiencePoints[skillId])

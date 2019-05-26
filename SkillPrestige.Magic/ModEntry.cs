@@ -89,9 +89,10 @@ namespace SkillPrestige.Magic
                 SourceRectangleForSkillIcon = new Rectangle(0, 0, 16, 16),
                 SkillIconTexture = this.IconTexture,
                 Professions = this.GetAddedProfessions(),
+                GetSkillLevel = this.GetLevel,
                 SetSkillLevel = x => { }, // no set necessary, as the level isn't stored independently from the experience
-                GetSkillLevel = this.GetMagicLevel,
-                SetSkillExperience = this.SetMagicExperience,
+                GetSkillExperience = this.GetExperience,
+                SetSkillExperience = this.SetExperience,
                 OnPrestige = this.OnPrestige,
                 LevelUpManager = new LevelUpManager
                 {
@@ -182,16 +183,22 @@ namespace SkillPrestige.Magic
             return professions;
         }
 
-        /// <summary>Get the current cooking skill level.</summary>
-        private int GetMagicLevel()
+        /// <summary>Get the current skill level.</summary>
+        private int GetLevel()
         {
             //this.FixExpLength();
             return Game1.player.GetCustomSkillLevel("spacechase0.Magic");
         }
 
-        /// <summary>Set the current cooking skill XP.</summary>
+        /// <summary>Get the current skill XP.</summary>
+        private int GetExperience()
+        {
+            return Game1.player.GetCustomSkillExperience("spacechase0.Magic");
+        }
+
+        /// <summary>Set the current skill XP.</summary>
         /// <param name="amount">The amount to set.</param>
-        private void SetMagicExperience(int amount)
+        private void SetExperience(int amount)
         {
             int addedExperience = amount - Game1.player.GetCustomSkillExperience("spacechase0.Magic");
             Game1.player.AddCustomSkillExperience("spacechase0.Magic", addedExperience);

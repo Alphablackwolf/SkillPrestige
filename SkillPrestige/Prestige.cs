@@ -87,7 +87,7 @@ namespace SkillPrestige
                 if (PerSaveOptions.Instance.PainlessPrestigeMode)
                 {
                     Logger.LogInformation($"Prestiging skill {skill.Type.Name} via Painless Mode.");
-                    skill.SetSkillExperience(Game1.player.experiencePoints[skill.Type.Ordinal] - PerSaveOptions.Instance.ExperienceNeededPerPainlessPrestige);
+                    skill.SetSkillExperience(skill.GetSkillExperience() - PerSaveOptions.Instance.ExperienceNeededPerPainlessPrestige);
                     Logger.LogInformation($"Removed {PerSaveOptions.Instance.ExperienceNeededPerPainlessPrestige} experience points from {skill.Type.Name} skill.");
                 }
                 else

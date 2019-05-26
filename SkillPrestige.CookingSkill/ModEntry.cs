@@ -77,9 +77,10 @@ namespace SkillPrestige.CookingSkill
                 SourceRectangleForSkillIcon = new Rectangle(0, 0, 16, 16),
                 SkillIconTexture = this.IconTexture,
                 Professions = this.GetAddedProfessions(),
+                GetSkillLevel = this.GetLevel,
                 SetSkillLevel = x => { }, // no set necessary, as the level isn't stored independently from the experience
-                GetSkillLevel = this.GetCookingLevel,
-                SetSkillExperience = SetCookingExperience,
+                GetSkillExperience = this.GetExperience,
+                SetSkillExperience = this.SetExperience,
                 LevelUpManager = new LevelUpManager
                 {
                     IsMenu = menu => menu is SkillLevelUpMenu && Helper.Reflection.GetField<string>(menu, "currentSkill").GetValue() == "spacechase0.Cooking",
@@ -171,16 +172,22 @@ namespace SkillPrestige.CookingSkill
             };
         }
 
-        /// <summary>Get the current cooking skill level.</summary>
-        private int GetCookingLevel()
+        /// <summary>Get the current skill level.</summary>
+        private int GetLevel()
         {
             //this.FixExpLength();
             return Game1.player.GetCustomSkillLevel("spacechase0.Cooking");
         }
 
-        /// <summary>Set the current cooking skill XP.</summary>
+        /// <summary>Get the current skill XP.</summary>
+        private int GetExperience()
+        {
+            return Game1.player.GetCustomSkillExperience("spacechase0.Cooking");
+        }
+
+        /// <summary>Set the current skill XP.</summary>
         /// <param name="amount">The amount to set.</param>
-        private static void SetCookingExperience(int amount)
+        private void SetExperience(int amount)
         {
             var addedExperience = amount - Game1.player.GetCustomSkillExperience("spacechase0.Cooking");
             Game1.player.AddCustomSkillExperience("spacechase0.Cooking", addedExperience);
