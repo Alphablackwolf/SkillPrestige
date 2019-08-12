@@ -2,7 +2,7 @@
 using SkillPrestige;
 
 
-namespace UnitTest
+namespace SkillPrestige.UnitTests
 {
     [TestFixture]
     public class ExtensionTests

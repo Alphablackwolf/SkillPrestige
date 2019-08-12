@@ -57,7 +57,7 @@ namespace SkillPrestige.Magic
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
         {
-            this.IconTexture = helper.Content.Load<Texture2D>("icon.png");
+            this.IconTexture = helper.Content.Load<Texture2D>("assets/icon.png");
             this.MagicSkillType = new SkillType("Magic", 8);
             this.IsFound = helper.ModRegistry.IsLoaded("spacechase0.Magic");
             this.IsCookingSkillModLoaded = helper.ModRegistry.IsLoaded("Alphablackwolf.CookingSkillPrestigeAdapter");

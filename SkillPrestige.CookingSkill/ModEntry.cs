@@ -52,7 +52,7 @@ namespace SkillPrestige.CookingSkill
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
         {
-            this.IconTexture = helper.Content.Load<Texture2D>("icon.png");
+            this.IconTexture = helper.Content.Load<Texture2D>("assets/icon.png");
             this.CookingSkillType = new SkillType("Cooking", 6);
             this.IsFound = helper.ModRegistry.IsLoaded("spacechase0.LuckSkill");
             this.IsLuckSkillModLoaded = helper.ModRegistry.IsLoaded("alphablackwolf.LuckSkillPrestigeAdapter");

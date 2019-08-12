@@ -4,7 +4,7 @@ using SkillPrestige;
 using SkillPrestige.SkillTypes;
 
 
-namespace UnitTest
+namespace SkillPrestige.UnitTests
 {
     [TestFixture]
     public class SkillTests

@@ -147,12 +147,12 @@ namespace SkillPrestige
             Button.DefaultButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\DialogBoxGreen");
             MinimalistProfessionButton.ProfessionButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\boardGameBorder");
 
-            var prestigeIconFilePath = Path.Combine(ModPath, @"PrestigeIcon.png");
+            var prestigeIconFilePath = Path.Combine(ModPath, "assets", "prestige-icon.png");
             Logger.LogInformation($"Prestige Icon Path: {prestigeIconFilePath}");
             var prestigeIconFileStream = new FileStream(prestigeIconFilePath, FileMode.Open);
             PrestigeIconTexture = Texture2D.FromStream(Game1.graphics.GraphicsDevice, prestigeIconFileStream);
 
-            var checkmarkFilePath = Path.Combine(ModPath, @"Checkmark.png");
+            var checkmarkFilePath = Path.Combine(ModPath, "assets", "checkmark.png");
             Logger.LogInformation($"Checkmark Path: {checkmarkFilePath}");
             var checkmarkFileStream = new FileStream(checkmarkFilePath, FileMode.Open);
             CheckmarkTexture = Texture2D.FromStream(Game1.graphics.GraphicsDevice, checkmarkFileStream);
