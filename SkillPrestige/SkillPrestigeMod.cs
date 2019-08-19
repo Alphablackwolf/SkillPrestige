@@ -36,9 +36,7 @@ namespace SkillPrestige
 
         public static IModRegistry ModRegistry { get; private set; }
 
-        private static bool SaveIsLoaded { get; set; }
-
-        private IModHelper ModHelper { get; set; }
+        private bool SaveIsLoaded { get; set; }
 
         #endregion
 
@@ -46,7 +44,6 @@ namespace SkillPrestige
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
         {
-            ModHelper = helper;
             LogMonitor = Monitor;
             ModPath = helper.DirectoryPath;
             ModRegistry = helper.ModRegistry;
@@ -55,28 +52,22 @@ namespace SkillPrestige
             Logger.LogInformation("Detected game entry.");
             PrestigeSaveData.Instance.Read();
 
-            if (ModHelper.ModRegistry.IsLoaded("community.AllProfessions"))
+            if (helper.ModRegistry.IsLoaded("community.AllProfessions"))
             {
                 Logger.LogCriticalWarning("Conflict Detected. This mod cannot work with AllProfessions. Skill Prestige disabled.");
                 Logger.LogDisplay("Skill Prestige Mod: If you wish to use this mod in place of AllProfessions, remove the AllProfessions mod and run the player_resetallprofessions command.");
                 return;
             }
             LoadSprites();
-            RegisterGameEvents(helper.Events);
-            //ReplaceStardewValleyCode();
-            Logger.LogDisplay($"{ModManifest.Name} version {ModManifest.Version} by {ModManifest.Author} Initialized.");
-        }
 
-        private void RegisterGameEvents(IModEvents events)
-        {
-            events.Input.ButtonPressed += OnButtonPressed;
-            events.Input.CursorMoved += OnCursorMoved;
-            events.Display.RenderedActiveMenu += OnRenderedActiveMenu;
-            events.GameLoop.GameLaunched += OnGameLaunched;
-            events.GameLoop.UpdateTicked += OnUpdateTicked;
-            events.GameLoop.DayStarted += OnDayStarted;
-            events.GameLoop.SaveLoaded += OnSaveLoaded;
-            events.GameLoop.ReturnedToTitle += OnReturnedToTitle;
+            helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+            helper.Events.Input.CursorMoved += this.OnCursorMoved;
+            helper.Events.Display.RenderedActiveMenu += this.OnRenderedActiveMenu;
+            helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
+            helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
+            helper.Events.GameLoop.DayStarted += this.OnDayStarted;
+            helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
+            helper.Events.GameLoop.ReturnedToTitle += this.OnReturnedToTitle;
         }
 
         /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
@@ -94,7 +85,7 @@ namespace SkillPrestige
         /// <summary>Raised after the player moves the in-game cursor.</summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event data.</param>
-        private static void OnCursorMoved(object sender, CursorMovedEventArgs e)
+        private void OnCursorMoved(object sender, CursorMovedEventArgs e)
         {
             SkillsMenuExtension.OnCursorMoved(e);
             if (Game1.activeClickableMenu is IInputHandler handler)
@@ -104,7 +95,7 @@ namespace SkillPrestige
         /// <summary>Raised after the game begins a new day (including when the player loads a save).</summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event data.</param>
-        private static void OnDayStarted(object sender, DayStartedEventArgs e)
+        private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
             Logger.LogVerbose("New Day Started");
             AnimalProduceHandler.HandleSpawnedAnimalProductQuantityIncrease();
@@ -113,7 +104,7 @@ namespace SkillPrestige
         /// <summary>Raised after the player loads a save slot and the world is initialised.</summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event data.</param>
-        private static void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
+        private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
         {
             PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
             PerSaveOptions.Instance.Check();
@@ -124,7 +115,7 @@ namespace SkillPrestige
         /// <summary>Raised after the game returns to the title screen.</summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event data.</param>
-        private static void OnReturnedToTitle(object sender, ReturnedToTitleEventArgs e)
+        private void OnReturnedToTitle(object sender, ReturnedToTitleEventArgs e)
         {
             PrestigeSaveData.Instance.Read();
             SaveIsLoaded = false;
@@ -136,12 +127,12 @@ namespace SkillPrestige
         /// <summary>When a menu is open (<see cref="Game1.activeClickableMenu"/> isn't null), raised after that menu is drawn to the sprite batch but before it's rendered to the screen.</summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event data.</param>
-        private static void OnRenderedActiveMenu(object sender, RenderedActiveMenuEventArgs e)
+        private void OnRenderedActiveMenu(object sender, RenderedActiveMenuEventArgs e)
         {
             SkillsMenuExtension.AddPrestigeButtonsToMenu();
         }
 
-        private static void LoadSprites()
+        private void LoadSprites()
         {
             Logger.LogInformation("Loading sprites...");
             Button.DefaultButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\DialogBoxGreen");
@@ -164,6 +155,7 @@ namespace SkillPrestige
         /// <param name="e">The event data.</param>
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
+            // register commands
             if (Options.Instance.TestingMode)
                 RegisterTestingCommands();
             RegisterCommands();
@@ -183,19 +175,19 @@ namespace SkillPrestige
                 UpdateExperience(); //one second tick for this, as the detection of changed experience can happen as infrequently as possible. a 10 second tick would be well within tolerance.
         }
 
-        private static void UpdateExperience()
+        private void UpdateExperience()
         {
             if (SaveIsLoaded) ExperienceHandler.UpdateExperience();
         }
 
-        private static void CheckForGameSave()
+        private void CheckForGameSave()
         {
             if (!Game1.newDay || Game1.fadeToBlackAlpha <= 0.95f) return;
             Logger.LogInformation("New game day detected.");
             PrestigeSaveData.Instance.Save();
         }
 
-        private static void CheckForLevelUpMenu()
+        private void CheckForLevelUpMenu()
         {
             foreach (var levelUpManager in Skill.AllSkills.Select(x => x.LevelUpManager))
             {
@@ -212,23 +204,15 @@ namespace SkillPrestige
         private void RegisterTestingCommands()
         {
             Logger.LogInformation("Registering Testing commands...");
-            SkillPrestigeCommand.RegisterCommands(ModHelper.ConsoleCommands, true);
+            SkillPrestigeCommand.RegisterCommands(this.Helper.ConsoleCommands, true);
             Logger.LogInformation("Testing commands registered.");
         }
 
         private void RegisterCommands()
         {
             Logger.LogInformation("Registering commands...");
-            SkillPrestigeCommand.RegisterCommands(ModHelper.ConsoleCommands, false);
+            SkillPrestigeCommand.RegisterCommands(this.Helper.ConsoleCommands, false);
             Logger.LogInformation("Commands registered.");
-        }
-
-        private static void ReplaceStardewValleyCode()
-        {
-            Logger.LogInformation("Hijacking Methods...");
-            Logger.LogInformation("Hijacking Crop Harvest method...");
-            typeof(Crop).ReplaceMethod("harvest", typeof(CropReplacement), "HarvestReplacement");
-            Logger.LogInformation("Crop Harvest method hijacked!");
         }
     }
 }
