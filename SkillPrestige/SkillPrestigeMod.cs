@@ -6,6 +6,7 @@ using SkillPrestige.InputHandling;
 using SkillPrestige.Logging;
 using SkillPrestige.Menus;
 using SkillPrestige.Menus.Elements.Buttons;
+using SkillPrestige.Mods;
 using SkillPrestige.Professions;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
@@ -13,13 +14,18 @@ using StardewValley;
 
 namespace SkillPrestige
 {
-    /// <summary>
-    /// The Skill Prestige Mod by Alphablackwolf. Enjoy! 
-    /// </summary>
+    /// <summary>The mod entry class.</summary>
     public class SkillPrestigeMod : Mod
     {
-        #region Manifest Data
+        /**********
+        ** Fields
+        *********/
+        private bool SaveIsLoaded { get; set; }
 
+
+        /**********
+        ** Accessors
+        *********/
         public static string ModPath { get; private set; }
 
         public static string OptionsPath { get; private set; }
@@ -36,30 +42,30 @@ namespace SkillPrestige
 
         public static IModRegistry ModRegistry { get; private set; }
 
-        private bool SaveIsLoaded { get; set; }
 
-        #endregion
-
+        /**********
+        ** Public methods
+        *********/
         /// <summary>The mod entry point, called after the mod is first loaded.</summary>
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
         {
+            // init
             LogMonitor = Monitor;
             ModPath = helper.DirectoryPath;
             ModRegistry = helper.ModRegistry;
             PerSaveOptionsDirectory = Path.Combine(ModPath, "psconfigs/");
             OptionsPath = Path.Combine(ModPath, "config.json");
-            Logger.LogInformation("Detected game entry.");
-            PrestigeSaveData.Instance.Read();
 
-            if (helper.ModRegistry.IsLoaded("community.AllProfessions"))
+            // disable mod if All Professions is installed
+            if (this.Helper.ModRegistry.IsLoaded("community.AllProfessions"))
             {
                 Logger.LogCriticalWarning("Conflict Detected. This mod cannot work with AllProfessions. Skill Prestige disabled.");
                 Logger.LogDisplay("Skill Prestige Mod: If you wish to use this mod in place of AllProfessions, remove the AllProfessions mod and run the player_resetallprofessions command.");
                 return;
             }
-            LoadSprites();
 
+            // hook events
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
             helper.Events.Input.CursorMoved += this.OnCursorMoved;
             helper.Events.Display.RenderedActiveMenu += this.OnRenderedActiveMenu;
@@ -70,6 +76,10 @@ namespace SkillPrestige
             helper.Events.GameLoop.ReturnedToTitle += this.OnReturnedToTitle;
         }
 
+
+        /**********
+        ** Private methods
+        *********/
         /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event data.</param>
@@ -155,6 +165,11 @@ namespace SkillPrestige
         /// <param name="e">The event data.</param>
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
+            // init mod
+            LoadSprites();
+            PrestigeSaveData.Instance.Read();
+            ModHandler.Initialise();
+
             // register commands
             if (Options.Instance.TestingMode)
                 RegisterTestingCommands();

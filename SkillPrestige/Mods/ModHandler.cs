@@ -5,20 +5,58 @@ using SkillPrestige.Logging;
 
 namespace SkillPrestige.Mods
 {
-    /// <summary>
-    /// Register your skill mod with this class to add it to the prestige system.
-    /// </summary>
+    /// <summary>Handles registering skill mods for the prestige system.</summary>
     public static class ModHandler
     {
+        /**********
+        ** Fields
+        *********/
+        /// <summary>Whether the mod is initialised and ready to register skill mods.</summary>
+        private static bool IsInitialised;
+
+        /// <summary>The mods to add once the handler is initialised.</summary>
+        private static readonly List<ISkillMod> PendingMods = new List<ISkillMod>();
+
+        /// <summary>The registered mods.</summary>
         private static readonly List<ISkillMod> Mods = new List<ISkillMod>();
 
-        /// <summary>
-        /// Registers another skill mod to work with the skill prestige system.
-        /// </summary>
+
+        /**********
+        ** Public methods
+        *********/
+        /// <summary>Register a skill mod for the prestige system.</summary>
         /// <param name="mod">The mod you wish to register. the mod and its profession Ids cannot already exist in the system, 
         /// and the mod must implement ISkillMod. It is recommended to inherit from SkillPrestige's SkillMod class.</param>
         public static void RegisterMod(ISkillMod mod)
         {
+            if (ModHandler.IsInitialised)
+                ModHandler.RegisterModImpl(mod);
+            else
+                ModHandler.PendingMods.Add(mod);
+        }
+
+        /// <summary>Initialise the mod handler and add any pending mods.</summary>
+        internal static void Initialise()
+        {
+            ModHandler.IsInitialised = true;
+
+            foreach (ISkillMod mod in ModHandler.PendingMods)
+                ModHandler.RegisterModImpl(mod);
+            ModHandler.PendingMods.Clear();
+        }
+
+
+        /**********
+        ** Private methods
+        *********/
+        /// <summary>Register a skill mod for the prestige system.</summary>
+        /// <param name="mod">The mod you wish to register. the mod and its profession Ids cannot already exist in the system, 
+        /// and the mod must implement ISkillMod. It is recommended to inherit from SkillPrestige's SkillMod class.</param>
+        public static void RegisterModImpl(ISkillMod mod)
+        {
+            if (!ModHandler.IsInitialised)
+                throw new InvalidOperationException($"The mod handler is not ready to register skill mods yet.");
+
             if (!mod.IsFound)
             {
                 Logger.LogInformation($"{mod.DisplayName} Mod not found. Mod not registered.");
@@ -51,12 +89,8 @@ namespace SkillPrestige.Mods
             }
         }
 
-
-        /// <summary>
-        /// Returns the set of mods with profession Ids that collide with already loaded professions Ids.
-        /// </summary>
-        /// <param name="mod"></param>
-        /// <returns></returns>
+        /// <summary>Get the mods and profession IDs which collide with an already-registered professions ID.</summary>
+        /// <param name="mod">The mod to check.</param>
         private static IDictionary<ISkillMod, IEnumerable<int>> GetIntersectingModProfessions(ISkillMod mod)
         {
             var intersectingMods = new Dictionary<ISkillMod, IEnumerable<int>>();
@@ -76,23 +110,16 @@ namespace SkillPrestige.Mods
             return intersectingMods;
         }
 
-        /// <summary>
-        /// returns the sets of empty prestiges from mods for saving.
-        /// </summary>
-        /// <returns></returns>
+        /// <summary>Get the empty prestiges from mods for saving.</summary>
         public static IEnumerable<Prestige> GetAddedEmptyPrestiges()
         {
             return Mods.Where(x => x.AdditonalPrestiges != null).SelectMany(x => x.AdditonalPrestiges);
         }
 
-        /// <summary>
-        /// returns the sets of skills added by other mods.
-        /// </summary>
-        /// <returns></returns>
+        /// <summary>Get the skills added by other mods.</summary>
         public static IEnumerable<Skill> GetAddedSkills()
         {
             return Mods.Where(x => x.AdditionalSkills != null).SelectMany(x => x.AdditionalSkills);
         }
-
     }
 }
