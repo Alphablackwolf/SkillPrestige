@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Logging;
 using StardewValley;
@@ -33,7 +34,7 @@ namespace SkillPrestige
                 if (ShouldAnimalProductQuanityIncrease())
                 {
                     Logger.LogInformation($"Adding 1 to stack of object id: {produce.ParentSheetIndex}: {produce.Type}");
-                    produce.addToStack(1);
+                    produce.Stack = Math.Min(produce.Stack + 1, produce.maximumStackSize());
                 }
                 //TODO: apply effect after each new day
                 //TODO: handle doubling of milk or other farmer interaction doubling
