@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Logging;
@@ -7,14 +7,12 @@ using StardewValley;
 
 namespace SkillPrestige.Commands
 {
-    /// <summary>
-    /// A command that resets the player's professions after all professions has been removed.
-    /// </summary>
+    /// <summary>A command that resets the player's professions after all professions has been removed.</summary>
     /// // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class ResetAllProfessionsCommand : SkillPrestigeCommand
     {
-
-        public ResetAllProfessionsCommand() : base("player_resetallprofessions", "Resets professions from all profession mods to only be a single profession tree for each skill.\n\nUsage: player_resetallprofessions") { }
+        public ResetAllProfessionsCommand()
+            : base("player_resetallprofessions", "Resets professions from all profession mods to only be a single profession tree for each skill.\n\nUsage: player_resetallprofessions") { }
 
         protected override bool TestingCommand => false;
 
@@ -33,10 +31,8 @@ namespace SkillPrestige.Commands
                        "For example, if your farming skill is level 10, you will only have the Rancher and Coopmaster skills after this command has been run. " + Environment.NewLine +
                        "If you would prefer to choose your professions, use the player_clearallprofessions command, followed by the player_addprofession command for each profession you wish to add." + Environment.NewLine +
                        "If you have read this and wish to continue confirm with 'y' or 'yes'");
-            var response = Console.ReadLine();
-            if (response == null ||
-                (!response.Equals("y", StringComparison.InvariantCultureIgnoreCase) &&
-                 !response.Equals("yes", StringComparison.InvariantCultureIgnoreCase)))
+            string response = Console.ReadLine();
+            if (response == null || (!response.Equals("y", StringComparison.InvariantCultureIgnoreCase) && !response.Equals("yes", StringComparison.InvariantCultureIgnoreCase)))
             {
                 Logger.LogVerbose("Cancelled all profession reset.");
                 return;
@@ -46,12 +42,14 @@ namespace SkillPrestige.Commands
             var professionsToKeep = new List<Profession>();
             foreach (var skill in Skill.AllSkills)
             {
-                var skillLevel = skill.GetSkillLevel();
+                int skillLevel = skill.GetSkillLevel();
                 Logger.LogVerbose($"Checking for professions to keep for skill {skill.Type.Name} at level {skillLevel}");
                 var levelFiveProfession = skill.Professions.FirstOrDefault(x => skillLevel >= 5 && x is TierOneProfession);
                 var levelTenProfession = skill.Professions.FirstOrDefault(x => skillLevel >= 10 && x is TierTwoProfession);
-                if (levelFiveProfession != null) professionsToKeep.Add(levelFiveProfession);
-                if (levelTenProfession != null) professionsToKeep.Add(levelTenProfession);
+                if (levelFiveProfession != null)
+                    professionsToKeep.Add(levelFiveProfession);
+                if (levelTenProfession != null)
+                    professionsToKeep.Add(levelTenProfession);
             }
 
             var specialHandlingsForSkillsRemoved =

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using SkillPrestige.Logging;
 
 namespace SkillPrestige.Professions.Registration

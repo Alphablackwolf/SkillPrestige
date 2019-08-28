@@ -1,4 +1,4 @@
-﻿using StardewModdingAPI.Events;
+using StardewModdingAPI.Events;
 
 namespace SkillPrestige.InputHandling
 {

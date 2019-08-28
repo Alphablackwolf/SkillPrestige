@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -6,9 +6,7 @@ using StardewValley.Menus;
 
 namespace SkillPrestige.Menus.Elements.Buttons
 {
-    /// <summary>
-    /// Represents a button that has nothing drawn on top of it's background texture.
-    /// </summary>
+    /// <summary>Represents a button that has nothing drawn on top of it's background texture.</summary>
     public sealed class TextureButton : Button
     {
         public TextureButton(Rectangle bounds, Texture2D buttonTexture, Rectangle sourceRectangle, ClickCallback onClickCallback, string hoverText = "")
@@ -17,8 +15,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
             ButtonTexture = buttonTexture;
             HoverText = hoverText;
             SourceRectangle = sourceRectangle;
-            ClickableTextureComponent = new ClickableTextureComponent(string.Empty, Bounds, string.Empty, HoverText,
-                            ButtonTexture, sourceRectangle, 1f);
+            ClickableTextureComponent = new ClickableTextureComponent(string.Empty, Bounds, string.Empty, HoverText, ButtonTexture, sourceRectangle, 1f);
             _onClick = onClickCallback;
         }
 
@@ -61,7 +58,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
 
         public void Draw(SpriteBatch spriteBatch, Color color)
         {
-            var location = new Vector2(ClickableTextureComponent.bounds.X, ClickableTextureComponent.bounds.Y);
+            Vector2 location = new Vector2(ClickableTextureComponent.bounds.X, ClickableTextureComponent.bounds.Y);
             spriteBatch.Draw(ClickableTextureComponent.texture, location, ClickableTextureComponent.sourceRect, color, 0.0f, Vector2.Zero, Game1.pixelZoom, SpriteEffects.None, 0.4f);
         }
     }

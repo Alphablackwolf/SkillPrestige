@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using SkillPrestige.Logging;
 
 namespace SkillPrestige.Professions.Registration
@@ -12,12 +12,10 @@ namespace SkillPrestige.Professions.Registration
             Miner = new TierOneProfession
             {
                 Id = 18
-
             };
             Geologist = new TierOneProfession
             {
                 Id = 19
-
             };
             Blacksmith = new TierTwoProfession
             {

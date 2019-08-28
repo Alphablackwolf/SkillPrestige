@@ -1,19 +1,21 @@
-﻿using System;
+using System;
 using System.Linq;
 using SkillPrestige.Logging;
 
 namespace SkillPrestige.SkillTypes
 {
-    /// <summary>
-    /// Represents a skill type in Stardew Valley. (e.g. Farming, Fishing, Foraging)
-    /// </summary>
+    /// <summary>Represents a skill type in Stardew Valley (e.g. Farming, Fishing, Foraging).</summary>
     [Serializable]
     public partial class SkillType
     {
         static SkillType()
         {
             Logger.LogInformation("Registering skill types...");
-            var concreteSkillTypeRegistrations = AppDomain.CurrentDomain.GetNonSystemAssemblies().SelectMany(x => x.GetTypesSafely()).Where(x => typeof(ISkillTypeRegistration).IsAssignableFrom(x) && x.IsClass && !x.IsAbstract).ToList();
+            var concreteSkillTypeRegistrations = AppDomain.CurrentDomain
+                .GetNonSystemAssemblies()
+                .SelectMany(x => x.GetTypesSafely())
+                .Where(x => typeof(ISkillTypeRegistration).IsAssignableFrom(x) && x.IsClass && !x.IsAbstract)
+                .ToList();
             Logger.LogVerbose($"concerete skill type registration count: {concreteSkillTypeRegistrations.Count}");
             foreach (var registration in concreteSkillTypeRegistrations)
             {
@@ -35,16 +37,16 @@ namespace SkillPrestige.SkillTypes
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local - setter used by deserializer.
         public string Name { get; private set; }
 
+        /// <summary>The ordinal and lookup used to get the skill type from Stardew Valley.</summary>
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local - setter used by deserializer.
-        /// <summary>
-        /// The ordinal and lookup used to get the skill type from Stardew Valley.
-        /// </summary>
         public int Ordinal { get; private set; }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
             return obj.GetType() == GetType() && Equals((SkillType)obj);
         }
 
@@ -64,8 +66,10 @@ namespace SkillPrestige.SkillTypes
 
         public static bool operator ==(SkillType left, SkillType right)
         {
-            if (ReferenceEquals(left, right)) return true;
-            if (((object)left == null) || ((object)right == null)) return false;
+            if (ReferenceEquals(left, right))
+                return true;
+            if ((object)left == null || (object)right == null)
+                return false;
             return left.Equals(right);
         }
         public static bool operator !=(SkillType left, SkillType right)

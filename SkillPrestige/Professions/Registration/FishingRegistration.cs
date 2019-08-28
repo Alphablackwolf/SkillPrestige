@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using SkillPrestige.Logging;
 
 namespace SkillPrestige.Professions.Registration
@@ -12,12 +12,10 @@ namespace SkillPrestige.Professions.Registration
             Fisher = new TierOneProfession
             {
                 Id = 6
-
             };
             Trapper = new TierOneProfession
             {
                 Id = 7
-
             };
             Angler = new TierTwoProfession
             {

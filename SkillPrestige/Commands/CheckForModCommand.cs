@@ -1,13 +1,11 @@
-﻿namespace SkillPrestige.Commands
+namespace SkillPrestige.Commands
 {
-    /// <summary>
-    /// A command that checks wehther a mod is installed
-    /// </summary>
+    /// <summary>A command that checks whether a mod is installed.</summary>
     /// // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class CheckForModCommand : SkillPrestigeCommand
     {
-
-        public CheckForModCommand() : base("checkformod", "Checks for the existence of a mod.\n\nUsage: checkformod <uniqueId>\n- uniqueId: the mod's uniqueId as found in the manifest.") { }
+        public CheckForModCommand()
+            : base("checkformod", "Checks for the existence of a mod.\n\nUsage: checkformod <uniqueId>\n- uniqueId: the mod's uniqueId as found in the manifest.") { }
 
         protected override bool TestingCommand => true;
 
@@ -18,7 +16,7 @@
                 ModEntry.LogMonitor.Log("<uniqueid> must be specified");
                 return;
             }
-            var uniqueIdArgument = args[0];
+            string uniqueIdArgument = args[0];
             ModEntry.LogMonitor.Log($"mod {uniqueIdArgument} {(ModEntry.ModRegistry.IsLoaded(uniqueIdArgument) ? string.Empty : "not ")}found.");
         }
     }

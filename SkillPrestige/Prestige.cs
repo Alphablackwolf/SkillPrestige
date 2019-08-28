@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Bonuses;
@@ -9,9 +9,7 @@ using StardewValley;
 
 namespace SkillPrestige
 {
-    /// <summary>
-    /// Represents a prestige for a skill.
-    /// </summary>
+    /// <summary>Represents a prestige for a skill.</summary>
     [Serializable]
     public class Prestige
     {
@@ -20,35 +18,24 @@ namespace SkillPrestige
             PrestigeProfessionsSelected = new List<int>();
         }
 
-        /// <summary>
-        /// The skill the prestige is for.
-        /// </summary>
+        /// <summary>The skill the prestige is for.</summary>
         public SkillType SkillType { get; set; }
 
-        /// <summary>
-        /// The total available prestige points, one is gained per skill reset.
-        /// </summary>
+        /// <summary>The total available prestige points, one is gained per skill reset.</summary>
         public int PrestigePoints { get; set; }
 
-        /// <summary>
-        /// Professions that have been chosen to be permanent using skill points.
-        /// </summary>
+        /// <summary>Professions that have been chosen to be permanent using skill points.</summary>
         public IList<int> PrestigeProfessionsSelected { get; set; }
 
-        /// <summary>
-        /// Bonuses that have been purchased for this prestige.
-        /// </summary>
+        /// <summary>Bonuses that have been purchased for this prestige.</summary>
         public IList<Bonus> Bonuses { get; set; }
 
-        /// <summary>
-        /// Purchases a profession to be part of the prestige set.
-        /// </summary>
-        /// <param name="professionId"></param>
+        /// <summary>Purchases a profession to be part of the prestige set.</summary>
         public static void AddPrestigeProfession(int professionId)
         {
-            var skill = Skill.AllSkills.Single(x => x.Professions.Select(y => y.Id).Contains(professionId));
-            var prestige = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == skill.Type);
-            var originalPrestigePointsForSkill = prestige.PrestigePoints;
+            Skill skill = Skill.AllSkills.Single(x => x.Professions.Select(y => y.Id).Contains(professionId));
+            Prestige prestige = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == skill.Type);
+            int originalPrestigePointsForSkill = prestige.PrestigePoints;
             if (skill.Professions.Where(x => x.LevelAvailableAt == 5).Select(x => x.Id).Contains(professionId))
             {
                 prestige.PrestigePoints -= PerSaveOptions.Instance.CostOfTierOnePrestige;
@@ -75,10 +62,7 @@ namespace SkillPrestige
             }
         }
 
-        /// <summary>
-        /// Prestiges a skill, resetting it to level 0, removing all recipes and effects of the skill at higher levels
-        /// and grants one prestige point in that skill to the player.
-        /// </summary>
+        /// <summary>Prestiges a skill, resetting it to level 0, removing all recipes and effects of the skill at higher levels and grants one prestige point in that skill to the player.</summary>
         /// <param name="skill">the skill you wish to prestige.</param>
         public static void PrestigeSkill(Skill skill)
         {
@@ -116,9 +100,7 @@ namespace SkillPrestige
             }
         }
 
-        /// <summary>
-        /// Removes all crafting recipes granted by levelling  a skill.
-        /// </summary>
+        /// <summary>Removes all crafting recipes granted by levelling a skill.</summary>
         /// <param name="skillType">the skill type to remove all crafting recipes from.</param>
         private static void RemovePlayerCraftingRecipesForSkill(SkillType skillType)
         {
@@ -137,9 +119,7 @@ namespace SkillPrestige
 
         }
 
-        /// <summary>
-        /// Removes all cooking recipes granted by levelling  a skill.
-        /// </summary>
+        /// <summary>Removes all cooking recipes granted by levelling a skill.</summary>
         /// <param name="skillType">the skill type to remove all cooking recipes from.</param>
         private static void RemovePlayerCookingRecipesForSkill(SkillType skillType)
         {

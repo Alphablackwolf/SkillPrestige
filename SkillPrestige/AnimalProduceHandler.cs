@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Logging;
@@ -6,16 +6,14 @@ using StardewValley;
 
 namespace SkillPrestige
 {
-    /// <summary>
-    /// Makes any necessary adjustments to the game's strategy for determinations about animal produce.
-    /// </summary>
+    /// <summary>Makes any necessary adjustments to the game's strategy for determinations about animal produce.</summary>
     public static class AnimalProduceHandler
     {
         public static decimal QuantityIncreaseChance { get; set; }
 
         public static bool ShouldAnimalProductQuanityIncrease()
         {
-            var randomizedValue = Game1.random.Next(1, 10);
+            int randomizedValue = Game1.random.Next(1, 10);
             return QuantityIncreaseChance * 10 >= randomizedValue;
         }
 
@@ -40,6 +38,5 @@ namespace SkillPrestige
                 //TODO: handle doubling of milk or other farmer interaction doubling
             }
         }
-
     }
 }

@@ -1,10 +1,8 @@
-﻿using System;
+using System;
 
 namespace SkillPrestige.Logging
 {
-    /// <summary>
-    /// A wrapper for the Stardew Valley logger to simplify the interface and restrict what is logged.
-    /// </summary>
+    /// <summary>A wrapper for the Stardew Valley logger to simplify the interface and restrict what is logged.</summary>
     public static class Logger
     {
         public static void LogVerbose(string message)

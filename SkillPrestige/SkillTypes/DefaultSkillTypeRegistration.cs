@@ -1,10 +1,8 @@
-﻿using SkillPrestige.Logging;
+using SkillPrestige.Logging;
 
 namespace SkillPrestige.SkillTypes
 {
-    /// <summary>
-    /// Class registers all of the skill types that are available in Stardew Valley by default.
-    /// </summary>
+    /// <summary>Class registers all of the skill types that are available in Stardew Valley by default.</summary>
     // ReSharper disable once UnusedMember.Global - created through reflection.
     public sealed class DefaultSkillTypeRegistration : SkillType, ISkillTypeRegistration
     {
@@ -18,7 +16,6 @@ namespace SkillPrestige.SkillTypes
             Combat = new SkillType("Combat", 4);
             Logger.LogInformation("Default skill types registered.");
         }
-
     }
 }
 

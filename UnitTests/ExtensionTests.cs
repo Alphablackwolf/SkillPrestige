@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-using SkillPrestige;
-
+using NUnit.Framework;
 
 namespace SkillPrestige.UnitTests
 {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Logging;
@@ -75,9 +75,7 @@ namespace SkillPrestige.Mods
                 {
                     Logger.LogWarning($"Cannot load skill mod: {mod.DisplayName}, as it collides with another mod's skills. Details:");
                     foreach (var intersectingMod in intersectingMods)
-                    {
                         Logger.LogWarning($"Skill mod {mod.DisplayName} registration failed due to {intersectingMod.Key.DisplayName}, for profession ids: {string.Join(",", intersectingMod.Value)}");
-                    }
                     return;
                 }
                 Mods.Add(mod);
@@ -98,14 +96,13 @@ namespace SkillPrestige.Mods
             foreach (var loadedMod in Mods)
             {
                 var loadedModProfessions = loadedMod.AdditionalSkills?.SelectMany(x => x.GetAllProfessionIds());
-                if (loadedModProfessions == null) continue;
+                if (loadedModProfessions == null)
+                    continue;
                 var modProfessions = mod.AdditionalSkills.SelectMany(x => x.GetAllProfessionIds());
                 var intersectingProfessions = loadedModProfessions.Intersect(modProfessions).ToList();
                 Logger.LogInformation($"intersecting profession for {loadedMod.DisplayName} and {mod.DisplayName}: {intersectingProfessions.Count}");
                 if (intersectingProfessions.Any())
-                {
                     intersectingMods.Add(loadedMod, intersectingProfessions);
-                }
             }
             return intersectingMods;
         }

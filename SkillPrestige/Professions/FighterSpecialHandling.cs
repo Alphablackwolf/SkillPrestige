@@ -1,11 +1,9 @@
-﻿using SkillPrestige.Logging;
+using SkillPrestige.Logging;
 using StardewValley;
 
 namespace SkillPrestige.Professions
 {
-    /// <summary>
-    /// Special handling for the fighter profession, which adds 15 to the player's maximum health.
-    /// </summary>
+    /// <summary>Special handling for the fighter profession, which adds 15 to the player's maximum health.</summary>
     public class FighterSpecialHandling : IProfessionSpecialHandling
     {
         public void ApplyEffect()

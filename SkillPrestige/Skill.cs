@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -115,7 +115,8 @@ namespace SkillPrestige
             {
                 var skills = new List<Skill>(DefaultSkills);
                 var addedSkills = ModHandler.GetAddedSkills().ToList();
-                if (addedSkills.Any()) skills.AddRange(addedSkills);
+                if (addedSkills.Any())
+                    skills.AddRange(addedSkills);
                 return skills;
             }
         }

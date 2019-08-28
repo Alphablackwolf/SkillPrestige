@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using SkillPrestige.Logging;
 
 namespace SkillPrestige.Bonuses.TypeRegistration
@@ -23,21 +23,14 @@ namespace SkillPrestige.Bonuses.TypeRegistration
                 ApplyEffect = x =>
                 {
                     if (ToolProficiencyHandler.AddedToolProficencies.ContainsKey(ToolType.Hoe))
-                    {
-                        ToolProficiencyHandler.AddedToolProficencies[ToolType.Hoe] = x*4;
-                    }
+                        ToolProficiencyHandler.AddedToolProficencies[ToolType.Hoe] = x * 4;
                     else
-                    {
-                        ToolProficiencyHandler.AddedToolProficencies.Add(ToolType.Hoe, x*4);
-                    }
+                        ToolProficiencyHandler.AddedToolProficencies.Add(ToolType.Hoe, x * 4);
+
                     if (ToolProficiencyHandler.AddedToolProficencies.ContainsKey(ToolType.WateringCan))
-                    {
                         ToolProficiencyHandler.AddedToolProficencies[ToolType.WateringCan] = x * 4;
-                    }
                     else
-                    {
                         ToolProficiencyHandler.AddedToolProficencies.Add(ToolType.WateringCan, x * 4);
-                    }
                 }
             };
             BetterCrops = new BonusType
@@ -50,7 +43,7 @@ namespace SkillPrestige.Bonuses.TypeRegistration
                     "+10% chance of better quality crop."
                 },
                 SkillType = SkillTypes.SkillType.Farming,
-                ApplyEffect = x => CropQualityFactor.QualityImprovementChance = x/10m
+                ApplyEffect = x => CropQualityFactor.QualityImprovementChance = x / 10m
             };
             EfficientAnimals = new BonusType
             {
@@ -62,7 +55,7 @@ namespace SkillPrestige.Bonuses.TypeRegistration
                     "+20% chance of receiving double animal products."
                 },
                 SkillType = SkillTypes.SkillType.Farming,
-                ApplyEffect = x =>AnimalProduceHandler.QuantityIncreaseChance = x/5m
+                ApplyEffect = x => AnimalProduceHandler.QuantityIncreaseChance = x / 5m
             };
             RegrowthOpportunity = new BonusType
             {

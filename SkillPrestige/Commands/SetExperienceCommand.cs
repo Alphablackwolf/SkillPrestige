@@ -1,22 +1,20 @@
-﻿using System;
+using System;
 using System.Linq;
 using SkillPrestige.Logging;
 using StardewValley;
 
 namespace SkillPrestige.Commands
 {
-    /// <summary>
-    /// A command that sets experience levels for a player.
-    /// </summary>
+    /// <summary>A command that sets experience levels for a player.</summary>
     /// // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class SetExperienceCommand : SkillPrestigeCommand
     {
-
-        public SetExperienceCommand() : base("player_setexperience", GetDescription()) { }
+        public SetExperienceCommand()
+            : base("player_setexperience", GetDescription()) { }
 
         private static string GetDescription()
         {
-            var skillNames = string.Join(", ", Skill.AllSkills.Select(x => x.Type.Name));
+            string skillNames = string.Join(", ", Skill.AllSkills.Select(x => x.Type.Name));
             return "Sets the player's specified skill to the specified level of experience.\n\n"
                         + "Usage: player_setexperience <skill> <level>\n"
                         + $"- skill: the name of the skill (one of {skillNames}).\n"
@@ -32,7 +30,7 @@ namespace SkillPrestige.Commands
                 ModEntry.LogMonitor.Log("<skill> and <value> must be specified");
                 return;
             }
-            var skillArgument = args[0];
+            string skillArgument = args[0];
             if (!Skill.AllSkills.Select(x => x.Type.Name).Contains(skillArgument, StringComparer.InvariantCultureIgnoreCase))
             {
                 ModEntry.LogMonitor.Log("<skill> is invalid");
@@ -52,15 +50,15 @@ namespace SkillPrestige.Commands
             Logger.LogVerbose($"experience argument: {experienceArgument}");
             experienceArgument = experienceArgument.Clamp(0, 100000);
             Logger.LogVerbose($"experience used: {experienceArgument}");
-            var skill = Skill.AllSkills.Single(x => x.Type.Name.Equals(skillArgument, StringComparison.InvariantCultureIgnoreCase));
+            Skill skill = Skill.AllSkills.Single(x => x.Type.Name.Equals(skillArgument, StringComparison.InvariantCultureIgnoreCase));
 
-            var playerSkillExperience = skill.GetSkillExperience();
+            int playerSkillExperience = skill.GetSkillExperience();
             Logger.LogVerbose($"Current experience level for {skill.Type.Name} skill: {playerSkillExperience}");
             Logger.LogVerbose($"Setting {skill.Type.Name} skill to {experienceArgument} experience.");
             ExperienceHandler.DisableExperienceGains = true;
             skill.SetSkillExperience(experienceArgument);
             ExperienceHandler.DisableExperienceGains = false;
-            var skillLevel = GetLevel(experienceArgument);
+            int skillLevel = GetLevel(experienceArgument);
             Logger.LogVerbose($"Setting skill level for {experienceArgument} experience: {skillLevel}");
             skill.SetSkillLevel(skillLevel);
 

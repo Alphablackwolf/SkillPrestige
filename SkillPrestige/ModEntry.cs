@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Commands;
@@ -148,14 +148,14 @@ namespace SkillPrestige
             Button.DefaultButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\DialogBoxGreen");
             MinimalistProfessionButton.ProfessionButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\boardGameBorder");
 
-            var prestigeIconFilePath = Path.Combine(ModPath, "assets", "prestige-icon.png");
+            string prestigeIconFilePath = Path.Combine(ModPath, "assets", "prestige-icon.png");
             Logger.LogInformation($"Prestige Icon Path: {prestigeIconFilePath}");
-            var prestigeIconFileStream = new FileStream(prestigeIconFilePath, FileMode.Open);
+            FileStream prestigeIconFileStream = new FileStream(prestigeIconFilePath, FileMode.Open);
             PrestigeIconTexture = Texture2D.FromStream(Game1.graphics.GraphicsDevice, prestigeIconFileStream);
 
-            var checkmarkFilePath = Path.Combine(ModPath, "assets", "checkmark.png");
+            string checkmarkFilePath = Path.Combine(ModPath, "assets", "checkmark.png");
             Logger.LogInformation($"Checkmark Path: {checkmarkFilePath}");
-            var checkmarkFileStream = new FileStream(checkmarkFilePath, FileMode.Open);
+            FileStream checkmarkFileStream = new FileStream(checkmarkFilePath, FileMode.Open);
             CheckmarkTexture = Texture2D.FromStream(Game1.graphics.GraphicsDevice, checkmarkFileStream);
             Logger.LogInformation("Sprites loaded.");
         }
@@ -192,25 +192,29 @@ namespace SkillPrestige
 
         private void UpdateExperience()
         {
-            if (SaveIsLoaded) ExperienceHandler.UpdateExperience();
+            if (SaveIsLoaded)
+                ExperienceHandler.UpdateExperience();
         }
 
         private void CheckForGameSave()
         {
-            if (!Game1.newDay || Game1.fadeToBlackAlpha <= 0.95f) return;
+            if (!Game1.newDay || Game1.fadeToBlackAlpha <= 0.95f)
+                return;
             Logger.LogInformation("New game day detected.");
             PrestigeSaveData.Instance.Save();
         }
 
         private void CheckForLevelUpMenu()
         {
-            foreach (var levelUpManager in Skill.AllSkills.Select(x => x.LevelUpManager))
+            foreach (LevelUpManager levelUpManager in Skill.AllSkills.Select(x => x.LevelUpManager))
             {
-                if (Game1.activeClickableMenu == null || !levelUpManager.IsMenu(Game1.activeClickableMenu)) continue;
-                var currentLevel = levelUpManager.GetLevel.Invoke();
-                if (currentLevel % 5 != 0) return;
+                if (Game1.activeClickableMenu == null || !levelUpManager.IsMenu(Game1.activeClickableMenu))
+                    continue;
+                int currentLevel = levelUpManager.GetLevel.Invoke();
+                if (currentLevel % 5 != 0)
+                    return;
                 Logger.LogInformation("Level up menu as profession chooser detected.");
-                var currentSkill = levelUpManager.GetSkill.Invoke();
+                Skill currentSkill = levelUpManager.GetSkill.Invoke();
                 Game1.activeClickableMenu = levelUpManager.CreateNewLevelUpMenu.Invoke(currentSkill, currentLevel);
                 Logger.LogInformation("Replaced level up menu with custom menu.");
             }

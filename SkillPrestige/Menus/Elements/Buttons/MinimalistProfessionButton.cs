@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Logging;
@@ -8,10 +8,7 @@ using StardewValley;
 
 namespace SkillPrestige.Menus.Elements.Buttons
 {
-    /// <summary>
-    /// Represents a profession button on the prestige menu. 
-    /// Used to allow the user to choose to permanently obtain a profession.
-    /// </summary>
+    /// <summary>Represents a profession button on the prestige menu. Used to allow the user to choose to permanently obtain a profession.</summary>
     public class MinimalistProfessionButton : Button
     {
         public MinimalistProfessionButton()
@@ -21,8 +18,8 @@ namespace SkillPrestige.Menus.Elements.Buttons
 
         protected override Texture2D ButtonTexture
         {
-            get { return ProfessionButtonTexture; }
-            set { ProfessionButtonTexture = value; }
+            get => ProfessionButtonTexture;
+            set => ProfessionButtonTexture = value;
         }
 
         public static Texture2D ProfessionButtonTexture { get; set; }
@@ -33,7 +30,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
         public bool CanBeAfforded { private get; set; }
         private bool IsDisabled => Selected || !IsObtainable || !CanBeAfforded;
         private Color DrawColor => IsDisabled ? Color.Gray : Color.White;
-        private Rectangle _checkmarkSourceRectangle = new Rectangle(0, 0, 64, 64);
+        private readonly Rectangle _checkmarkSourceRectangle = new Rectangle(0, 0, 64, 64);
 
         private static int TextYOffset => 4 * Game1.pixelZoom;
         private Vector2 _iconLocation;
@@ -60,28 +57,29 @@ namespace SkillPrestige.Menus.Elements.Buttons
 
         private void DrawIcon(SpriteBatch spriteBatch)
         {
-            var locationOfIconRelativeToButton = new Vector2(Bounds.Width / 2 - Profession.IconSourceRectangle.Width * Game1.pixelZoom / 2, TextYOffset);
-            var buttonLocation = new Vector2(Bounds.X, Bounds.Y);
+            Vector2 locationOfIconRelativeToButton = new Vector2(Bounds.Width / 2 - Profession.IconSourceRectangle.Width * Game1.pixelZoom / 2, TextYOffset);
+            Vector2 buttonLocation = new Vector2(Bounds.X, Bounds.Y);
             _iconLocation = buttonLocation + locationOfIconRelativeToButton;
             spriteBatch.Draw(Profession.Texture, _iconLocation, Profession.IconSourceRectangle, DrawColor, 0.0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
         }
 
         private void DrawText(SpriteBatch spriteBatch)
         {
-            var buttonXCenter = Bounds.Width / 2;
-            var textCenter = TitleTextFont.MeasureString(Text).X / 2;
-            var textXLocationRelativeToButton = buttonXCenter - textCenter;
-            var textYLocationRelativeToButton = TextYOffset * 2 + Profession.IconSourceRectangle.Height * Game1.pixelZoom;
-            var locationOfTextRelativeToButton = new Vector2(textXLocationRelativeToButton, textYLocationRelativeToButton);
+            int buttonXCenter = Bounds.Width / 2;
+            float textCenter = TitleTextFont.MeasureString(Text).X / 2;
+            float textXLocationRelativeToButton = buttonXCenter - textCenter;
+            int textYLocationRelativeToButton = TextYOffset * 2 + Profession.IconSourceRectangle.Height * Game1.pixelZoom;
+            Vector2 locationOfTextRelativeToButton = new Vector2(textXLocationRelativeToButton, textYLocationRelativeToButton);
             DrawTitleText(spriteBatch, locationOfTextRelativeToButton);
         }
 
         private void DrawCheckmark(SpriteBatch spriteBatch)
         {
-            if (!Selected) return;
-            var locationOfCheckmarkRelativeToButton = new Vector2(Bounds.Width - _checkmarkSourceRectangle.Width * Game1.pixelZoom / 8, 0);
-            var buttonLocation = new Vector2(Bounds.X, Bounds.Y);
-            var checkmarkLocation = buttonLocation + locationOfCheckmarkRelativeToButton;
+            if (!Selected)
+                return;
+            Vector2 locationOfCheckmarkRelativeToButton = new Vector2(Bounds.Width - _checkmarkSourceRectangle.Width * Game1.pixelZoom / 8, 0);
+            Vector2 buttonLocation = new Vector2(Bounds.X, Bounds.Y);
+            Vector2 checkmarkLocation = buttonLocation + locationOfCheckmarkRelativeToButton;
             spriteBatch.Draw(ModEntry.CheckmarkTexture, checkmarkLocation, _checkmarkSourceRectangle, Color.White, 0f, Vector2.Zero, Game1.pixelZoom / 4f, SpriteEffects.None, 1f);
         }
 
@@ -114,7 +112,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
 
         private int GetPrestigeCost()
         {
-            var tier = Profession.LevelAvailableAt / 5;
+            int tier = Profession.LevelAvailableAt / 5;
             switch (tier)
             {
                 case 1:

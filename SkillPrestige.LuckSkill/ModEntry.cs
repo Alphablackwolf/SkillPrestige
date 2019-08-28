@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using SkillPrestige.LuckSkill.Framework;
@@ -168,7 +168,7 @@ namespace SkillPrestige.LuckSkill
                 Game1.player.experiencePoints[skillId] = amount;
             else
             {
-                var addedExperience = amount - Game1.player.experiencePoints[skillId];
+                int addedExperience = amount - Game1.player.experiencePoints[skillId];
                 OriginalMod.Mod.gainLuckExp(addedExperience);
             }
         }

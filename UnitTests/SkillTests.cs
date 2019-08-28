@@ -1,6 +1,5 @@
-﻿using System.Linq;
+using System.Linq;
 using NUnit.Framework;
-using SkillPrestige;
 using SkillPrestige.SkillTypes;
 
 

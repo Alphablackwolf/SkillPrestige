@@ -1,10 +1,8 @@
-﻿namespace SkillPrestige.Bonuses.TypeRegistration
+namespace SkillPrestige.Bonuses.TypeRegistration
 {
     public abstract class BonusTypeRegistration : BonusType, IBonusTypeRegistration
     {
-        /// <summary>
-        /// This call will 'register' available professions with the bonus type class.
-        /// </summary>
+        /// <summary>Register available professions with the bonus type class.</summary>
         public abstract void RegisterBonusTypes();
     }
 }

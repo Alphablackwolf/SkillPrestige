@@ -1,10 +1,8 @@
-﻿using System.Linq;
+using System.Linq;
 
 namespace SkillPrestige.Bonuses
 {
-    /// <summary>
-    /// Represents a bonus in this mod, which are post-all-professions-prestiged effects the player can purchase.
-    /// </summary>
+    /// <summary>Represents a bonus in this mod, which are post-all-professions-prestiged effects the player can purchase.</summary>
     public class Bonus
     {
         public string BonusTypeCode { get; set; }

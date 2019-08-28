@@ -1,18 +1,17 @@
-﻿using System;
+using System;
 using System.Linq;
 using SkillPrestige.Logging;
 using StardewValley;
 
 namespace SkillPrestige.Commands
 {
-    /// <summary>
-    /// A command that clears all professions from a player's game.
-    /// </summary>
+    /// <summary>A command that clears all professions from a player's game.</summary>
     // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class AddProfessionCommand : SkillPrestigeCommand
     {
 
-        public AddProfessionCommand() : base("player_addprofession", GetDescription()) { }
+        public AddProfessionCommand()
+            : base("player_addprofession", GetDescription()) { }
 
         protected override bool TestingCommand => false;
 
@@ -23,7 +22,7 @@ namespace SkillPrestige.Commands
                 ModEntry.LogMonitor.Log("<profession> must be specified");
                 return;
             }
-            var professionArgument = args[0];
+            string professionArgument = args[0];
             if (!Skill.AllSkills.SelectMany(x => x.Professions).Select(x => x.DisplayName).Contains(professionArgument, StringComparer.InvariantCultureIgnoreCase))
             {
                 ModEntry.LogMonitor.Log("<profession> is invalid");
@@ -47,7 +46,7 @@ namespace SkillPrestige.Commands
 
         private static string GetDescription()
         {
-            var professionNames = string.Join(", ", Skill.AllSkills.SelectMany(x => x.Professions).Select(x => x.DisplayName));
+            string professionNames = string.Join(", ", Skill.AllSkills.SelectMany(x => x.Professions).Select(x => x.DisplayName));
             return
                 "Adds the specified profession to the player.\n\n"
                 + "Usage: player_addprofession <profession>\n"

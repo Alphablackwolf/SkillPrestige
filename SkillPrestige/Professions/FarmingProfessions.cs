@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace SkillPrestige.Professions
 {
@@ -21,4 +21,3 @@ namespace SkillPrestige.Professions
         protected static TierTwoProfession Agriculturist { get; set; }
     }
 }
-    

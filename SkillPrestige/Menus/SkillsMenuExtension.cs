@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -12,9 +12,7 @@ using StardewValley.Menus;
 
 namespace SkillPrestige.Menus
 {
-    /// <summary>
-    /// Extends the skills menu in Stardew Valley to add prestige buttons next to the skills.
-    /// </summary>
+    /// <summary>Extends the skills menu in Stardew Valley to add prestige buttons next to the skills.</summary>
     internal static class SkillsMenuExtension
     {
         private static bool _skillsMenuInitialized;
@@ -35,7 +33,7 @@ namespace SkillPrestige.Menus
             Logger.LogVerbose("Initializing Skills Menu...");
             _skillsMenuInitialized = true;
             PrestigeButtons.Clear();
-            foreach (var skill in Skill.AllSkills)
+            foreach (Skill skill in Skill.AllSkills)
             {
                 const int iconSize = 32;
                 int width = 8 * Game1.pixelZoom;
@@ -43,8 +41,8 @@ namespace SkillPrestige.Menus
                 int yOffset = (Game1.tileSize / 2.5).Floor();
                 int yPadding = (Game1.tileSize * 1.05).Floor();
                 int xOffset = Math.Min(skillsPage.width + Game1.tileSize, Game1.viewport.Width - iconSize); // if icon would be off-screen (e.g. on mobile), draw it on the edge instead
-                var bounds = new Rectangle(skillsPage.xPositionOnScreen + xOffset, skillsPage.yPositionOnScreen + yPadding + yOffset * skill.SkillScreenPosition + skill.SkillScreenPosition * height, width, height);
-                var prestigeButton = new TextureButton(bounds, ModEntry.PrestigeIconTexture, new Rectangle(0, 0, iconSize, iconSize), () => OpenPrestigeMenu(skill), "Click to open the Prestige menu.");
+                Rectangle bounds = new Rectangle(skillsPage.xPositionOnScreen + xOffset, skillsPage.yPositionOnScreen + yPadding + yOffset * skill.SkillScreenPosition + skill.SkillScreenPosition * height, width, height);
+                TextureButton prestigeButton = new TextureButton(bounds, ModEntry.PrestigeIconTexture, new Rectangle(0, 0, iconSize, iconSize), () => OpenPrestigeMenu(skill), "Click to open the Prestige menu.");
                 PrestigeButtons.Add(prestigeButton);
                 Logger.LogVerbose($"{skill.Type.Name} skill prestige button initiated at {bounds.X}, {bounds.Y}. Width: {bounds.Width}, Height: {bounds.Height}");
             }
@@ -55,7 +53,7 @@ namespace SkillPrestige.Menus
         /// <param name="e">The event data.</param>
         internal static void OnCursorMoved(CursorMovedEventArgs e)
         {
-            foreach (var button in PrestigeButtons)
+            foreach (TextureButton button in PrestigeButtons)
                 button.OnCursorMoved(e);
 
         }
@@ -65,7 +63,7 @@ namespace SkillPrestige.Menus
         /// <param name="isClick">Whether the button press is a click.</param>
         internal static void OnButtonPressed(ButtonPressedEventArgs e, bool isClick)
         {
-            foreach (var button in PrestigeButtons)
+            foreach (TextureButton button in PrestigeButtons)
                 button.OnButtonPressed(e, isClick);
         }
 
@@ -79,10 +77,11 @@ namespace SkillPrestige.Menus
 
         public static void AddPrestigeButtonsToMenu()
         {
-            var activeClickableMenu = Game1.activeClickableMenu as GameMenu;
+            GameMenu activeClickableMenu = Game1.activeClickableMenu as GameMenu;
             if (activeClickableMenu == null || activeClickableMenu.currentTab != 1)
             {
-                if (_skillsMenuInitialized) UnloadSkillsPageAdditions();
+                if (_skillsMenuInitialized)
+                    UnloadSkillsPageAdditions();
             }
             else
             {
@@ -91,7 +90,7 @@ namespace SkillPrestige.Menus
                 {
                     if (!_skillsMenuInitialized)
                         IntializeSkillsMenu(skillsPage);
-                    var spriteBatch = Game1.spriteBatch;
+                    SpriteBatch spriteBatch = Game1.spriteBatch;
                     DrawPrestigeButtons(spriteBatch);
                     DrawProfessionHoverText(spriteBatch, skillsPage);
                     DrawPrestigeButtonsHoverText(spriteBatch);
@@ -102,7 +101,7 @@ namespace SkillPrestige.Menus
 
         private static void DrawPrestigeButtons(SpriteBatch spriteBatch)
         {
-            foreach (var prestigeButton in PrestigeButtons)
+            foreach (TextureButton prestigeButton in PrestigeButtons)
             {
                 prestigeButton.Draw(spriteBatch);
             }
@@ -110,7 +109,7 @@ namespace SkillPrestige.Menus
 
         private static void DrawPrestigeButtonsHoverText(SpriteBatch spriteBatch)
         {
-            foreach (var prestigeButton in PrestigeButtons)
+            foreach (TextureButton prestigeButton in PrestigeButtons)
             {
                 prestigeButton.DrawHoverText(spriteBatch);
             }
@@ -118,27 +117,28 @@ namespace SkillPrestige.Menus
 
         private static void DrawProfessionHoverText(SpriteBatch spriteBatch, IClickableMenu skillsPage)
         {
-            var hoverText = (string)skillsPage.GetInstanceField("hoverText");
-            if (hoverText.Length <= 0) return;
-            var hoverTitle = (string)skillsPage.GetInstanceField("hoverTitle");
+            string hoverText = (string)skillsPage.GetInstanceField("hoverText");
+            if (hoverText.Length <= 0)
+                return;
+            string hoverTitle = (string)skillsPage.GetInstanceField("hoverTitle");
             IClickableMenu.drawHoverText(spriteBatch, hoverText, Game1.smallFont, 0, 0, -1, hoverTitle.Length > 0 ? hoverTitle : null);
         }
 
         private static void OpenPrestigeMenu(Skill skill)
         {
             Logger.LogVerbose("Skills Menu - Setting up Prestige Menu...");
-            var menuWidth = Game1.tileSize * 18;
-            var menuHeight = Game1.tileSize * 10;
+            int menuWidth = Game1.tileSize * 18;
+            int menuHeight = Game1.tileSize * 10;
 
-            var menuXCenter = (menuWidth + IClickableMenu.borderWidth * 2) / 2;
-            var menuYCenter = (menuHeight + IClickableMenu.borderWidth * 2) / 2;
-            var viewport = Game1.graphics.GraphicsDevice.Viewport;
-            var screenXCenter = (int)(viewport.Width * (1.0 / Game1.options.zoomLevel)) / 2;
-            var screenYCenter = (int)(viewport.Height * (1.0 / Game1.options.zoomLevel)) / 2;
-            var bounds = new Rectangle(screenXCenter - menuXCenter, screenYCenter - menuYCenter, menuWidth + IClickableMenu.borderWidth * 2, menuHeight + IClickableMenu.borderWidth * 2);
+            int menuXCenter = (menuWidth + IClickableMenu.borderWidth * 2) / 2;
+            int menuYCenter = (menuHeight + IClickableMenu.borderWidth * 2) / 2;
+            Viewport viewport = Game1.graphics.GraphicsDevice.Viewport;
+            int screenXCenter = (int)(viewport.Width * (1.0 / Game1.options.zoomLevel)) / 2;
+            int screenYCenter = (int)(viewport.Height * (1.0 / Game1.options.zoomLevel)) / 2;
+            Rectangle bounds = new Rectangle(screenXCenter - menuXCenter, screenYCenter - menuYCenter, menuWidth + IClickableMenu.borderWidth * 2, menuHeight + IClickableMenu.borderWidth * 2);
             Game1.playSound("bigSelect");
             Logger.LogVerbose("Getting currently loaded prestige data...");
-            var prestige = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == skill.Type);
+            Prestige prestige = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == skill.Type);
             Game1.activeClickableMenu = new PrestigeMenu(bounds, skill, prestige);
             Logger.LogVerbose("Skills Menu - Loaded Prestige Menu.");
         }

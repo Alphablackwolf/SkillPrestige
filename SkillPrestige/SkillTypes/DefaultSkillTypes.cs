@@ -1,4 +1,4 @@
-﻿namespace SkillPrestige.SkillTypes
+namespace SkillPrestige.SkillTypes
 {
     public partial class SkillType
     {
@@ -9,4 +9,3 @@
         public static SkillType Combat { get; protected set; }
     }
 }
-

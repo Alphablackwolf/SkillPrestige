@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.InputHandling;
 using SkillPrestige.Logging;
@@ -41,15 +41,16 @@ namespace SkillPrestige.Menus.Dialogs
 
         private void InstantiateButtons()
         {
-            if (_buttonsInstantiated) return;
+            if (_buttonsInstantiated)
+                return;
             _buttonsInstantiated = true;
             Logger.LogVerbose("Warning Dialog - Instantiating Okay/Cancel buttons...");
-            var buttonSize = Game1.tileSize;
-            var buttonPadding = Game1.tileSize * 4;
-            var okayButtonBounds = new Rectangle(xPositionOnScreen + width - buttonSize - spaceToClearSideBorder * 3, yPositionOnScreen + height - (buttonSize * 1.5).Floor(), buttonSize, buttonSize);
+            int buttonSize = Game1.tileSize;
+            int buttonPadding = Game1.tileSize * 4;
+            Rectangle okayButtonBounds = new Rectangle(xPositionOnScreen + width - buttonSize - spaceToClearSideBorder * 3, yPositionOnScreen + height - (buttonSize * 1.5).Floor(), buttonSize, buttonSize);
             _okayButton = new TextureButton(okayButtonBounds, Game1.mouseCursors, new Rectangle(128, 256, 64, 64), Okay, "Prestige Skill");
             Logger.LogVerbose("Warning Dialog - Okay button instantiated.");
-            var cancelButtonBounds = okayButtonBounds;
+            Rectangle cancelButtonBounds = okayButtonBounds;
             cancelButtonBounds.X -= buttonSize + buttonPadding;
             _cancelButton = new TextureButton(cancelButtonBounds, Game1.mouseCursors, new Rectangle(192, 256, 64, 64), () => exitThisMenu(false), "Cancel");
             Logger.LogVerbose("Warning Dialog - Cancel button instantiated.");
@@ -69,13 +70,14 @@ namespace SkillPrestige.Menus.Dialogs
                 _debounceTimer--;
 
             Game1.drawDialogueBox(xPositionOnScreen, yPositionOnScreen, width, height, false, true);
-            var textPadding = 2 * Game1.pixelZoom;
+            int textPadding = 2 * Game1.pixelZoom;
             Game1.spriteBatch.DrawString(Game1.dialogueFont,
                 _message.WrapText(Game1.dialogueFont, width - spaceToClearSideBorder * 2),
                 new Vector2(xPositionOnScreen + spaceToClearSideBorder * 2 + textPadding,
                     yPositionOnScreen + spaceToClearTopBorder + textPadding), Game1.textColor);
             upperRightCloseButton?.draw(spriteBatch);
-            if (!_buttonsInstantiated) InstantiateButtons();
+            if (!_buttonsInstantiated)
+                InstantiateButtons();
             _okayButton.Draw(spriteBatch);
             _cancelButton.Draw(spriteBatch);
             _okayButton.DrawHoverText(spriteBatch);

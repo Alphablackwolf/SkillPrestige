@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,9 +9,7 @@ using StardewValley;
 
 namespace SkillPrestige
 {
-    /// <summary>
-    /// Represents the save file data for the Skill Prestige Mod.
-    /// </summary>
+    /// <summary>Represents the save file data for the Skill Prestige Mod.</summary>
     [Serializable]
     public class PrestigeSaveData
     {
@@ -22,9 +20,7 @@ namespace SkillPrestige
 
         private static PrestigeSaveData _instance;
 
-        /// <summary>
-        /// Set of prestige data saved per save file unique ID.
-        /// </summary>
+        /// <summary>Set of prestige data saved per save file unique ID.</summary>
         // ReSharper disable once MemberCanBePrivate.Global - no, it can't be made private or it won't be serialized.
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - setter used by deserializer.
         public IDictionary<ulong, PrestigeSet> PrestigeSaveFiles { get; set; }
@@ -53,7 +49,8 @@ namespace SkillPrestige
 
         public void Read()
         {
-            if (!File.Exists(DataFilePath)) SetupDataFile();
+            if (!File.Exists(DataFilePath))
+                SetupDataFile();
             Logger.LogInformation("Deserializing prestige save data...");
             var settings = new JsonSerializerSettings { ContractResolver = new PrivateSetterContractResolver() };
             _instance = JsonConvert.DeserializeObject<PrestigeSaveData>(File.ReadAllText(DataFilePath), settings);
@@ -64,7 +61,8 @@ namespace SkillPrestige
         {
             Logger.LogVerbose("Checking for missing prestige data...");
             var missingPrestiges = PrestigeSet.CompleteEmptyPrestigeSet.Prestiges.Where(x => !CurrentlyLoadedPrestigeSet.Prestiges.Select(y => y.SkillType).Contains(x.SkillType)).ToList();
-            if (!missingPrestiges.Any()) return;
+            if (!missingPrestiges.Any())
+                return;
             Logger.LogInformation("Missing Prestige data found. Loading new prestige data...");
             var prestiges = new List<Prestige>(CurrentlyLoadedPrestigeSet.Prestiges);
             prestiges.AddRange(missingPrestiges);
@@ -90,7 +88,8 @@ namespace SkillPrestige
 
         public void UpdateCurrentSaveFileInformation()
         {
-            if (CurrentlyLoadedSaveFileUniqueId == Game1.uniqueIDForThisGame) return;
+            if (CurrentlyLoadedSaveFileUniqueId == Game1.uniqueIDForThisGame)
+                return;
             Logger.LogInformation("Save file change detected.");
             if (!Instance.PrestigeSaveFiles.ContainsKey(Game1.uniqueIDForThisGame))
             {
@@ -102,6 +101,5 @@ namespace SkillPrestige
             UpdatePrestigeSkillsForCurrentFile();
             Read();
         }
-
     }
 }

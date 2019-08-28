@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -189,7 +189,7 @@ namespace SkillPrestige.CookingSkill
         /// <param name="amount">The amount to set.</param>
         private void SetExperience(int amount)
         {
-            var addedExperience = amount - Game1.player.GetCustomSkillExperience("spacechase0.Cooking");
+            int addedExperience = amount - Game1.player.GetCustomSkillExperience("spacechase0.Cooking");
             Game1.player.AddCustomSkillExperience("spacechase0.Cooking", addedExperience);
         }
     }

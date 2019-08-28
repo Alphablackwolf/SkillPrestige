@@ -1,10 +1,8 @@
-﻿using StardewValley;
+using StardewValley;
 
 namespace SkillPrestige
 {
-    /// <summary>
-    /// Provides an access point to determine crop 'regrowth' adjustments (seeds given at harvest time).
-    /// </summary>
+    /// <summary>Provides an access point to determine crop 'regrowth' adjustments (seeds given at harvest time).</summary>
     public static class CropRegrowthFactor
     {
         public static decimal RegrowthChance { get; set; }
@@ -21,6 +19,5 @@ namespace SkillPrestige
             var randomizedValue = Game1.random.Next(1, 100);
             return DeadRegrowthChance * 100 >= randomizedValue;
         }
-
     }
 }

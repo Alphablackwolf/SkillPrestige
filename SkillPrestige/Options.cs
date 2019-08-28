@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using JsonNet.PrivateSettersContractResolvers;
 using Newtonsoft.Json;
@@ -6,20 +6,14 @@ using SkillPrestige.Logging;
 
 namespace SkillPrestige
 {
-    /// <summary>
-    /// Represents options for this mod.
-    /// </summary>
+    /// <summary>Represents options for this mod.</summary>
     [Serializable]
     public class Options
     {
-        /// <summary>
-        /// The logging verbosity for the mod. A log level set to Verbose will log all entries.
-        /// </summary>
+        /// <summary>The logging verbosity for the mod. A log level set to Verbose will log all entries.</summary>
         public LogLevel LogLevel { get; private set; }
 
-        /// <summary>
-        /// Whether or not testing mode is enabled, which adds testing specific commands to the system.
-        /// </summary>
+        /// <summary>Whether testing mode is enabled, which adds testing specific commands to the system.</summary>
         public bool TestingMode { get; set; }
 
         private Options() { }
@@ -28,9 +22,11 @@ namespace SkillPrestige
         {
             get
             {
-                if (_instance != null) return _instance;
-                _instance = new Options();
-                LoadOptions();
+                if (_instance == null)
+                {
+                    _instance = new Options();
+                    LoadOptions();
+                }
                 return _instance;
             }
         }
@@ -38,7 +34,8 @@ namespace SkillPrestige
         private static void LoadOptions()
         {
             Logger.LogDisplay($"options file path: {ModEntry.OptionsPath}");
-            if (!File.Exists(ModEntry.OptionsPath)) SetupOptionsFile();
+            if (!File.Exists(ModEntry.OptionsPath))
+                SetupOptionsFile();
             var settings = new JsonSerializerSettings { ContractResolver = new PrivateSetterContractResolver() };
             Logger.LogDisplay("Deserializing options file...");
             _instance = JsonConvert.DeserializeObject<Options>(File.ReadAllText(ModEntry.OptionsPath), settings);
@@ -66,6 +63,5 @@ namespace SkillPrestige
             File.WriteAllLines(ModEntry.OptionsPath, new[] { JsonConvert.SerializeObject(_instance) });
             Logger.LogInformation("Options file saved.");
         }
-
     }
 }

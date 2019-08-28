@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.InputHandling;
 using SkillPrestige.Logging;
@@ -9,9 +9,7 @@ using StardewValley.Menus;
 
 namespace SkillPrestige.Menus.Dialogs
 {
-    /// <summary>
-    /// Represents a message dialog box to display information to the user.
-    /// </summary>
+    /// <summary>Represents a message dialog box to display information to the user.</summary>
     internal class MessageDialog : IClickableMenu, IInputHandler
     {
         private bool _buttonInstantiated;
@@ -27,11 +25,12 @@ namespace SkillPrestige.Menus.Dialogs
 
         private void InstantiateButtons()
         {
-            if (_buttonInstantiated) return;
+            if (_buttonInstantiated)
+                return;
             _buttonInstantiated = true;
             Logger.LogVerbose("Message Dialog - Instantiating Okay button...");
-            var buttonSize = Game1.tileSize;
-            var okayButtonBounds = new Rectangle(xPositionOnScreen + width + Game1.tileSize / 4, yPositionOnScreen + height - buttonSize, buttonSize, buttonSize);
+            int buttonSize = Game1.tileSize;
+            Rectangle okayButtonBounds = new Rectangle(xPositionOnScreen + width + Game1.tileSize / 4, yPositionOnScreen + height - buttonSize, buttonSize, buttonSize);
             _okayButton = new TextureButton(okayButtonBounds, Game1.mouseCursors, new Rectangle(128, 256, 64, 64), Okay);
             Logger.LogVerbose("Message Dialog - Okay button instantiated.");
 
@@ -52,7 +51,8 @@ namespace SkillPrestige.Menus.Dialogs
             upperRightCloseButton?.draw(spriteBatch);
             DrawDecorations(spriteBatch);
             DrawMessage(spriteBatch);
-            if (!_buttonInstantiated) InstantiateButtons();
+            if (!_buttonInstantiated)
+                InstantiateButtons();
             _okayButton.Draw(spriteBatch);
             _okayButton.DrawHoverText(spriteBatch);
             Mouse.DrawCursor(spriteBatch);
@@ -60,9 +60,9 @@ namespace SkillPrestige.Menus.Dialogs
 
         protected virtual void DrawMessage(SpriteBatch spriteBatch)
         {
-            var textPadding = 2 * Game1.pixelZoom;
-            var xLocationOfMessage = xPositionOnScreen + spaceToClearSideBorder*2 + textPadding;
-            var yLocationOfMessage = yPositionOnScreen + spaceToClearTopBorder + textPadding;
+            int textPadding = 2 * Game1.pixelZoom;
+            int xLocationOfMessage = xPositionOnScreen + spaceToClearSideBorder * 2 + textPadding;
+            int yLocationOfMessage = yPositionOnScreen + spaceToClearTopBorder + textPadding;
             DrawMessage(spriteBatch, Game1.dialogueFont, new Vector2(xLocationOfMessage, yLocationOfMessage), width - spaceToClearSideBorder * 2);
         }
 
