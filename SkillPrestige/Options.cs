@@ -24,7 +24,7 @@ namespace SkillPrestige
 
         private Options() { }
         private static Options _instance;
-        public static Options Instance 
+        public static Options Instance
         {
             get
             {
@@ -35,13 +35,13 @@ namespace SkillPrestige
             }
         }
 
-       private static void LoadOptions()
+        private static void LoadOptions()
         {
-            Logger.LogDisplay($"options file path: {SkillPrestigeMod.OptionsPath}");
-            if (!File.Exists(SkillPrestigeMod.OptionsPath)) SetupOptionsFile();
+            Logger.LogDisplay($"options file path: {ModEntry.OptionsPath}");
+            if (!File.Exists(ModEntry.OptionsPath)) SetupOptionsFile();
             var settings = new JsonSerializerSettings { ContractResolver = new PrivateSetterContractResolver() };
             Logger.LogDisplay("Deserializing options file...");
-            _instance = JsonConvert.DeserializeObject<Options>(File.ReadAllText(SkillPrestigeMod.OptionsPath), settings);
+            _instance = JsonConvert.DeserializeObject<Options>(File.ReadAllText(ModEntry.OptionsPath), settings);
             Logger.LogInformation("Options loaded.");
         }
 
@@ -53,7 +53,7 @@ namespace SkillPrestige
                 Instance.LogLevel = LogLevel.Warning;
                 Save();
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 Logger.LogOptionsError($"Error while attempting to create an options file. {Environment.NewLine} {exception}");
                 throw;
@@ -63,7 +63,7 @@ namespace SkillPrestige
 
         private static void Save()
         {
-            File.WriteAllLines(SkillPrestigeMod.OptionsPath, new[] { JsonConvert.SerializeObject(_instance) });
+            File.WriteAllLines(ModEntry.OptionsPath, new[] { JsonConvert.SerializeObject(_instance) });
             Logger.LogInformation("Options file saved.");
         }
 

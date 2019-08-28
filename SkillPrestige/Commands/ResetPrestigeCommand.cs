@@ -33,16 +33,16 @@ namespace SkillPrestige.Commands
         {
             if (args.Length < 1)
             {
-                SkillPrestigeMod.LogMonitor.Log("<skill> must be specified");
+                ModEntry.LogMonitor.Log("<skill> must be specified");
                 return;
             }
             if (Game1.player == null)
             {
-                SkillPrestigeMod.LogMonitor.Log("A game file must be loaded in order to run this command.");
+                ModEntry.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
             var skillArgument = args[0];
-            SkillPrestigeMod.LogMonitor.Log($"This command will reset your character's prestiged selections and prestige points for the {skillArgument} skill. " + Environment.NewLine +
+            ModEntry.LogMonitor.Log($"This command will reset your character's prestiged selections and prestige points for the {skillArgument} skill. " + Environment.NewLine +
                        "Please note that this command by itself will only clear the prestige data located in the skills prestige mod folder, " +
                        "and *not* the player's gained professions. once this is run all professions already prestiged/purchased will still belong to the player." + Environment.NewLine +
                        "If you have read this and wish to continue confirm with 'y' or 'yes'");
@@ -61,7 +61,5 @@ namespace SkillPrestige.Commands
             PrestigeSaveData.Instance.Save();
             Logger.LogInformation($"{skillArgument} skill prestige data reset.");
         }
-
-        
     }
 }

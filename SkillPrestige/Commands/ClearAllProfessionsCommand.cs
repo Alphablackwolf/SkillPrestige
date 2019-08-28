@@ -20,10 +20,10 @@ namespace SkillPrestige.Commands
         {
             if (Game1.player == null)
             {
-                SkillPrestigeMod.LogMonitor.Log("A game file must be loaded in order to run this command.");
+                ModEntry.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
-            SkillPrestigeMod.LogMonitor.Log("This command will remove all of your character's professions. " + Environment.NewLine +
+            ModEntry.LogMonitor.Log("This command will remove all of your character's professions. " + Environment.NewLine +
                        "If you have read this and wish to continue confirm with 'y' or 'yes'");
             var response = Console.ReadLine();
             if (response == null ||

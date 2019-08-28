@@ -20,24 +20,24 @@ namespace SkillPrestige.Commands
         {
             if (args.Length < 1)
             {
-                SkillPrestigeMod.LogMonitor.Log("<profession> must be specified");
+                ModEntry.LogMonitor.Log("<profession> must be specified");
                 return;
             }
             var professionArgument = args[0];
             if (!Skill.AllSkills.SelectMany(x => x.Professions).Select(x => x.DisplayName).Contains(professionArgument, StringComparer.InvariantCultureIgnoreCase))
             {
-                SkillPrestigeMod.LogMonitor.Log("<profession> is invalid");
+                ModEntry.LogMonitor.Log("<profession> is invalid");
                 return;
             }
             if (Game1.player == null)
             {
-                SkillPrestigeMod.LogMonitor.Log("A game file must be loaded in order to run this command.");
+                ModEntry.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
             var profession = Skill.AllSkills.SelectMany(x => x.Professions).Single(x => x.DisplayName.Equals(professionArgument, StringComparison.InvariantCultureIgnoreCase));
             if (Game1.player.professions.Contains(profession.Id))
             {
-                SkillPrestigeMod.LogMonitor.Log("profession already added.");
+                ModEntry.LogMonitor.Log("profession already added.");
             }
             Logger.LogInformation($"Adding profession {professionArgument}...");
             Game1.player.professions.Add(profession.Id);

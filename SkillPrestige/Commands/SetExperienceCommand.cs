@@ -29,23 +29,23 @@ namespace SkillPrestige.Commands
         {
             if (args.Length <= 1)
             {
-                SkillPrestigeMod.LogMonitor.Log("<skill> and <value> must be specified");
+                ModEntry.LogMonitor.Log("<skill> and <value> must be specified");
                 return;
             }
             var skillArgument = args[0];
             if (!Skill.AllSkills.Select(x => x.Type.Name).Contains(skillArgument, StringComparer.InvariantCultureIgnoreCase))
             {
-                SkillPrestigeMod.LogMonitor.Log("<skill> is invalid");
+                ModEntry.LogMonitor.Log("<skill> is invalid");
                 return;
             }
             if (!int.TryParse(args[1], out int experienceArgument))
             {
-                SkillPrestigeMod.LogMonitor.Log("experience must be an integer.");
+                ModEntry.LogMonitor.Log("experience must be an integer.");
                 return;
             }
             if (Game1.player == null)
             {
-                SkillPrestigeMod.LogMonitor.Log("A game file must be loaded in order to run this command.");
+                ModEntry.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
             Logger.LogInformation("Setting experience level...");
@@ -53,7 +53,7 @@ namespace SkillPrestige.Commands
             experienceArgument = experienceArgument.Clamp(0, 100000);
             Logger.LogVerbose($"experience used: {experienceArgument}");
             var skill = Skill.AllSkills.Single(x => x.Type.Name.Equals(skillArgument, StringComparison.InvariantCultureIgnoreCase));
-           
+
             var playerSkillExperience = skill.GetSkillExperience();
             Logger.LogVerbose($"Current experience level for {skill.Type.Name} skill: {playerSkillExperience}");
             Logger.LogVerbose($"Setting {skill.Type.Name} skill to {experienceArgument} experience.");
@@ -63,7 +63,7 @@ namespace SkillPrestige.Commands
             var skillLevel = GetLevel(experienceArgument);
             Logger.LogVerbose($"Setting skill level for {experienceArgument} experience: {skillLevel}");
             skill.SetSkillLevel(skillLevel);
-            
+
         }
 
         private static int GetLevel(int experience)

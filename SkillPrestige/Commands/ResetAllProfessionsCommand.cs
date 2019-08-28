@@ -20,16 +20,16 @@ namespace SkillPrestige.Commands
 
         protected override void Apply(string[] args)
         {
-            if (SkillPrestigeMod.ModRegistry.IsLoaded("community.AllProfessions"))
+            if (ModEntry.ModRegistry.IsLoaded("community.AllProfessions"))
             {
-                SkillPrestigeMod.LogMonitor.Log("Command cannot be run while AllProfessions is still installed. Please remove AllProfessions before proceeding.");
+                ModEntry.LogMonitor.Log("Command cannot be run while AllProfessions is still installed. Please remove AllProfessions before proceeding.");
             }
             if (Game1.player == null)
             {
-                SkillPrestigeMod.LogMonitor.Log("A game file must be loaded in order to run this command.");
+                ModEntry.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
-            SkillPrestigeMod.LogMonitor.Log("This command will reset your character's professions to the first profession available for each skill that your skill level warrants. " + Environment.NewLine +
+            ModEntry.LogMonitor.Log("This command will reset your character's professions to the first profession available for each skill that your skill level warrants. " + Environment.NewLine +
                        "For example, if your farming skill is level 10, you will only have the Rancher and Coopmaster skills after this command has been run. " + Environment.NewLine +
                        "If you would prefer to choose your professions, use the player_clearallprofessions command, followed by the player_addprofession command for each profession you wish to add." + Environment.NewLine +
                        "If you have read this and wish to continue confirm with 'y' or 'yes'");

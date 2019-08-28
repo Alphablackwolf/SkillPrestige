@@ -15,7 +15,7 @@ using StardewValley;
 namespace SkillPrestige
 {
     /// <summary>The mod entry class.</summary>
-    public class SkillPrestigeMod : Mod
+    public class ModEntry : Mod
     {
         /**********
         ** Fields

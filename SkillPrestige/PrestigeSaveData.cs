@@ -16,7 +16,7 @@ namespace SkillPrestige
     public class PrestigeSaveData
     {
         private const string DataFileName = @"Data.json";
-        private static readonly string DataFilePath = Path.Combine(SkillPrestigeMod.ModPath, DataFileName);
+        private static readonly string DataFilePath = Path.Combine(ModEntry.ModPath, DataFileName);
         public static PrestigeSet CurrentlyLoadedPrestigeSet => Instance.PrestigeSaveFiles[CurrentlyLoadedSaveFileUniqueId];
         private static ulong CurrentlyLoadedSaveFileUniqueId { get; set; }
 
@@ -28,7 +28,7 @@ namespace SkillPrestige
         // ReSharper disable once MemberCanBePrivate.Global - no, it can't be made private or it won't be serialized.
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - setter used by deserializer.
         public IDictionary<ulong, PrestigeSet> PrestigeSaveFiles { get; set; }
-        
+
         private PrestigeSaveData()
         {
             PrestigeSaveFiles = new Dictionary<ulong, PrestigeSet>();
@@ -55,7 +55,7 @@ namespace SkillPrestige
         {
             if (!File.Exists(DataFilePath)) SetupDataFile();
             Logger.LogInformation("Deserializing prestige save data...");
-            var settings = new JsonSerializerSettings { ContractResolver = new PrivateSetterContractResolver()};
+            var settings = new JsonSerializerSettings { ContractResolver = new PrivateSetterContractResolver() };
             _instance = JsonConvert.DeserializeObject<PrestigeSaveData>(File.ReadAllText(DataFilePath), settings);
             Logger.LogInformation("Prestige save data loaded.");
         }
@@ -95,7 +95,7 @@ namespace SkillPrestige
             if (!Instance.PrestigeSaveFiles.ContainsKey(Game1.uniqueIDForThisGame))
             {
                 Instance.PrestigeSaveFiles.Add(Game1.uniqueIDForThisGame, PrestigeSet.CompleteEmptyPrestigeSet);
-                Save();   
+                Save();
                 Logger.LogInformation($"Save file not found in list, adding save file to prestige data. Id = {Game1.uniqueIDForThisGame}");
             }
             CurrentlyLoadedSaveFileUniqueId = Game1.uniqueIDForThisGame;

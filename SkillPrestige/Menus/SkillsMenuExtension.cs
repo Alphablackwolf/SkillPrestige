@@ -44,7 +44,7 @@ namespace SkillPrestige.Menus
                 int yPadding = (Game1.tileSize * 1.05).Floor();
                 int xOffset = Math.Min(skillsPage.width + Game1.tileSize, Game1.viewport.Width - iconSize); // if icon would be off-screen (e.g. on mobile), draw it on the edge instead
                 var bounds = new Rectangle(skillsPage.xPositionOnScreen + xOffset, skillsPage.yPositionOnScreen + yPadding + yOffset * skill.SkillScreenPosition + skill.SkillScreenPosition * height, width, height);
-                var prestigeButton = new TextureButton(bounds, SkillPrestigeMod.PrestigeIconTexture, new Rectangle(0, 0, iconSize, iconSize), () => OpenPrestigeMenu(skill), "Click to open the Prestige menu.");
+                var prestigeButton = new TextureButton(bounds, ModEntry.PrestigeIconTexture, new Rectangle(0, 0, iconSize, iconSize), () => OpenPrestigeMenu(skill), "Click to open the Prestige menu.");
                 PrestigeButtons.Add(prestigeButton);
                 Logger.LogVerbose($"{skill.Type.Name} skill prestige button initiated at {bounds.X}, {bounds.Y}. Width: {bounds.Width}, Height: {bounds.Height}");
             }

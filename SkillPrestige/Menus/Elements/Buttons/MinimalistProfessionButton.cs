@@ -33,7 +33,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
         public bool CanBeAfforded { private get; set; }
         private bool IsDisabled => Selected || !IsObtainable || !CanBeAfforded;
         private Color DrawColor => IsDisabled ? Color.Gray : Color.White;
-        private Rectangle _checkmarkSourceRectangle = new Rectangle(0,0, 64,64);
+        private Rectangle _checkmarkSourceRectangle = new Rectangle(0, 0, 64, 64);
 
         private static int TextYOffset => 4 * Game1.pixelZoom;
         private Vector2 _iconLocation;
@@ -48,7 +48,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
                                                     : $"You cannot afford this profession,{Environment.NewLine}you need {GetPrestigeCost()} prestige point(s) in this skill to purchase it."
                                                 : $"This profession is not available to obtain permanently until the {Environment.NewLine}{(Profession as TierTwoProfession)?.TierOneProfession.DisplayName} profession has been permanently obtained.";
 
-        protected override string Text => string.Join(Environment.NewLine,Profession.DisplayName.Split(' '));
+        protected override string Text => string.Join(Environment.NewLine, Profession.DisplayName.Split(' '));
 
         public override void Draw(SpriteBatch spriteBatch)
         {
@@ -68,10 +68,10 @@ namespace SkillPrestige.Menus.Elements.Buttons
 
         private void DrawText(SpriteBatch spriteBatch)
         {
-            var buttonXCenter = Bounds.Width/2;
+            var buttonXCenter = Bounds.Width / 2;
             var textCenter = TitleTextFont.MeasureString(Text).X / 2;
             var textXLocationRelativeToButton = buttonXCenter - textCenter;
-            var textYLocationRelativeToButton = TextYOffset*2 + Profession.IconSourceRectangle.Height*Game1.pixelZoom;
+            var textYLocationRelativeToButton = TextYOffset * 2 + Profession.IconSourceRectangle.Height * Game1.pixelZoom;
             var locationOfTextRelativeToButton = new Vector2(textXLocationRelativeToButton, textYLocationRelativeToButton);
             DrawTitleText(spriteBatch, locationOfTextRelativeToButton);
         }
@@ -79,10 +79,10 @@ namespace SkillPrestige.Menus.Elements.Buttons
         private void DrawCheckmark(SpriteBatch spriteBatch)
         {
             if (!Selected) return;
-            var locationOfCheckmarkRelativeToButton = new Vector2(Bounds.Width - _checkmarkSourceRectangle.Width*Game1.pixelZoom/8, 0);
+            var locationOfCheckmarkRelativeToButton = new Vector2(Bounds.Width - _checkmarkSourceRectangle.Width * Game1.pixelZoom / 8, 0);
             var buttonLocation = new Vector2(Bounds.X, Bounds.Y);
             var checkmarkLocation = buttonLocation + locationOfCheckmarkRelativeToButton;
-            spriteBatch.Draw(SkillPrestigeMod.CheckmarkTexture, checkmarkLocation, _checkmarkSourceRectangle, Color.White, 0f, Vector2.Zero, Game1.pixelZoom / 4f, SpriteEffects.None, 1f);
+            spriteBatch.Draw(ModEntry.CheckmarkTexture, checkmarkLocation, _checkmarkSourceRectangle, Color.White, 0f, Vector2.Zero, Game1.pixelZoom / 4f, SpriteEffects.None, 1f);
         }
 
         /// <summary>Raised when the player begins hovering over the button.</summary>

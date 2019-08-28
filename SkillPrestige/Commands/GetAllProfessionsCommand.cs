@@ -20,7 +20,7 @@ namespace SkillPrestige.Commands
             const string professionSeparator = ", ";
             if (Game1.player == null)
             {
-                SkillPrestigeMod.LogMonitor.Log("A game file must be loaded in order to run this command.");
+                ModEntry.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
             Logger.LogInformation("getting list of all professions...");
@@ -28,7 +28,7 @@ namespace SkillPrestige.Commands
             {
                 var allObtainedProfessions = skill.Professions.Where(x => Game1.player.professions.Contains(x.Id));
                 var professionNames = string.Join(professionSeparator, allObtainedProfessions.Select(x => x.DisplayName).ToArray()).TrimEnd(professionSeparator.ToCharArray());
-                SkillPrestigeMod.LogMonitor.Log($"{skill.Type.Name} skill (level: {skill.GetSkillLevel()}) professions: {professionNames}");
+                ModEntry.LogMonitor.Log($"{skill.Type.Name} skill (level: {skill.GetSkillLevel()}) professions: {professionNames}");
             }
             Logger.LogInformation("list of all professions retrieved.");
         }

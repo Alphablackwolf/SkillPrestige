@@ -29,7 +29,7 @@ namespace SkillPrestige
         /// Number of prestige points gained per prestige of a skill.
         /// </summary>
         public int PointsPerPrestige { get; set; }
-        
+
         /// <summary>
         /// A mode where the player pays for prestige via the points gained after reaching level 10, never resetting to 0.
         /// </summary>
@@ -40,7 +40,7 @@ namespace SkillPrestige
         private PerSaveOptions() { }
         private static PerSaveOptions _instance;
 
-        public static PerSaveOptions Instance 
+        public static PerSaveOptions Instance
         {
             get
             {
@@ -53,13 +53,13 @@ namespace SkillPrestige
 
         private static void LoadPerSaveOptions()
         {
-            Logger.LogInformation($"per save options file path: {SkillPrestigeMod.CurrentSaveOptionsPath}");
-            if (!File.Exists(SkillPrestigeMod.CurrentSaveOptionsPath)) SetupPerSaveOptionsFile();
+            Logger.LogInformation($"per save options file path: {ModEntry.CurrentSaveOptionsPath}");
+            if (!File.Exists(ModEntry.CurrentSaveOptionsPath)) SetupPerSaveOptionsFile();
             var settings = new JsonSerializerSettings { ContractResolver = new PrivateSetterContractResolver() };
             Logger.LogInformation("Deserializing per save options file...");
             try
             {
-                _instance = JsonConvert.DeserializeObject<PerSaveOptions>(File.ReadAllText(SkillPrestigeMod.CurrentSaveOptionsPath), settings);
+                _instance = JsonConvert.DeserializeObject<PerSaveOptions>(File.ReadAllText(ModEntry.CurrentSaveOptionsPath), settings);
                 if (Instance.CostOfTierOnePrestige <= 0)
                 {
                     Logger.LogWarning("Tier one prestige cost loaded without value, defaulting to a cost of 1.");
@@ -89,7 +89,7 @@ namespace SkillPrestige
             }
             catch (Exception ex)
             {
-                Logger.LogError($"Error deserializing per-save options file. {Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.StackTrace}"); 
+                Logger.LogError($"Error deserializing per-save options file. {Environment.NewLine}{ex.Message}{Environment.NewLine}{ex.StackTrace}");
                 Logger.LogInformation(" Attempting to create new per-save options file...");
                 SetupPerSaveOptionsFile();
             }
@@ -101,16 +101,16 @@ namespace SkillPrestige
             Logger.LogInformation("Creating new options file...");
             try
             {
-                Instance.ResetRecipesOnPrestige =  true;
-                Instance.UseExperienceMultiplier =  true;
-                Instance.ExperienceMultiplier =  0.1m;
-                Instance.CostOfTierOnePrestige =  1;
-                Instance.CostOfTierTwoPrestige =  2;
-                Instance.PointsPerPrestige =  1;
+                Instance.ResetRecipesOnPrestige = true;
+                Instance.UseExperienceMultiplier = true;
+                Instance.ExperienceMultiplier = 0.1m;
+                Instance.CostOfTierOnePrestige = 1;
+                Instance.CostOfTierTwoPrestige = 2;
+                Instance.PointsPerPrestige = 1;
                 Instance.ExperienceNeededPerPainlessPrestige = 15000;
                 Save();
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 Logger.LogError($"Error while attempting to create a per save options file. {Environment.NewLine} {exception}");
                 throw;
@@ -120,8 +120,8 @@ namespace SkillPrestige
 
         public static void Save()
         {
-            Directory.CreateDirectory(SkillPrestigeMod.PerSaveOptionsDirectory);
-            File.WriteAllLines(SkillPrestigeMod.CurrentSaveOptionsPath, new[] { JsonConvert.SerializeObject(_instance) });
+            Directory.CreateDirectory(ModEntry.PerSaveOptionsDirectory);
+            File.WriteAllLines(ModEntry.CurrentSaveOptionsPath, new[] { JsonConvert.SerializeObject(_instance) });
             Logger.LogInformation("Per save options file saved.");
         }
 

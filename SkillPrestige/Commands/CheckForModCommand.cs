@@ -15,11 +15,11 @@
         {
             if (args.Length < 1)
             {
-                SkillPrestigeMod.LogMonitor.Log("<uniqueid> must be specified");
+                ModEntry.LogMonitor.Log("<uniqueid> must be specified");
                 return;
             }
             var uniqueIdArgument = args[0];
-            SkillPrestigeMod.LogMonitor.Log($"mod {uniqueIdArgument} {(SkillPrestigeMod.ModRegistry.IsLoaded(uniqueIdArgument) ? string.Empty : "not ")}found.");
+            ModEntry.LogMonitor.Log($"mod {uniqueIdArgument} {(ModEntry.ModRegistry.IsLoaded(uniqueIdArgument) ? string.Empty : "not ")}found.");
         }
     }
 }
