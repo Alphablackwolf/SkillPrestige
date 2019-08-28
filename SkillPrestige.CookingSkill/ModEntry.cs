@@ -54,7 +54,7 @@ namespace SkillPrestige.CookingSkill
         {
             this.IconTexture = helper.Content.Load<Texture2D>("assets/icon.png");
             this.CookingSkillType = new SkillType("Cooking", 6);
-            this.IsFound = helper.ModRegistry.IsLoaded("spacechase0.LuckSkill");
+            this.IsFound = helper.ModRegistry.IsLoaded("spacechase0.CookingSkill");
             this.IsLuckSkillModLoaded = helper.ModRegistry.IsLoaded("alphablackwolf.LuckSkillPrestigeAdapter");
 
             ModHandler.RegisterMod(this);
