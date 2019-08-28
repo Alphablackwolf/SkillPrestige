@@ -22,15 +22,8 @@ namespace SkillPrestige.Bonuses.TypeRegistration
                 SkillType = SkillTypes.SkillType.Farming,
                 ApplyEffect = x =>
                 {
-                    if (ToolProficiencyHandler.AddedToolProficencies.ContainsKey(ToolType.Hoe))
-                        ToolProficiencyHandler.AddedToolProficencies[ToolType.Hoe] = x * 4;
-                    else
-                        ToolProficiencyHandler.AddedToolProficencies.Add(ToolType.Hoe, x * 4);
-
-                    if (ToolProficiencyHandler.AddedToolProficencies.ContainsKey(ToolType.WateringCan))
-                        ToolProficiencyHandler.AddedToolProficencies[ToolType.WateringCan] = x * 4;
-                    else
-                        ToolProficiencyHandler.AddedToolProficencies.Add(ToolType.WateringCan, x * 4);
+                    ToolProficiencyHandler.AddedToolProficencies[ToolType.Hoe] = x * 4;
+                    ToolProficiencyHandler.AddedToolProficencies[ToolType.WateringCan] = x * 4;
                 }
             };
             BetterCrops = new BonusType
