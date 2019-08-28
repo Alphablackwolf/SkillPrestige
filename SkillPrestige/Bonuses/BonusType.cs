@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SkillPrestige.Bonuses.TypeRegistration;
+using SkillPrestige.Framework.Bonuses.TypeRegistration;
 using SkillPrestige.Logging;
 using SkillPrestige.SkillTypes;
 

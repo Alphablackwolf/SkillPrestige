@@ -1,6 +1,6 @@
 namespace SkillPrestige.Logging
 {
-    public enum LogLevel
+    internal enum LogLevel
     {
         Critical = 1,
         Error = 2,

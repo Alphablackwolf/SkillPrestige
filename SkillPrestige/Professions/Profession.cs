@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SkillPrestige.Framework;
+using SkillPrestige.Framework.Professions.Registration;
 using SkillPrestige.Logging;
-using SkillPrestige.Professions.Registration;
 using StardewValley;
 using StardewValley.Menus;
 
 namespace SkillPrestige.Professions
 {
-
     /// <summary>Represents a profession in Stardew Valley.</summary>
     public abstract partial class Profession
     {

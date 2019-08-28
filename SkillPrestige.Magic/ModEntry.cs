@@ -16,7 +16,7 @@ using StardewValley;
 namespace SkillPrestige.Magic
 {
     /// <summary>The mod entry class.</summary>
-    public class ModEntry : StardewModdingAPI.Mod, ISkillMod
+    internal class ModEntry : StardewModdingAPI.Mod, ISkillMod
     {
         /*********
         ** Fields

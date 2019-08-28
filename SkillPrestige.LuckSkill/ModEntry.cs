@@ -13,7 +13,7 @@ using OriginalMod = LuckSkill;
 namespace SkillPrestige.LuckSkill
 {
     /// <summary>The mod entry class.</summary>
-    public class ModEntry : Mod, ISkillMod
+    internal class ModEntry : Mod, ISkillMod
     {
         /*********
         ** Fields

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using SkillPrestige.Framework.SkillTypes;
 using SkillPrestige.Logging;
 
 namespace SkillPrestige.SkillTypes

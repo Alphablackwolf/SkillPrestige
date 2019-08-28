@@ -2,7 +2,6 @@ using System.Linq;
 using NUnit.Framework;
 using SkillPrestige.SkillTypes;
 
-
 namespace SkillPrestige.UnitTests
 {
     [TestFixture]

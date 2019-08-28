@@ -1,11 +1,13 @@
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
-using SkillPrestige.Commands;
-using SkillPrestige.InputHandling;
+using SkillPrestige.Framework;
+using SkillPrestige.Framework.Commands;
+using SkillPrestige.Framework.InputHandling;
+using SkillPrestige.Framework.Menus;
+using SkillPrestige.Framework.Menus.Elements.Buttons;
 using SkillPrestige.Logging;
 using SkillPrestige.Menus;
-using SkillPrestige.Menus.Elements.Buttons;
 using SkillPrestige.Mods;
 using SkillPrestige.Professions;
 using StardewModdingAPI;
@@ -15,7 +17,7 @@ using StardewValley;
 namespace SkillPrestige
 {
     /// <summary>The mod entry class.</summary>
-    public class ModEntry : Mod
+    internal class ModEntry : Mod
     {
         /**********
         ** Fields
@@ -28,7 +30,7 @@ namespace SkillPrestige
         *********/
         public static string ModPath { get; private set; }
 
-        public static string OptionsPath { get; private set; }
+        public static string ConfigPath { get; private set; }
 
         public static IMonitor LogMonitor { get; private set; }
 
@@ -55,7 +57,7 @@ namespace SkillPrestige
             ModPath = helper.DirectoryPath;
             ModRegistry = helper.ModRegistry;
             PerSaveOptionsDirectory = Path.Combine(ModPath, "psconfigs/");
-            OptionsPath = Path.Combine(ModPath, "config.json");
+            ConfigPath = Path.Combine(ModPath, "config.json");
 
             // disable mod if All Professions is installed
             if (this.Helper.ModRegistry.IsLoaded("community.AllProfessions"))
@@ -171,7 +173,7 @@ namespace SkillPrestige
             ModHandler.Initialise();
 
             // register commands
-            if (Options.Instance.TestingMode)
+            if (ModConfig.Instance.TestingMode)
                 RegisterTestingCommands();
             RegisterCommands();
         }

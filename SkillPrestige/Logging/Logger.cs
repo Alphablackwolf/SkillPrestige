@@ -1,4 +1,5 @@
 using System;
+using SkillPrestige.Framework;
 
 namespace SkillPrestige.Logging
 {
@@ -7,37 +8,37 @@ namespace SkillPrestige.Logging
     {
         public static void LogVerbose(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Verbose)
+            if (ModConfig.Instance.LogLevel >= LogLevel.Verbose)
                 ModEntry.LogMonitor.Log(message, StardewModdingAPI.LogLevel.Trace);
         }
 
         public static void LogInformation(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Information)
+            if (ModConfig.Instance.LogLevel >= LogLevel.Information)
                 ModEntry.LogMonitor.Log(message, StardewModdingAPI.LogLevel.Info);
         }
 
         public static void LogWarning(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Warning)
+            if (ModConfig.Instance.LogLevel >= LogLevel.Warning)
                 ModEntry.LogMonitor.Log(message, StardewModdingAPI.LogLevel.Warn);
         }
 
         public static void LogError(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Error)
+            if (ModConfig.Instance.LogLevel >= LogLevel.Error)
                 ModEntry.LogMonitor.Log(message.AddErrorText(), StardewModdingAPI.LogLevel.Error);
         }
 
         public static void LogCritical(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Critical)
+            if (ModConfig.Instance.LogLevel >= LogLevel.Critical)
                 ModEntry.LogMonitor.Log(message.AddErrorText(), StardewModdingAPI.LogLevel.Alert);
         }
 
         public static void LogCriticalWarning(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Critical)
+            if (ModConfig.Instance.LogLevel >= LogLevel.Critical)
                 ModEntry.LogMonitor.Log(message, StardewModdingAPI.LogLevel.Alert);
         }
 

@@ -4,7 +4,7 @@ using StardewValley;
 namespace SkillPrestige.Professions
 {
     /// <summary>Special handling for the defender profession, which adds 25 to the player's maximum health.</summary>
-    public class DefenderSpecialHandling : IProfessionSpecialHandling
+    internal class DefenderSpecialHandling : IProfessionSpecialHandling
     {
         public void ApplyEffect()
         {
