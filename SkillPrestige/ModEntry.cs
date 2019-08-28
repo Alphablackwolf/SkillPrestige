@@ -30,7 +30,7 @@ namespace SkillPrestige
         *********/
         public static string ModPath { get; private set; }
 
-        public static string ConfigPath { get; private set; }
+        public static ModConfig Config { get; private set; }
 
         public static IMonitor LogMonitor { get; private set; }
 
@@ -57,7 +57,7 @@ namespace SkillPrestige
             ModPath = helper.DirectoryPath;
             ModRegistry = helper.ModRegistry;
             PerSaveOptionsDirectory = Path.Combine(ModPath, "psconfigs/");
-            ConfigPath = Path.Combine(ModPath, "config.json");
+            Config = helper.ReadConfig<ModConfig>();
 
             // disable mod if All Professions is installed
             if (this.Helper.ModRegistry.IsLoaded("community.AllProfessions"))
@@ -173,7 +173,7 @@ namespace SkillPrestige
             ModHandler.Initialise();
 
             // register commands
-            if (ModConfig.Instance.TestingMode)
+            if (ModEntry.Config.TestingMode)
                 RegisterTestingCommands();
             RegisterCommands();
         }
