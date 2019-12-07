@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using SkillPrestige.Framework;
 using SkillPrestige.Framework.InputHandling;
 using SkillPrestige.Framework.Menus.Dialogs;
@@ -277,6 +278,27 @@ namespace SkillPrestige.Menus
             _drawLeftPrestigedIndicator = prestigedProfessionsForThisSkillAndLevel.Contains(professionsToChooseFrom.Skip(_isRightSideOfTree == false ? 0 : 2).First());
             _drawRightPrestigedIndicator = prestigedProfessionsForThisSkillAndLevel.Contains(professionsToChooseFrom.Skip(_isRightSideOfTree == false ? 1 : 3).First());
         }
+
+        public override void receiveGamePadButton(Buttons b)
+        {
+            _internalMenu.receiveGamePadButton(b);
+        }
+
+        public override void snapToDefaultClickableComponent()
+        {
+            _internalMenu.snapToDefaultClickableComponent();
+        }
+
+        public override void applyMovementKey(int direction)
+        {
+            _internalMenu.applyMovementKey(direction);
+        }
+
+        public override void receiveKeyPress(Keys key)
+        {
+            _internalMenu.receiveKeyPress(key);
+        }
+
         private void RemoveLevelFromLevelList(int skill, int level)
         {
             for (int index = 0; index < Game1.player.newLevels.Count; ++index)
