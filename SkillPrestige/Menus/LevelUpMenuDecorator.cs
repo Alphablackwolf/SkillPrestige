@@ -60,6 +60,10 @@ namespace SkillPrestige.Menus
         public LevelUpMenuDecorator(Skill skill, int level, T internalMenu, string professionsToChooseInternalName, string leftProfessionDescriptionInternalName, string rightProfessionDescriptionInternalName, Func<int, List<string>> getProfessionDescription)
         {
             _internalMenu = internalMenu;
+            _internalMenu.exitFunction = () =>
+            {
+                this.exitThisMenu(false);
+            };
             _currentSkill = skill;
             _currentLevel = level;
             _professionsToChooseInternalName = professionsToChooseInternalName;
