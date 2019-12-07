@@ -136,14 +136,16 @@ namespace SkillPrestige.Menus
                     Profession professionToAdd = professionsToChooseFrom.First(x => !prestigedProfessionsForThisSkillAndLevel.Contains(x));
                     Game1.player.professions.Add(professionToAdd.Id);
                     professionToAdd.SpecialHandling?.ApplyEffect();
-                    exitThisMenu(false);
+                    _internalMenu.exitThisMenu(false);
+                    RemoveLevelFromLevelList(_currentSkill.Type.Ordinal, _currentLevel);
                     Game1.activeClickableMenu = new LevelUpMessageDialogWithProfession(MessageDialogBounds, $"You levelled your {_currentSkill.Type.Name} skill to level {_currentLevel} and gained a profession!", _currentSkill, professionToAdd);
                     return;
                 }
                 if (prestigedProfessionsForThisSkillAndLevel.Count >= 2)
                 {
                     Logger.LogInformation("Level Up Menu - Both available level 5 professions are already prestiged.");
-                    exitThisMenu(false);
+                    _internalMenu.exitThisMenu(false);
+                    RemoveLevelFromLevelList(_currentSkill.Type.Ordinal, _currentLevel);
                     Game1.activeClickableMenu = new LevelUpMessageDialog(MessageDialogBounds, $"You levelled your {_currentSkill.Type.Name} skill to level {_currentLevel}!", _currentSkill);
                     return;
                 }
@@ -174,14 +176,16 @@ namespace SkillPrestige.Menus
                         );
                     Game1.player.professions.Add(professionToAdd.Id);
                     professionToAdd.SpecialHandling?.ApplyEffect();
-                    exitThisMenu(false);
+                    _internalMenu.exitThisMenu(false);
+                    RemoveLevelFromLevelList(_currentSkill.Type.Ordinal, _currentLevel);
                     Game1.activeClickableMenu = new LevelUpMessageDialogWithProfession(ExtraTallMessageDialogBounds, $"You levelled your {_currentSkill.Type.Name} skill to level {_currentLevel} and gained a profession! {Environment.NewLine} You may now prestige this skill again!", _currentSkill, professionToAdd);
                     return;
                 }
                 if (prestigedProfessionsForThisSkillAndLevel.Count < 2)
                     return;
                 Logger.LogInformation("Level Up Menu - Only one level 5 profession found with both level 10 professions already prestiged (cheater!).");
-                exitThisMenu(false);
+                _internalMenu.exitThisMenu(false);
+                RemoveLevelFromLevelList(_currentSkill.Type.Ordinal, _currentLevel);
                 Game1.activeClickableMenu = new LevelUpMessageDialog(MessageDialogBounds, $"You levelled your {_currentSkill.Type.Name} skill to level {_currentLevel}!  {Environment.NewLine} You may now prestige this skill again!", _currentSkill);
             }
             else
@@ -215,14 +219,16 @@ namespace SkillPrestige.Menus
                     Profession professionToAdd = professionsToChooseFrom.First(x => !prestigedProfessionsForThisSkillAndLevel.Contains(x));
                     Game1.player.professions.Add(professionToAdd.Id);
                     professionToAdd.SpecialHandling?.ApplyEffect();
-                    exitThisMenu(false);
+                    _internalMenu.exitThisMenu(false);
+                    RemoveLevelFromLevelList(_currentSkill.Type.Ordinal, _currentLevel);
                     Game1.activeClickableMenu = new LevelUpMessageDialogWithProfession(ExtraTallMessageDialogBounds, $"You levelled your {_currentSkill.Type.Name} skill to level {_currentLevel} and gained a profession!  {Environment.NewLine} You may now prestige this skill again!", _currentSkill, professionToAdd);
                     return;
                 }
                 if (prestigedProfessionsForThisSkillAndLevel.Count < 4)
                     return;
                 Logger.LogInformation("Level Up Menu - All professions already prestiged for this skill.");
-                exitThisMenu(false);
+                _internalMenu.exitThisMenu(false);
+                RemoveLevelFromLevelList(_currentSkill.Type.Ordinal, _currentLevel);
                 Game1.activeClickableMenu = new LevelUpMessageDialog(ExtraTallMessageDialogBounds, $"You levelled your {_currentSkill.Type.Name} skill to level {_currentLevel}!  {Environment.NewLine} Congratulations! You have prestiged all of your professions and reached level 10 again! You may continue to earn prestige points if you wish, as more prestige options are coming soon!", _currentSkill);
             }
         }
@@ -270,6 +276,18 @@ namespace SkillPrestige.Menus
             List<Profession> professionsToChooseFrom = _currentSkill.Professions.Where(x => x.LevelAvailableAt == _currentLevel).ToList();
             _drawLeftPrestigedIndicator = prestigedProfessionsForThisSkillAndLevel.Contains(professionsToChooseFrom.Skip(_isRightSideOfTree == false ? 0 : 2).First());
             _drawRightPrestigedIndicator = prestigedProfessionsForThisSkillAndLevel.Contains(professionsToChooseFrom.Skip(_isRightSideOfTree == false ? 1 : 3).First());
+        }
+        private void RemoveLevelFromLevelList(int skill, int level)
+        {
+            for (int index = 0; index < Game1.player.newLevels.Count; ++index)
+            {
+                Point newLevel = Game1.player.newLevels[index];
+                if (newLevel.X == skill && newLevel.Y == level)
+                {
+                    Game1.player.newLevels.RemoveAt(index);
+                    --index;
+                }
+            }
         }
     }
 }
