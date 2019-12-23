@@ -184,7 +184,10 @@ namespace SkillPrestige
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
             CheckForGameSave();
-            CheckForLevelUpMenu();
+            if (Game1.activeClickableMenu != null)
+            {
+                CheckForLevelUpMenu();
+            }
 
             if (e.IsMultipleOf(30)) // half-second
                 ToolProficiencyHandler.HandleToolProficiency(); //from what I can tell of the original game code, tools cannot be used quicker than 600ms, so a half second tick is the largest tick that will always catch that the tool was used.
@@ -210,7 +213,7 @@ namespace SkillPrestige
         {
             foreach (LevelUpManager levelUpManager in Skill.AllSkills.Select(x => x.LevelUpManager))
             {
-                if (Game1.activeClickableMenu == null || !levelUpManager.IsMenu(Game1.activeClickableMenu))
+                if (!levelUpManager.IsMenu(Game1.activeClickableMenu))
                     continue;
                 int currentLevel = levelUpManager.GetLevel.Invoke();
                 if (currentLevel % 5 != 0)
