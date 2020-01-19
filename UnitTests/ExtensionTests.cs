@@ -5,7 +5,6 @@ namespace SkillPrestige.UnitTests
     [TestFixture]
     public class ExtensionTests
     {
-
         [Test]
         public void SetInstanceFieldOfBase_SetsPrivateBaseClassProperty()
         {
@@ -20,11 +19,11 @@ namespace SkillPrestige.UnitTests
             private readonly int _cost;
 
             // ReSharper disable once ConvertToAutoProperty - test requires the 'cost' property be private.
-            public int GetCost => _cost;
+            public int GetCost => this._cost;
 
             protected BaseClass()
             {
-                _cost = 2;
+                this._cost = 2;
             }
         }
 

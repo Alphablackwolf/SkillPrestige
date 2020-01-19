@@ -8,24 +8,31 @@ namespace SkillPrestige.Framework.Commands
     // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class GetAllProfessionsCommand : SkillPrestigeCommand
     {
+        /*********
+        ** Public methods
+        *********/
+        /// <summary>Construct an instance.</summary>
         public GetAllProfessionsCommand()
-            : base("player_getallprofessions", "Returns a list of all professions the player has.\n\nUsage: player_getallprofessions") { }
+            : base("player_getallprofessions", "Returns a list of all professions the player has.\n\nUsage: player_getallprofessions", testingCommand: true) { }
 
-        protected override bool TestingCommand => true;
 
+        /*********
+        ** Protected methods
+        *********/
+        /// <summary>Applies the effect of a command when it is called from the console.</summary>
         protected override void Apply(string[] args)
         {
-            const string professionSeparator = ", ";
             if (Game1.player == null)
             {
                 ModEntry.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
+
             Logger.LogInformation("getting list of all professions...");
             foreach (var skill in Skill.AllSkills)
             {
-                var allObtainedProfessions = skill.Professions.Where(x => Game1.player.professions.Contains(x.Id));
-                string professionNames = string.Join(professionSeparator, allObtainedProfessions.Select(x => x.DisplayName).ToArray()).TrimEnd(professionSeparator.ToCharArray());
+                var obtainedProfessions = skill.Professions.Where(x => Game1.player.professions.Contains(x.Id));
+                string professionNames = string.Join(", ", obtainedProfessions.Select(x => x.DisplayName));
                 ModEntry.LogMonitor.Log($"{skill.Type.Name} skill (level: {skill.GetSkillLevel()}) professions: {professionNames}");
             }
             Logger.LogInformation("list of all professions retrieved.");

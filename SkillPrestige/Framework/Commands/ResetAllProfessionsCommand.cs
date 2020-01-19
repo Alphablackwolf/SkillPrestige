@@ -11,26 +11,35 @@ namespace SkillPrestige.Framework.Commands
     // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class ResetAllProfessionsCommand : SkillPrestigeCommand
     {
+        /*********
+        ** Public methods
+        *********/
+        /// <summary>Construct an instance.</summary>
         public ResetAllProfessionsCommand()
             : base("player_resetallprofessions", "Resets professions from all profession mods to only be a single profession tree for each skill.\n\nUsage: player_resetallprofessions") { }
 
-        protected override bool TestingCommand => false;
 
+        /*********
+        ** Protected methods
+        *********/
+        /// <summary>Applies the effect of a command when it is called from the console.</summary>
         protected override void Apply(string[] args)
         {
             if (ModEntry.ModRegistry.IsLoaded("community.AllProfessions"))
-            {
                 ModEntry.LogMonitor.Log("Command cannot be run while AllProfessions is still installed. Please remove AllProfessions before proceeding.");
-            }
+
             if (Game1.player == null)
             {
                 ModEntry.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
-            ModEntry.LogMonitor.Log("This command will reset your character's professions to the first profession available for each skill that your skill level warrants. " + Environment.NewLine +
-                       "For example, if your farming skill is level 10, you will only have the Rancher and Coopmaster skills after this command has been run. " + Environment.NewLine +
-                       "If you would prefer to choose your professions, use the player_clearallprofessions command, followed by the player_addprofession command for each profession you wish to add." + Environment.NewLine +
-                       "If you have read this and wish to continue confirm with 'y' or 'yes'");
+
+            ModEntry.LogMonitor.Log(
+                "This command will reset your character's professions to the first profession available for each skill that your skill level warrants.\n"
+                + "For example, if your farming skill is level 10, you will only have the Rancher and Coopmaster skills after this command has been run.\n"
+                + "If you would prefer to choose your professions, use the player_clearallprofessions command, followed by the player_addprofession command for each profession you wish to add.\n"
+                + "If you have read this and wish to continue confirm with 'y' or 'yes'"
+            );
             string response = Console.ReadLine();
             if (response == null || (!response.Equals("y", StringComparison.InvariantCultureIgnoreCase) && !response.Equals("yes", StringComparison.InvariantCultureIgnoreCase)))
             {
@@ -52,17 +61,16 @@ namespace SkillPrestige.Framework.Commands
                     professionsToKeep.Add(levelTenProfession);
             }
 
-            var specialHandlingsForSkillsRemoved =
-                Skill.AllSkills.SelectMany(x => x.Professions)
-                    .Where(x => Game1.player.professions.Contains(x.Id) && x.SpecialHandling != null)
-                    .Select(x => x.SpecialHandling);
+            var specialHandlingsForSkillsRemoved = Skill
+                .AllSkills
+                .SelectMany(skill => skill.Professions)
+                .Where(prof => Game1.player.professions.Contains(prof.Id) && prof.SpecialHandling != null)
+                .Select(prof => prof.SpecialHandling);
 
             Game1.player.professions.Clear();
             Game1.player.professions.AddRange(professionsToKeep.Select(x => x.Id));
             foreach (var specialHandling in specialHandlingsForSkillsRemoved)
-            {
                 specialHandling.RemoveEffect();
-            }
             Logger.LogInformation("Professions reset.");
         }
     }

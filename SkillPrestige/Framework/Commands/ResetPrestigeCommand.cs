@@ -10,21 +10,18 @@ namespace SkillPrestige.Framework.Commands
     // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class ResetPrestigeCommand : SkillPrestigeCommand
     {
+        /*********
+        ** Public methods
+        *********/
+        /// <summary>Construct an instance.</summary>
         public ResetPrestigeCommand()
-            : base("player_resetprestige", GetDescription()) { }
+            : base("player_resetprestige", GetDescription(), testingCommand: true) { }
 
-        ///<summary>Get the command's help description.</summary>
-        private static string GetDescription()
-        {
-            string skillNames = string.Join(", ", Skill.AllSkills.Select(x => x.Type.Name));
-            return
-                "Resets prestiged professions and prestige points for a specific skill.\n\n"
-                + "Usage: player_resetprestige <skill>\n"
-                + $"- skill: the name of the skill (one of {skillNames}).";
-        }
 
-        protected override bool TestingCommand => true;
-
+        /*********
+        ** Protected methods
+        *********/
+        /// <summary>Applies the effect of a command when it is called from the console.</summary>
         protected override void Apply(string[] args)
         {
             if (args.Length < 1)
@@ -38,10 +35,12 @@ namespace SkillPrestige.Framework.Commands
                 return;
             }
             string skillArgument = args[0];
-            ModEntry.LogMonitor.Log($"This command will reset your character's prestiged selections and prestige points for the {skillArgument} skill. " + Environment.NewLine +
-                       "Please note that this command by itself will only clear the prestige data located in the skills prestige mod folder, " +
-                       "and *not* the player's gained professions. once this is run all professions already prestiged/purchased will still belong to the player." + Environment.NewLine +
-                       "If you have read this and wish to continue confirm with 'y' or 'yes'");
+            ModEntry.LogMonitor.Log(
+                $"This command will reset your character's prestiged selections and prestige points for the {skillArgument} skill.\n"
+                + "Please note that this command by itself will only clear the prestige data located in the skills prestige mod folder, "
+                + "and *not* the player's gained professions. once this is run all professions already prestiged/purchased will still belong to the player."
+                + "If you have read this and wish to continue confirm with 'y' or 'yes'"
+            );
             string response = Console.ReadLine();
             if (response == null || (!response.Equals("y", StringComparison.InvariantCultureIgnoreCase) && !response.Equals("yes", StringComparison.InvariantCultureIgnoreCase)))
             {
@@ -54,6 +53,16 @@ namespace SkillPrestige.Framework.Commands
             prestige.PrestigeProfessionsSelected = new List<int>();
             PrestigeSaveData.Instance.Save();
             Logger.LogInformation($"{skillArgument} skill prestige data reset.");
+        }
+
+        /// <summary>Get the command's help description.</summary>
+        private static string GetDescription()
+        {
+            string skillNames = string.Join(", ", Skill.AllSkills.Select(x => x.Type.Name));
+            return
+                "Resets prestiged professions and prestige points for a specific skill.\n\n"
+                + "Usage: player_resetprestige <skill>\n"
+                + $"- skill: the name of the skill (one of {skillNames}).";
         }
     }
 }

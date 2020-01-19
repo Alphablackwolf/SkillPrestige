@@ -10,6 +10,28 @@ namespace SkillPrestige.Framework
     [Serializable]
     internal class PerSaveOptions
     {
+        /*********
+        ** Fields
+        *********/
+        private static PerSaveOptions _instance;
+
+
+        /*********
+        ** Accessors
+        *********/
+        public static PerSaveOptions Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new PerSaveOptions();
+                    LoadPerSaveOptions();
+                }
+                return _instance;
+            }
+        }
+
         /// <summary>Whether to reset the recipes of a skill on load.</summary>
         public bool ResetRecipesOnPrestige { get; set; }
 
@@ -29,21 +51,31 @@ namespace SkillPrestige.Framework
 
         public int ExperienceNeededPerPainlessPrestige { get; set; }
 
-        private PerSaveOptions() { }
-        private static PerSaveOptions _instance;
 
-        public static PerSaveOptions Instance
+        /*********
+        ** Public methods
+        *********/
+        public static void Save()
         {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new PerSaveOptions();
-                    LoadPerSaveOptions();
-                }
-                return _instance;
-            }
+            Directory.CreateDirectory(ModEntry.PerSaveOptionsDirectory);
+            File.WriteAllLines(ModEntry.CurrentSaveOptionsPath, new[] { JsonConvert.SerializeObject(_instance) });
+            Logger.LogInformation("Per save options file saved.");
         }
+
+        public static void ClearLoadedPerSaveOptionsFile()
+        {
+            _instance = null;
+        }
+
+        /// <summary>Empty procedure to force the lazy load of the instance.</summary>
+        // ReSharper disable once MemberCanBeMadeStatic.Global - the whole point of this is to force the load of the instance.
+        public void Check() { }
+
+
+        /*********
+        ** Private methods
+        *********/
+        private PerSaveOptions() { }
 
         private static void LoadPerSaveOptions()
         {
@@ -112,21 +144,5 @@ namespace SkillPrestige.Framework
             }
             Logger.LogInformation("Successfully created new per save options file.");
         }
-
-        public static void Save()
-        {
-            Directory.CreateDirectory(ModEntry.PerSaveOptionsDirectory);
-            File.WriteAllLines(ModEntry.CurrentSaveOptionsPath, new[] { JsonConvert.SerializeObject(_instance) });
-            Logger.LogInformation("Per save options file saved.");
-        }
-
-        public static void ClearLoadedPerSaveOptionsFile()
-        {
-            _instance = null;
-        }
-
-        /// <summary>Empty procedure to force the lazy load of the instance.</summary>
-        // ReSharper disable once MemberCanBeMadeStatic.Global - the whole point of this is to force the load of the instance.
-        public void Check() { }
     }
 }

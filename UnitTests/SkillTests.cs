@@ -28,7 +28,6 @@ namespace SkillPrestige.UnitTests
         [Test]
         public void AllSkills_ContainsSkills_ReturnsTrue()
         {
-
             var skillType = SkillType.Mining;
             Assert.IsTrue(Skill.AllSkills.Select(x => x.Type).Contains(skillType));
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed - testing that the line does not throw an exception

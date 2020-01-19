@@ -13,6 +13,9 @@ namespace SkillPrestige.Framework
     [Serializable]
     internal class PrestigeSaveData
     {
+        /*********
+        ** Fields
+        *********/
         private const string DataFileName = @"Data.json";
         private static readonly string DataFilePath = Path.Combine(ModEntry.ModPath, DataFileName);
         public static PrestigeSet CurrentlyLoadedPrestigeSet => Instance.PrestigeSaveFiles[CurrentlyLoadedSaveFileUniqueId];
@@ -20,17 +23,19 @@ namespace SkillPrestige.Framework
 
         private static PrestigeSaveData _instance;
 
+
+        /*********
+        ** Accessors
+        *********/
         /// <summary>Set of prestige data saved per save file unique ID.</summary>
         // ReSharper disable once MemberCanBePrivate.Global - no, it can't be made private or it won't be serialized.
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - setter used by deserializer.
         public IDictionary<ulong, PrestigeSet> PrestigeSaveFiles { get; set; }
 
-        private PrestigeSaveData()
-        {
-            PrestigeSaveFiles = new Dictionary<ulong, PrestigeSet>();
-            Logger.LogInformation("Created new prestige save data instance.");
-        }
 
+        /*********
+        ** Public methods
+        *********/
         // ReSharper disable once MemberCanBePrivate.Global - used publically, resharper is wrong.
         public static PrestigeSaveData Instance
         {
@@ -50,11 +55,37 @@ namespace SkillPrestige.Framework
         public void Read()
         {
             if (!File.Exists(DataFilePath))
-                SetupDataFile();
+                this.SetupDataFile();
             Logger.LogInformation("Deserializing prestige save data...");
             var settings = new JsonSerializerSettings { ContractResolver = new PrivateSetterContractResolver() };
             _instance = JsonConvert.DeserializeObject<PrestigeSaveData>(File.ReadAllText(DataFilePath), settings);
             Logger.LogInformation("Prestige save data loaded.");
+        }
+
+        public void UpdateCurrentSaveFileInformation()
+        {
+            if (CurrentlyLoadedSaveFileUniqueId == Game1.uniqueIDForThisGame)
+                return;
+            Logger.LogInformation("Save file change detected.");
+            if (!Instance.PrestigeSaveFiles.ContainsKey(Game1.uniqueIDForThisGame))
+            {
+                Instance.PrestigeSaveFiles.Add(Game1.uniqueIDForThisGame, PrestigeSet.CompleteEmptyPrestigeSet);
+                this.Save();
+                Logger.LogInformation($"Save file not found in list, adding save file to prestige data. Id = {Game1.uniqueIDForThisGame}");
+            }
+            CurrentlyLoadedSaveFileUniqueId = Game1.uniqueIDForThisGame;
+            this.UpdatePrestigeSkillsForCurrentFile();
+            this.Read();
+        }
+
+
+        /*********
+        ** Private methods
+        *********/
+        private PrestigeSaveData()
+        {
+            this.PrestigeSaveFiles = new Dictionary<ulong, PrestigeSet>();
+            Logger.LogInformation("Created new prestige save data instance.");
         }
 
         private void UpdatePrestigeSkillsForCurrentFile()
@@ -67,7 +98,7 @@ namespace SkillPrestige.Framework
             var prestiges = new List<Prestige>(CurrentlyLoadedPrestigeSet.Prestiges);
             prestiges.AddRange(missingPrestiges);
             CurrentlyLoadedPrestigeSet.Prestiges = prestiges;
-            Save();
+            this.Save();
             Logger.LogInformation("Missing Prestige data loaded.");
         }
 
@@ -76,7 +107,7 @@ namespace SkillPrestige.Framework
             Logger.LogInformation("Creating new data file...");
             try
             {
-                Save();
+                this.Save();
             }
             catch (Exception exception)
             {
@@ -84,22 +115,6 @@ namespace SkillPrestige.Framework
                 throw;
             }
             Logger.LogInformation("Successfully created new data file.");
-        }
-
-        public void UpdateCurrentSaveFileInformation()
-        {
-            if (CurrentlyLoadedSaveFileUniqueId == Game1.uniqueIDForThisGame)
-                return;
-            Logger.LogInformation("Save file change detected.");
-            if (!Instance.PrestigeSaveFiles.ContainsKey(Game1.uniqueIDForThisGame))
-            {
-                Instance.PrestigeSaveFiles.Add(Game1.uniqueIDForThisGame, PrestigeSet.CompleteEmptyPrestigeSet);
-                Save();
-                Logger.LogInformation($"Save file not found in list, adding save file to prestige data. Id = {Game1.uniqueIDForThisGame}");
-            }
-            CurrentlyLoadedSaveFileUniqueId = Game1.uniqueIDForThisGame;
-            UpdatePrestigeSkillsForCurrentFile();
-            Read();
         }
     }
 }

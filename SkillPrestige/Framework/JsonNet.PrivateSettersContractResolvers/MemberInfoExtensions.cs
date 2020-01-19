@@ -6,9 +6,12 @@ namespace SkillPrestige.Framework.JsonNet.PrivateSettersContractResolvers
     /// <summary>Extension methods for member info for Json.Net.</summary>
     internal static class MemberInfoExtensions
     {
+        /*********
+        ** Public methods
+        *********/
         /// <summary>Checks to see if a property has a setter.</summary>
         /// <param name="member">The member to check.</param>
-        internal static bool IsPropertyWithSetter(this MemberInfo member)
+        public static bool IsPropertyWithSetter(this MemberInfo member)
         {
             PropertyInfo property = member as PropertyInfo;
 

@@ -11,6 +11,9 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
 {
     internal class IntegerEditor : Button
     {
+        /*********
+        ** Fields
+        *********/
         protected override string HoverText => string.Empty;
         protected override string Text { get; }
         private const int PixelsWide = 7;
@@ -21,61 +24,37 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         private int Maximum { get; }
         private int Increment { get; }
 
-        private readonly TextureButton _minusButton;
-        private readonly TextureButton _plusButton;
+        private readonly ClickCallback OnClick;
+        private readonly TextureButton MinusButton;
+        private readonly TextureButton PlusButton;
 
+
+        /*********
+        ** Accessors
+        *********/
         public delegate void ClickCallback(int number);
 
-        private readonly ClickCallback _onClick;
 
+        /*********
+        ** Public methods
+        *********/
         public IntegerEditor(string text, int startingNumber, int minimum, int maximum, Vector2 location, ClickCallback onClickCallback, int increment = 1)
         {
             if (maximum <= minimum)
                 throw new ArgumentException($"{nameof(minimum)} value cannot exceed {nameof(maximum)} value.");
-            _onClick = onClickCallback;
-            Value = startingNumber.Clamp(minimum, maximum);
-            Minimum = minimum;
-            Maximum = maximum;
-            Text = text;
-            Increment = increment;
-            int buttonYOffset = Game1.smallFont.MeasureString(text).Y.Ceiling() + _linePadding;
-            _minusButton = new TextureButton(new Rectangle(location.X.Floor(), location.Y.Floor() + buttonYOffset, PixelsWide * Game1.pixelZoom, PixelsHigh * Game1.pixelZoom), Game1.mouseCursors, OptionsPlusMinus.minusButtonSource, MinusButtonClicked);
-            int plusButtonOffset = MeasureNumberWidth(Maximum) + _minusButton.Bounds.Width;
-            _plusButton = new TextureButton(new Rectangle(location.X.Floor() + plusButtonOffset, location.Y.Floor() + buttonYOffset, PixelsWide * Game1.pixelZoom, PixelsHigh * Game1.pixelZoom), Game1.mouseCursors, OptionsPlusMinus.plusButtonSource, PlusButtonClicked);
-            int maxWidth = new[] { _plusButton.Bounds.X + _plusButton.Bounds.Width - location.X.Floor(), Game1.smallFont.MeasureString(text).X.Ceiling() }.Max();
-            int maxHeight = buttonYOffset + new[] { _minusButton.Bounds.Height, _plusButton.Bounds.Height, NumberSprite.getHeight() }.Max();
-            Bounds = new Rectangle(location.X.Floor(), location.Y.Floor(), maxWidth, maxHeight);
-        }
-
-        private void MinusButtonClicked()
-        {
-            Logger.LogVerbose($"{Text} minus button clicked.");
-            if (Value <= Minimum)
-                return;
-            Game1.playSound("drumkit6");
-            Value -= Increment;
-            if (Value < Minimum)
-                Value = Minimum;
-            SendValue();
-        }
-
-        private void PlusButtonClicked()
-        {
-            Logger.LogVerbose($"{Text} plus button clicked.");
-            if (Value >= Maximum)
-                return;
-            Game1.playSound("drumkit6");
-            Value += Increment;
-            if (Value > Maximum)
-                Value = Maximum;
-            SendValue();
-        }
-
-        private void SendValue()
-        {
-            Value = Value.Clamp(Minimum, Maximum);
-            Logger.LogVerbose($"{Text} value of {Value} sent, button clicked.");
-            _onClick.Invoke(Value);
+            this.OnClick = onClickCallback;
+            this.Value = startingNumber.Clamp(minimum, maximum);
+            this.Minimum = minimum;
+            this.Maximum = maximum;
+            this.Text = text;
+            this.Increment = increment;
+            int buttonYOffset = Game1.smallFont.MeasureString(text).Y.Ceiling() + this._linePadding;
+            this.MinusButton = new TextureButton(new Rectangle(location.X.Floor(), location.Y.Floor() + buttonYOffset, PixelsWide * Game1.pixelZoom, PixelsHigh * Game1.pixelZoom), Game1.mouseCursors, OptionsPlusMinus.minusButtonSource, this.MinusButtonClicked);
+            int plusButtonOffset = MeasureNumberWidth(this.Maximum) + this.MinusButton.Bounds.Width;
+            this.PlusButton = new TextureButton(new Rectangle(location.X.Floor() + plusButtonOffset, location.Y.Floor() + buttonYOffset, PixelsWide * Game1.pixelZoom, PixelsHigh * Game1.pixelZoom), Game1.mouseCursors, OptionsPlusMinus.plusButtonSource, this.PlusButtonClicked);
+            int maxWidth = new[] { this.PlusButton.Bounds.X + this.PlusButton.Bounds.Width - location.X.Floor(), Game1.smallFont.MeasureString(text).X.Ceiling() }.Max();
+            int maxHeight = buttonYOffset + new[] { this.MinusButton.Bounds.Height, this.PlusButton.Bounds.Height, NumberSprite.getHeight() }.Max();
+            this.Bounds = new Rectangle(location.X.Floor(), location.Y.Floor(), maxWidth, maxHeight);
         }
 
         /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
@@ -85,8 +64,8 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         {
             base.OnButtonPressed(e, isClick);
 
-            _minusButton.OnButtonPressed(e, isClick);
-            _plusButton.OnButtonPressed(e, isClick);
+            this.MinusButton.OnButtonPressed(e, isClick);
+            this.PlusButton.OnButtonPressed(e, isClick);
         }
 
         /// <summary>Raised after the player moves the in-game cursor.</summary>
@@ -95,22 +74,57 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         {
             base.OnCursorMoved(e);
 
-            _minusButton.OnCursorMoved(e);
-            _plusButton.OnCursorMoved(e);
+            this.MinusButton.OnCursorMoved(e);
+            this.PlusButton.OnCursorMoved(e);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            Vector2 location = new Vector2(Bounds.X, Bounds.Y);
-            spriteBatch.DrawString(Game1.smallFont, Text, location, Game1.textColor);
-            location.Y += Game1.smallFont.MeasureString(Text).Y + _linePadding;
-            _minusButton.Draw(spriteBatch, Value == Minimum ? Color.Gray : Color.White);
+            Vector2 location = new Vector2(this.Bounds.X, this.Bounds.Y);
+            spriteBatch.DrawString(Game1.smallFont, this.Text, location, Game1.textColor);
+            location.Y += Game1.smallFont.MeasureString(this.Text).Y + this._linePadding;
+            this.MinusButton.Draw(spriteBatch, this.Value == this.Minimum ? Color.Gray : Color.White);
             Vector2 numberLocation = location;
-            int controlAreaWidth = _plusButton.Bounds.X + _plusButton.Bounds.Width - Bounds.X;
-            numberLocation.X += controlAreaWidth / 2 + GetNumberXOffset(Value) / 2;
-            numberLocation.Y += _linePadding;
-            NumberSprite.draw(Value, spriteBatch, numberLocation, Color.SandyBrown, 1f, .85f, 1f, 0);
-            _plusButton.Draw(spriteBatch, Value == Maximum ? Color.Gray : Color.White);
+            int controlAreaWidth = this.PlusButton.Bounds.X + this.PlusButton.Bounds.Width - this.Bounds.X;
+            numberLocation.X += controlAreaWidth / 2 + GetNumberXOffset(this.Value) / 2;
+            numberLocation.Y += this._linePadding;
+            NumberSprite.draw(this.Value, spriteBatch, numberLocation, Color.SandyBrown, 1f, .85f, 1f, 0);
+            this.PlusButton.Draw(spriteBatch, this.Value == this.Maximum ? Color.Gray : Color.White);
+        }
+
+
+        /*********
+        ** Private methods
+        *********/
+        private void MinusButtonClicked()
+        {
+            Logger.LogVerbose($"{this.Text} minus button clicked.");
+            if (this.Value <= this.Minimum)
+                return;
+            Game1.playSound("drumkit6");
+            this.Value -= this.Increment;
+            if (this.Value < this.Minimum)
+                this.Value = this.Minimum;
+            this.SendValue();
+        }
+
+        private void PlusButtonClicked()
+        {
+            Logger.LogVerbose($"{this.Text} plus button clicked.");
+            if (this.Value >= this.Maximum)
+                return;
+            Game1.playSound("drumkit6");
+            this.Value += this.Increment;
+            if (this.Value > this.Maximum)
+                this.Value = this.Maximum;
+            this.SendValue();
+        }
+
+        private void SendValue()
+        {
+            this.Value = this.Value.Clamp(this.Minimum, this.Maximum);
+            Logger.LogVerbose($"{this.Text} value of {this.Value} sent, button clicked.");
+            this.OnClick.Invoke(this.Value);
         }
 
         /// <summary>Get the X pixel offset for a digit in the integer editor.</summary>

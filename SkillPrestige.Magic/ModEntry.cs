@@ -33,6 +33,12 @@ namespace SkillPrestige.Magic
         /// <summary>Whether the Luck Skill mod is loaded.</summary>
         private bool IsLuckSkillModLoaded;
 
+        /// <summary>The unique ID for the Cooking skill registered with SpaceCore.</summary>
+        private readonly string SpaceCoreSkillId = "spacechase0.Magic";
+
+        /// <summary>The unique ID for the Cooking Skill mod.</summary>
+        private readonly string TargetModId = "spacechase0.Magic";
+
 
         /*********
         ** Accessors
@@ -59,7 +65,7 @@ namespace SkillPrestige.Magic
         {
             this.IconTexture = helper.Content.Load<Texture2D>("assets/icon.png");
             this.MagicSkillType = new SkillType("Magic", 8);
-            this.IsFound = helper.ModRegistry.IsLoaded("spacechase0.Magic");
+            this.IsFound = helper.ModRegistry.IsLoaded(this.TargetModId);
             this.IsCookingSkillModLoaded = helper.ModRegistry.IsLoaded("Alphablackwolf.CookingSkillPrestigeAdapter");
             this.IsLuckSkillModLoaded = helper.ModRegistry.IsLoaded("alphablackwolf.LuckSkillPrestigeAdapter");
 
@@ -90,17 +96,24 @@ namespace SkillPrestige.Magic
                 SkillIconTexture = this.IconTexture,
                 Professions = this.GetAddedProfessions(),
                 GetSkillLevel = this.GetLevel,
-                SetSkillLevel = x => { }, // no set necessary, as the level isn't stored independently from the experience
+                SetSkillLevel = level => { }, // no set necessary, as the level isn't stored independently from the experience
                 GetSkillExperience = this.GetExperience,
                 SetSkillExperience = this.SetExperience,
                 OnPrestige = this.OnPrestige,
                 LevelUpManager = new LevelUpManager
                 {
-                    IsMenu = menu => menu is SkillLevelUpMenu && this.Helper.Reflection.GetField<string>(menu, "currentSkill").GetValue() == "spacechase0.Cooking",
-                    GetLevel = () => Game1.player.GetCustomSkillLevel(SpaceCore.Skills.GetSkill("spacechase0.Magic")),
-                    GetSkill = () => Skill.AllSkills.Single(x => x.Type == this.MagicSkillType),
-                    CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<SkillLevelUpMenu>(skill, level, new SkillLevelUpMenu("spacechase0.Magic", level),
-                        "professionsToChoose", "leftProfessionDescription", "rightProfessionDescription", SkillLevelUpMenu.getProfessionDescription)
+                    IsMenu = menu => menu is SkillLevelUpMenu && this.Helper.Reflection.GetField<string>(menu, "currentSkill").GetValue() == this.SpaceCoreSkillId,
+                    GetLevel = () => Game1.player.GetCustomSkillLevel(SpaceCore.Skills.GetSkill(this.SpaceCoreSkillId)),
+                    GetSkill = () => Skill.AllSkills.Single(skill => skill.Type == this.MagicSkillType),
+                    CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<SkillLevelUpMenu>(
+                        skill: skill,
+                        level: level,
+                        internalMenu: new SkillLevelUpMenu(this.SpaceCoreSkillId, level),
+                        professionsToChooseInternalName: "professionsToChoose",
+                        leftProfessionDescriptionInternalName: "leftProfessionDescription",
+                        rightProfessionDescriptionInternalName: "rightProfessionDescription",
+                        getProfessionDescription: SkillLevelUpMenu.getProfessionDescription
+                    )
                 }
             };
         }
@@ -120,7 +133,7 @@ namespace SkillPrestige.Magic
         /// <summary>Get the professions added by this mod.</summary>
         private IEnumerable<Profession> GetAddedProfessions()
         {
-            var skill = SpaceCore.Skills.GetSkill("spacechase0.Magic");
+            var skill = SpaceCore.Skills.GetSkill(this.SpaceCoreSkillId);
 
             IList<Profession> professions = new List<Profession>();
             IList<TierOneProfession> tierOne = new List<TierOneProfession>();
@@ -187,21 +200,21 @@ namespace SkillPrestige.Magic
         private int GetLevel()
         {
             //this.FixExpLength();
-            return Game1.player.GetCustomSkillLevel("spacechase0.Magic");
+            return Game1.player.GetCustomSkillLevel(this.SpaceCoreSkillId);
         }
 
         /// <summary>Get the current skill XP.</summary>
         private int GetExperience()
         {
-            return Game1.player.GetCustomSkillExperience("spacechase0.Magic");
+            return Game1.player.GetCustomSkillExperience(this.SpaceCoreSkillId);
         }
 
         /// <summary>Set the current skill XP.</summary>
         /// <param name="amount">The amount to set.</param>
         private void SetExperience(int amount)
         {
-            int addedExperience = amount - Game1.player.GetCustomSkillExperience("spacechase0.Magic");
-            Game1.player.AddCustomSkillExperience("spacechase0.Magic", addedExperience);
+            int addedExperience = amount - Game1.player.GetCustomSkillExperience(this.SpaceCoreSkillId);
+            Game1.player.AddCustomSkillExperience(this.SpaceCoreSkillId, addedExperience);
         }
 
         /// <summary>Reset the upgrade points of the player on prestige. Points from professions are handled in <see cref="UpgradePointSpecialHandling"/>.</summary>

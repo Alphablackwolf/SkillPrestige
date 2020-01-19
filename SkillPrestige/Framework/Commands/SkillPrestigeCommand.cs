@@ -8,47 +8,64 @@ namespace SkillPrestige.Framework.Commands
     /// <summary>Represents a command called in the SMAPI console interface.</summary>
     internal abstract class SkillPrestigeCommand
     {
+        /*********
+        ** Fields
+        *********/
         /// <summary>The name used to call the command in the console.</summary>
         private string Name { get; }
 
-        /// <summary>The help description of the command.</summary>
+        /// <summary>The help description for the command.</summary>
         private string Description { get; }
 
         /// <summary>Whether the command is used only in test mode.</summary>
-        protected abstract bool TestingCommand { get; }
+        private bool TestingCommand { get; }
 
-        protected SkillPrestigeCommand(string name, string description)
+
+        /*********
+        ** Public methods
+        *********/
+        /// <summary>Register all loaded command types.</summary>
+        /// <param name="helper">The SMAPI command helper.</param>
+        /// <param name="testCommands">Whether to only register testing commands.</param>
+        public static void RegisterCommands(ICommandHelper helper, bool testCommands)
         {
-            Name = name;
-            Description = description;
+            var commandTypes = typeof(SkillPrestigeCommand)
+                .Assembly
+                .GetTypesSafely()
+                .Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(SkillPrestigeCommand)));
+
+            foreach (Type commandType in commandTypes)
+            {
+                SkillPrestigeCommand command = (SkillPrestigeCommand)Activator.CreateInstance(commandType);
+                if (!(testCommands ^ command.TestingCommand))
+                    command.RegisterCommand(helper);
+            }
+        }
+
+
+        /*********
+        ** Protected methods
+        *********/
+        /// <summary>Construct an instance.</summary>
+        /// <param name="name">The name used to call the command in the console.</param>
+        /// <param name="description">The help description for the command.</param>
+        /// <param name="testingCommand">Whether the command is used only in test mode.</param>
+        protected SkillPrestigeCommand(string name, string description, bool testingCommand = false)
+        {
+            this.Name = name;
+            this.Description = description;
+            this.TestingCommand = testingCommand;
         }
 
         /// <summary>Registers a command with the SMAPI console.</summary>
         private void RegisterCommand(ICommandHelper helper)
         {
-            Logger.LogInformation($"Registering {Name} command...");
-            helper.Add(Name, Description, (name, args) => Apply(args));
-            Logger.LogInformation($"{Name} command registered.");
+            Logger.LogInformation($"Registering {this.Name} command...");
+            helper.Add(this.Name, this.Description, (name, args) => this.Apply(args));
+            Logger.LogInformation($"{this.Name} command registered.");
         }
 
         /// <summary>Applies the effect of a command when it is called from the console.</summary>
         protected abstract void Apply(string[] args);
-
-        /// <summary>Registers all commands found in the system.</summary>
-        /// <param name="helper">The SMAPI Command helper.</param>
-        /// <param name="testCommands">Whether you wish to only register testing commands.</param>
-        public static void RegisterCommands(ICommandHelper helper, bool testCommands)
-        {
-            var concreteCommands = AppDomain.CurrentDomain
-                .GetNonSystemAssemblies()
-                .SelectMany(x => x.GetTypesSafely())
-                .Where(x => x.IsSubclassOf(typeof(SkillPrestigeCommand)) && !x.IsAbstract);
-            foreach (var commandType in concreteCommands)
-            {
-                var command = (SkillPrestigeCommand)Activator.CreateInstance(commandType);
-                if (!(testCommands ^ command.TestingCommand))
-                    command.RegisterCommand(helper);
-            }
-        }
     }
 }

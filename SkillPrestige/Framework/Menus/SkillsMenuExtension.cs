@@ -15,9 +15,61 @@ namespace SkillPrestige.Framework.Menus
     /// <summary>Extends the skills menu in Stardew Valley to add prestige buttons next to the skills.</summary>
     internal static class SkillsMenuExtension
     {
-        private static bool _skillsMenuInitialized;
+        /*********
+        ** Fields
+        *********/
+        private static bool SkillsMenuInitialized;
         private static readonly IList<TextureButton> PrestigeButtons = new List<TextureButton>();
 
+
+        /*********
+        ** Public methods
+        *********/
+        /// <summary>Raised after the player moves the in-game cursor.</summary>
+        /// <param name="e">The event data.</param>
+        public static void OnCursorMoved(CursorMovedEventArgs e)
+        {
+            foreach (TextureButton button in PrestigeButtons)
+                button.OnCursorMoved(e);
+        }
+
+        /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
+        /// <param name="e">The event data.</param>
+        /// <param name="isClick">Whether the button press is a click.</param>
+        public static void OnButtonPressed(ButtonPressedEventArgs e, bool isClick)
+        {
+            foreach (TextureButton button in PrestigeButtons)
+                button.OnButtonPressed(e, isClick);
+        }
+
+        public static void AddPrestigeButtonsToMenu()
+        {
+            GameMenu activeClickableMenu = Game1.activeClickableMenu as GameMenu;
+            if (activeClickableMenu == null || activeClickableMenu.currentTab != 1)
+            {
+                if (SkillsMenuInitialized)
+                    UnloadSkillsPageAdditions();
+            }
+            else
+            {
+                IClickableMenu skillsPage = ((List<IClickableMenu>)activeClickableMenu.GetInstanceField("pages"))[1];
+                if (IsSupportedSkillsPage(skillsPage))
+                {
+                    if (!SkillsMenuInitialized)
+                        IntializeSkillsMenu(skillsPage);
+                    SpriteBatch spriteBatch = Game1.spriteBatch;
+                    DrawPrestigeButtons(spriteBatch);
+                    DrawProfessionHoverText(spriteBatch, skillsPage);
+                    DrawPrestigeButtonsHoverText(spriteBatch);
+                    Mouse.DrawCursor(spriteBatch);
+                }
+            }
+        }
+
+
+        /*********
+        ** Private methods
+        *********/
         /// <summary>Get whether a skills page is supported for extension.</summary>
         /// <param name="skillsPage">The skills page to check.</param>
         private static bool IsSupportedSkillsPage(IClickableMenu skillsPage)
@@ -31,7 +83,7 @@ namespace SkillPrestige.Framework.Menus
         private static void IntializeSkillsMenu(IClickableMenu skillsPage)
         {
             Logger.LogVerbose("Initializing Skills Menu...");
-            _skillsMenuInitialized = true;
+            SkillsMenuInitialized = true;
             PrestigeButtons.Clear();
             foreach (Skill skill in Skill.AllSkills)
             {
@@ -49,54 +101,12 @@ namespace SkillPrestige.Framework.Menus
             Logger.LogVerbose("Skills Menu initialized.");
         }
 
-        /// <summary>Raised after the player moves the in-game cursor.</summary>
-        /// <param name="e">The event data.</param>
-        internal static void OnCursorMoved(CursorMovedEventArgs e)
-        {
-            foreach (TextureButton button in PrestigeButtons)
-                button.OnCursorMoved(e);
-
-        }
-
-        /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
-        /// <param name="e">The event data.</param>
-        /// <param name="isClick">Whether the button press is a click.</param>
-        internal static void OnButtonPressed(ButtonPressedEventArgs e, bool isClick)
-        {
-            foreach (TextureButton button in PrestigeButtons)
-                button.OnButtonPressed(e, isClick);
-        }
-
         private static void UnloadSkillsPageAdditions()
         {
             Logger.LogVerbose("Unloading Skills Menu.");
-            _skillsMenuInitialized = false;
+            SkillsMenuInitialized = false;
             PrestigeButtons.Clear();
             Logger.LogVerbose("Skills Menu unloaded.");
-        }
-
-        public static void AddPrestigeButtonsToMenu()
-        {
-            GameMenu activeClickableMenu = Game1.activeClickableMenu as GameMenu;
-            if (activeClickableMenu == null || activeClickableMenu.currentTab != 1)
-            {
-                if (_skillsMenuInitialized)
-                    UnloadSkillsPageAdditions();
-            }
-            else
-            {
-                IClickableMenu skillsPage = ((List<IClickableMenu>)activeClickableMenu.GetInstanceField("pages"))[1];
-                if (IsSupportedSkillsPage(skillsPage))
-                {
-                    if (!_skillsMenuInitialized)
-                        IntializeSkillsMenu(skillsPage);
-                    SpriteBatch spriteBatch = Game1.spriteBatch;
-                    DrawPrestigeButtons(spriteBatch);
-                    DrawProfessionHoverText(spriteBatch, skillsPage);
-                    DrawPrestigeButtonsHoverText(spriteBatch);
-                    Mouse.DrawCursor(spriteBatch);
-                }
-            }
         }
 
         private static void DrawPrestigeButtons(SpriteBatch spriteBatch)

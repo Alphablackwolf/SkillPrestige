@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Logging;
@@ -11,10 +10,15 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
     /// <summary>Represents a profession button on the prestige menu. Used to allow the user to choose to permanently obtain a profession.</summary>
     internal class MinimalistProfessionButton : Button
     {
-        public MinimalistProfessionButton()
-        {
-            TitleTextFont = Game1.dialogueFont;
-        }
+        /*********
+        ** Fields
+        *********/
+        private bool IsDisabled => this.Selected || !this.IsObtainable || !this.CanBeAfforded;
+        private Color DrawColor => this.IsDisabled ? Color.Gray : Color.White;
+        private readonly Rectangle CheckmarkSourceRectangle = new Rectangle(0, 0, 64, 64);
+
+        private static int TextYOffset => 4 * Game1.pixelZoom;
+        private Vector2 IconLocation;
 
         protected override Texture2D ButtonTexture
         {
@@ -22,75 +26,44 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
             set => ProfessionButtonTexture = value;
         }
 
+        protected override string HoverText => $"{this.HoverTextPrefix}\n\n{(this.Profession?.EffectText == null ? string.Empty : string.Join("\n", this.Profession.EffectText))}";
+
+        private string HoverTextPrefix => this.Selected
+            ? $"You already permanently have the {this.Profession.DisplayName} profession."
+            : this.IsObtainable
+                ? this.CanBeAfforded
+                    ? $"Click to permanently obtain the {this.Profession.DisplayName} profession."
+                    : $"You cannot afford this profession,\nyou need {this.GetPrestigeCost()} prestige point(s) in this skill to purchase it."
+                : $"This profession is not available to obtain permanently until the \n{(this.Profession as TierTwoProfession)?.TierOneProfession.DisplayName} profession has been permanently obtained.";
+
+        protected override string Text => string.Join("\n", this.Profession.DisplayName.Split(' '));
+
+
+        /*********
+        ** Accessors
+        *********/
         public static Texture2D ProfessionButtonTexture { get; set; }
 
         public Profession Profession { get; set; }
         public bool Selected { private get; set; }
         public bool IsObtainable { private get; set; }
         public bool CanBeAfforded { private get; set; }
-        private bool IsDisabled => Selected || !IsObtainable || !CanBeAfforded;
-        private Color DrawColor => IsDisabled ? Color.Gray : Color.White;
-        private readonly Rectangle _checkmarkSourceRectangle = new Rectangle(0, 0, 64, 64);
 
-        private static int TextYOffset => 4 * Game1.pixelZoom;
-        private Vector2 _iconLocation;
 
-        protected override string HoverText => $"{HoverTextPrefix}{Environment.NewLine}{Environment.NewLine}{(Profession?.EffectText == null ? string.Empty : string.Join(Environment.NewLine, Profession.EffectText))}";
-
-        private string HoverTextPrefix => Selected
-                                            ? $"You already permanently have the {Profession.DisplayName} profession."
-                                            : IsObtainable
-                                                ? CanBeAfforded
-                                                    ? $"Click to permanently obtain the {Profession.DisplayName} profession."
-                                                    : $"You cannot afford this profession,{Environment.NewLine}you need {GetPrestigeCost()} prestige point(s) in this skill to purchase it."
-                                                : $"This profession is not available to obtain permanently until the {Environment.NewLine}{(Profession as TierTwoProfession)?.TierOneProfession.DisplayName} profession has been permanently obtained.";
-
-        protected override string Text => string.Join(Environment.NewLine, Profession.DisplayName.Split(' '));
+        /*********
+        ** Public methods
+        *********/
+        public MinimalistProfessionButton()
+        {
+            this.TitleTextFont = Game1.dialogueFont;
+        }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(ButtonTexture, Bounds, DrawColor);
-            DrawIcon(spriteBatch);
-            DrawText(spriteBatch);
-            DrawCheckmark(spriteBatch);
-        }
-
-        private void DrawIcon(SpriteBatch spriteBatch)
-        {
-            Vector2 locationOfIconRelativeToButton = new Vector2(Bounds.Width / 2 - Profession.IconSourceRectangle.Width * Game1.pixelZoom / 2, TextYOffset);
-            Vector2 buttonLocation = new Vector2(Bounds.X, Bounds.Y);
-            _iconLocation = buttonLocation + locationOfIconRelativeToButton;
-            spriteBatch.Draw(Profession.Texture, _iconLocation, Profession.IconSourceRectangle, DrawColor, 0.0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
-        }
-
-        private void DrawText(SpriteBatch spriteBatch)
-        {
-            int buttonXCenter = Bounds.Width / 2;
-            float textCenter = TitleTextFont.MeasureString(Text).X / 2;
-            float textXLocationRelativeToButton = buttonXCenter - textCenter;
-            int textYLocationRelativeToButton = TextYOffset * 2 + Profession.IconSourceRectangle.Height * Game1.pixelZoom;
-            Vector2 locationOfTextRelativeToButton = new Vector2(textXLocationRelativeToButton, textYLocationRelativeToButton);
-            DrawTitleText(spriteBatch, locationOfTextRelativeToButton);
-        }
-
-        private void DrawCheckmark(SpriteBatch spriteBatch)
-        {
-            if (!Selected)
-                return;
-            Vector2 locationOfCheckmarkRelativeToButton = new Vector2(Bounds.Width - _checkmarkSourceRectangle.Width * Game1.pixelZoom / 8, 0);
-            Vector2 buttonLocation = new Vector2(Bounds.X, Bounds.Y);
-            Vector2 checkmarkLocation = buttonLocation + locationOfCheckmarkRelativeToButton;
-            spriteBatch.Draw(ModEntry.CheckmarkTexture, checkmarkLocation, _checkmarkSourceRectangle, Color.White, 0f, Vector2.Zero, Game1.pixelZoom / 4f, SpriteEffects.None, 1f);
-        }
-
-        /// <summary>Raised when the player begins hovering over the button.</summary>
-        protected override void OnMouseHovered()
-        {
-            base.OnMouseHovered();
-            if (IsDisabled)
-                return;
-
-            Game1.playSound("smallSelect");
+            spriteBatch.Draw(this.ButtonTexture, this.Bounds, this.DrawColor);
+            this.DrawIcon(spriteBatch);
+            this.DrawText(spriteBatch);
+            this.DrawCheckmark(spriteBatch);
         }
 
         /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
@@ -99,20 +72,62 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         public override void OnButtonPressed(ButtonPressedEventArgs e, bool isClick)
         {
             base.OnButtonPressed(e, isClick);
-            if (IsDisabled)
+            if (this.IsDisabled)
                 return;
 
-            if (isClick && IsHovered)
+            if (isClick && this.IsHovered)
             {
                 Game1.playSound("bigSelect");
-                Prestige.AddPrestigeProfession(Profession.Id);
-                Selected = true;
+                Prestige.AddPrestigeProfession(this.Profession.Id);
+                this.Selected = true;
             }
+        }
+
+
+        /*********
+        ** Protected methods
+        *********/
+        private void DrawIcon(SpriteBatch spriteBatch)
+        {
+            Vector2 locationOfIconRelativeToButton = new Vector2(this.Bounds.Width / 2 - this.Profession.IconSourceRectangle.Width * Game1.pixelZoom / 2, TextYOffset);
+            Vector2 buttonLocation = new Vector2(this.Bounds.X, this.Bounds.Y);
+            this.IconLocation = buttonLocation + locationOfIconRelativeToButton;
+            spriteBatch.Draw(this.Profession.Texture, this.IconLocation, this.Profession.IconSourceRectangle, this.DrawColor, 0.0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
+        }
+
+        private void DrawText(SpriteBatch spriteBatch)
+        {
+            int buttonXCenter = this.Bounds.Width / 2;
+            float textCenter = this.TitleTextFont.MeasureString(this.Text).X / 2;
+            float textXLocationRelativeToButton = buttonXCenter - textCenter;
+            int textYLocationRelativeToButton = TextYOffset * 2 + this.Profession.IconSourceRectangle.Height * Game1.pixelZoom;
+            Vector2 locationOfTextRelativeToButton = new Vector2(textXLocationRelativeToButton, textYLocationRelativeToButton);
+            this.DrawTitleText(spriteBatch, locationOfTextRelativeToButton);
+        }
+
+        private void DrawCheckmark(SpriteBatch spriteBatch)
+        {
+            if (!this.Selected)
+                return;
+            Vector2 locationOfCheckmarkRelativeToButton = new Vector2(this.Bounds.Width - this.CheckmarkSourceRectangle.Width * Game1.pixelZoom / 8, 0);
+            Vector2 buttonLocation = new Vector2(this.Bounds.X, this.Bounds.Y);
+            Vector2 checkmarkLocation = buttonLocation + locationOfCheckmarkRelativeToButton;
+            spriteBatch.Draw(ModEntry.CheckmarkTexture, checkmarkLocation, this.CheckmarkSourceRectangle, Color.White, 0f, Vector2.Zero, Game1.pixelZoom / 4f, SpriteEffects.None, 1f);
+        }
+
+        /// <summary>Raised when the player begins hovering over the button.</summary>
+        protected override void OnMouseHovered()
+        {
+            base.OnMouseHovered();
+            if (this.IsDisabled)
+                return;
+
+            Game1.playSound("smallSelect");
         }
 
         private int GetPrestigeCost()
         {
-            int tier = Profession.LevelAvailableAt / 5;
+            int tier = this.Profession.LevelAvailableAt / 5;
             switch (tier)
             {
                 case 1:

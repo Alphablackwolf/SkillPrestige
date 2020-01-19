@@ -6,6 +6,9 @@ namespace SkillPrestige.Professions
     /// <summary>Special handling for the fighter profession, which adds 15 to the player's maximum health.</summary>
     internal class FighterSpecialHandling : IProfessionSpecialHandling
     {
+        /*********
+        ** Public methods
+        *********/
         public void ApplyEffect()
         {
             Logger.LogInformation("Applying fighter effect.");

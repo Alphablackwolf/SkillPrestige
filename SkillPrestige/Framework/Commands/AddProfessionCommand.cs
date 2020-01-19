@@ -9,11 +9,18 @@ namespace SkillPrestige.Framework.Commands
     // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class AddProfessionCommand : SkillPrestigeCommand
     {
+        /*********
+        ** Public methods
+        *********/
+        /// <summary>Construct an instance.</summary>
         public AddProfessionCommand()
             : base("player_addprofession", GetDescription()) { }
 
-        protected override bool TestingCommand => false;
 
+        /*********
+        ** Protected methods
+        *********/
+        /// <summary>Applies the effect of a command when it is called from the console.</summary>
         protected override void Apply(string[] args)
         {
             if (args.Length < 1)
@@ -43,6 +50,7 @@ namespace SkillPrestige.Framework.Commands
             Logger.LogInformation($"Profession {professionArgument} added.");
         }
 
+        /// <summary>Get the command's help description.</summary>
         private static string GetDescription()
         {
             string professionNames = string.Join(", ", Skill.AllSkills.SelectMany(x => x.Professions).Select(x => x.DisplayName));

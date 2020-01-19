@@ -18,19 +18,22 @@ namespace SkillPrestige.Menus
     /// <summary>Decorates the Level Up Menu with a prestiged! indicator on prestiged professions.</summary>
     public class LevelUpMenuDecorator<T> : IClickableMenu, IInputHandler where T : IClickableMenu
     {
-        private readonly Skill _currentSkill;
-        private readonly int _currentLevel;
-        private bool _isRightSideOfTree;
-        private bool _uiInitiated;
-        private bool _drawToggleSwitch;
-        private bool _drawLeftPrestigedIndicator;
-        private bool _drawRightPrestigedIndicator;
-        private TextureButton _levelTenToggleButton;
-        private readonly T _internalMenu;
-        private readonly string _professionsToChooseInternalName;
-        private readonly string _leftProfessionDescriptionInternalName;
-        private readonly string _rightProfessionDescriptionInternalName;
-        private readonly Func<int, List<string>> _getProfessionDescription;
+        /*********
+        ** Fields
+        *********/
+        private readonly Skill CurrentSkill;
+        private readonly int CurrentLevel;
+        private bool IsRightSideOfTree;
+        private bool UiInitiated;
+        private bool DrawToggleSwitch;
+        private bool DrawLeftPrestigedIndicator;
+        private bool DrawRightPrestigedIndicator;
+        private TextureButton LevelTenToggleButton;
+        private readonly T InternalMenu;
+        private readonly string ProfessionsToChooseInternalName;
+        private readonly string LeftProfessionDescriptionInternalName;
+        private readonly string RightProfessionDescriptionInternalName;
+        private readonly Func<int, List<string>> GetProfessionDescription;
 
         private Rectangle MessageDialogBounds
         {
@@ -41,8 +44,8 @@ namespace SkillPrestige.Menus
                 int screenYCenter = (int)(viewport.Height * (1.0 / Game1.options.zoomLevel)) / 2;
                 int dialogWidth = Game1.tileSize * 10;
                 int dialogHeight = Game1.tileSize * 8;
-                int xLocation = screenXCenter - _internalMenu.width / 2;
-                int yLocation = screenYCenter - _internalMenu.height / 2;
+                int xLocation = screenXCenter - this.InternalMenu.width / 2;
+                int yLocation = screenYCenter - this.InternalMenu.height / 2;
                 return new Rectangle(xLocation, yLocation, dialogWidth, dialogHeight);
             }
         }
@@ -51,52 +54,56 @@ namespace SkillPrestige.Menus
         {
             get
             {
-                Rectangle extraTallRectangle = MessageDialogBounds;
+                Rectangle extraTallRectangle = this.MessageDialogBounds;
                 extraTallRectangle.Height += Game1.tileSize * 4;
                 return extraTallRectangle;
             }
         }
 
+
+        /*********
+        ** Public methods
+        *********/
         public LevelUpMenuDecorator(Skill skill, int level, T internalMenu, string professionsToChooseInternalName, string leftProfessionDescriptionInternalName, string rightProfessionDescriptionInternalName, Func<int, List<string>> getProfessionDescription)
         {
-            _internalMenu = internalMenu;
-            _currentSkill = skill;
-            _currentLevel = level;
-            _professionsToChooseInternalName = professionsToChooseInternalName;
-            _leftProfessionDescriptionInternalName = leftProfessionDescriptionInternalName;
-            _rightProfessionDescriptionInternalName = rightProfessionDescriptionInternalName;
-            _getProfessionDescription = getProfessionDescription;
+            this.InternalMenu = internalMenu;
+            this.CurrentSkill = skill;
+            this.CurrentLevel = level;
+            this.ProfessionsToChooseInternalName = professionsToChooseInternalName;
+            this.LeftProfessionDescriptionInternalName = leftProfessionDescriptionInternalName;
+            this.RightProfessionDescriptionInternalName = rightProfessionDescriptionInternalName;
+            this.GetProfessionDescription = getProfessionDescription;
         }
 
         public override void receiveRightClick(int x, int y, bool playSound = true)
         {
-            _internalMenu.receiveRightClick(x, y, playSound);
+            this.InternalMenu.receiveRightClick(x, y, playSound);
         }
 
         public override void update(GameTime time)
         {
-            _internalMenu.update(time);
+            this.InternalMenu.update(time);
         }
 
         public override void gameWindowSizeChanged(Rectangle oldBounds, Rectangle newBounds)
         {
-            _internalMenu.gameWindowSizeChanged(oldBounds, newBounds);
+            this.InternalMenu.gameWindowSizeChanged(oldBounds, newBounds);
         }
 
         public override void draw(SpriteBatch spriteBatch)
         {
-            _internalMenu.draw(spriteBatch);
-            if (!_uiInitiated)
-                InitiateUi();
-            DecorateUi(spriteBatch);
-            drawMouse(spriteBatch);
+            this.InternalMenu.draw(spriteBatch);
+            if (!this.UiInitiated)
+                this.InitiateUi();
+            this.DecorateUi(spriteBatch);
+            this.drawMouse(spriteBatch);
         }
 
         /// <summary>Raised after the player moves the in-game cursor.</summary>
         /// <param name="e">The event data.</param>
         public void OnCursorMoved(CursorMovedEventArgs e)
         {
-            _levelTenToggleButton?.OnCursorMoved(e);
+            this.LevelTenToggleButton?.OnCursorMoved(e);
         }
 
         /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
@@ -104,22 +111,26 @@ namespace SkillPrestige.Menus
         /// <param name="isClick">Whether the button press is a click.</param>
         public void OnButtonPressed(ButtonPressedEventArgs e, bool isClick)
         {
-            _levelTenToggleButton?.OnButtonPressed(e, isClick);
+            this.LevelTenToggleButton?.OnButtonPressed(e, isClick);
         }
 
+
+        /*********
+        ** Private methods
+        *********/
         private void InitiateUi()
         {
-            if (_uiInitiated)
+            if (this.UiInitiated)
                 return;
-            _uiInitiated = true;
+            this.UiInitiated = true;
             Logger.LogVerbose("Level Up Menu - initializing UI...");
-            Prestige prestigeData = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == _currentSkill.Type);
-            List<Profession> prestigedProfessionsForThisSkillAndLevel = _currentSkill.Professions
-                .Where(x => prestigeData.PrestigeProfessionsSelected.Contains(x.Id) && x.LevelAvailableAt == _currentLevel)
+            Prestige prestigeData = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == this.CurrentSkill.Type);
+            List<Profession> prestigedProfessionsForThisSkillAndLevel = this.CurrentSkill.Professions
+                .Where(x => prestigeData.PrestigeProfessionsSelected.Contains(x.Id) && x.LevelAvailableAt == this.CurrentLevel)
                 .ToList();
-            List<Profession> professionsToChooseFrom = _currentSkill.Professions.Where(x => x.LevelAvailableAt == _currentLevel).ToList();
+            List<Profession> professionsToChooseFrom = this.CurrentSkill.Professions.Where(x => x.LevelAvailableAt == this.CurrentLevel).ToList();
 
-            if (_currentLevel == 5)
+            if (this.CurrentLevel == 5)
             {
                 if (!prestigedProfessionsForThisSkillAndLevel.Any())
                 {
@@ -132,24 +143,24 @@ namespace SkillPrestige.Menus
                     Profession professionToAdd = professionsToChooseFrom.First(x => !prestigedProfessionsForThisSkillAndLevel.Contains(x));
                     Game1.player.professions.Add(professionToAdd.Id);
                     professionToAdd.SpecialHandling?.ApplyEffect();
-                    exitThisMenu(false);
-                    Game1.activeClickableMenu = new LevelUpMessageDialogWithProfession(MessageDialogBounds, $"You levelled your {_currentSkill.Type.Name} skill to level {_currentLevel} and gained a profession!", _currentSkill, professionToAdd);
+                    this.exitThisMenu(false);
+                    Game1.activeClickableMenu = new LevelUpMessageDialogWithProfession(this.MessageDialogBounds, $"You levelled your {this.CurrentSkill.Type.Name} skill to level {this.CurrentLevel} and gained a profession!", this.CurrentSkill, professionToAdd);
                     return;
                 }
                 if (prestigedProfessionsForThisSkillAndLevel.Count >= 2)
                 {
                     Logger.LogInformation("Level Up Menu - Both available level 5 professions are already prestiged.");
-                    exitThisMenu(false);
-                    Game1.activeClickableMenu = new LevelUpMessageDialog(MessageDialogBounds, $"You levelled your {_currentSkill.Type.Name} skill to level {_currentLevel}!", _currentSkill);
+                    this.exitThisMenu(false);
+                    Game1.activeClickableMenu = new LevelUpMessageDialog(this.MessageDialogBounds, $"You levelled your {this.CurrentSkill.Type.Name} skill to level {this.CurrentLevel}!", this.CurrentSkill);
                     return;
                 }
             }
-            if (_currentLevel != 10)
+            if (this.CurrentLevel != 10)
                 return;
 
             int levelFiveProfessionsCount = Game1.player.professions
                 .Intersect(
-                    _currentSkill.Professions.Where(x => x is TierOneProfession).Select(x => x.Id)
+                    this.CurrentSkill.Professions.Where(x => x is TierOneProfession).Select(x => x.Id)
                 )
                 .Count();
             if (levelFiveProfessionsCount == 1)
@@ -170,15 +181,15 @@ namespace SkillPrestige.Menus
                         );
                     Game1.player.professions.Add(professionToAdd.Id);
                     professionToAdd.SpecialHandling?.ApplyEffect();
-                    exitThisMenu(false);
-                    Game1.activeClickableMenu = new LevelUpMessageDialogWithProfession(ExtraTallMessageDialogBounds, $"You levelled your {_currentSkill.Type.Name} skill to level {_currentLevel} and gained a profession! {Environment.NewLine} You may now prestige this skill again!", _currentSkill, professionToAdd);
+                    this.exitThisMenu(false);
+                    Game1.activeClickableMenu = new LevelUpMessageDialogWithProfession(this.ExtraTallMessageDialogBounds, $"You levelled your {this.CurrentSkill.Type.Name} skill to level {this.CurrentLevel} and gained a profession! {Environment.NewLine} You may now prestige this skill again!", this.CurrentSkill, professionToAdd);
                     return;
                 }
                 if (prestigedProfessionsForThisSkillAndLevel.Count < 2)
                     return;
                 Logger.LogInformation("Level Up Menu - Only one level 5 profession found with both level 10 professions already prestiged (cheater!).");
-                exitThisMenu(false);
-                Game1.activeClickableMenu = new LevelUpMessageDialog(MessageDialogBounds, $"You levelled your {_currentSkill.Type.Name} skill to level {_currentLevel}!  {Environment.NewLine} You may now prestige this skill again!", _currentSkill);
+                this.exitThisMenu(false);
+                Game1.activeClickableMenu = new LevelUpMessageDialog(this.MessageDialogBounds, $"You levelled your {this.CurrentSkill.Type.Name} skill to level {this.CurrentLevel}!  {Environment.NewLine} You may now prestige this skill again!", this.CurrentSkill);
             }
             else
             {
@@ -188,7 +199,7 @@ namespace SkillPrestige.Menus
                     if (prestigedProfessionsForThisSkillAndLevel.Intersect(professionsToChooseFrom.Take(2)).Count() == 2)
                     {
                         Logger.LogInformation("Level Up Menu - All of one level 10 profession branch found, switching to remaining menu.");
-                        ToggleLevelTenMenu();
+                        this.ToggleLevelTenMenu();
                         return;
                     }
                     if (prestigedProfessionsForThisSkillAndLevel.Intersect(professionsToChooseFrom.Skip(2).Take(2)).Count() == 2)
@@ -197,12 +208,12 @@ namespace SkillPrestige.Menus
                         return;
                     }
                     Logger.LogInformation("Level Up Menu - Both level up menus found as viable, enabling user side toggle.");
-                    SetupLevelTenToggleButton();
-                    _drawToggleSwitch = true;
-                    _drawLeftPrestigedIndicator = prestigedProfessionsForThisSkillAndLevel
-                        .Contains(professionsToChooseFrom.Skip(_isRightSideOfTree == false ? 0 : 2).First());
-                    _drawRightPrestigedIndicator = prestigedProfessionsForThisSkillAndLevel
-                        .Contains(professionsToChooseFrom.Skip(_isRightSideOfTree == false ? 1 : 3).First());
+                    this.SetupLevelTenToggleButton();
+                    this.DrawToggleSwitch = true;
+                    this.DrawLeftPrestigedIndicator = prestigedProfessionsForThisSkillAndLevel
+                        .Contains(professionsToChooseFrom.Skip(this.IsRightSideOfTree == false ? 0 : 2).First());
+                    this.DrawRightPrestigedIndicator = prestigedProfessionsForThisSkillAndLevel
+                        .Contains(professionsToChooseFrom.Skip(this.IsRightSideOfTree == false ? 1 : 3).First());
                     return;
                 }
                 if (prestigedProfessionsForThisSkillAndLevel.Count == 3)
@@ -211,23 +222,23 @@ namespace SkillPrestige.Menus
                     Profession professionToAdd = professionsToChooseFrom.First(x => !prestigedProfessionsForThisSkillAndLevel.Contains(x));
                     Game1.player.professions.Add(professionToAdd.Id);
                     professionToAdd.SpecialHandling?.ApplyEffect();
-                    exitThisMenu(false);
-                    Game1.activeClickableMenu = new LevelUpMessageDialogWithProfession(ExtraTallMessageDialogBounds, $"You levelled your {_currentSkill.Type.Name} skill to level {_currentLevel} and gained a profession!  {Environment.NewLine} You may now prestige this skill again!", _currentSkill, professionToAdd);
+                    this.exitThisMenu(false);
+                    Game1.activeClickableMenu = new LevelUpMessageDialogWithProfession(this.ExtraTallMessageDialogBounds, $"You levelled your {this.CurrentSkill.Type.Name} skill to level {this.CurrentLevel} and gained a profession!  {Environment.NewLine} You may now prestige this skill again!", this.CurrentSkill, professionToAdd);
                     return;
                 }
                 if (prestigedProfessionsForThisSkillAndLevel.Count < 4)
                     return;
                 Logger.LogInformation("Level Up Menu - All professions already prestiged for this skill.");
-                exitThisMenu(false);
-                Game1.activeClickableMenu = new LevelUpMessageDialog(ExtraTallMessageDialogBounds, $"You levelled your {_currentSkill.Type.Name} skill to level {_currentLevel}!  {Environment.NewLine} Congratulations! You have prestiged all of your professions and reached level 10 again! You may continue to earn prestige points if you wish, as more prestige options are coming soon!", _currentSkill);
+                this.exitThisMenu(false);
+                Game1.activeClickableMenu = new LevelUpMessageDialog(this.ExtraTallMessageDialogBounds, $"You levelled your {this.CurrentSkill.Type.Name} skill to level {this.CurrentLevel}!  {Environment.NewLine} Congratulations! You have prestiged all of your professions and reached level 10 again! You may continue to earn prestige points if you wish, as more prestige options are coming soon!", this.CurrentSkill);
             }
         }
 
         private void DecorateUi(SpriteBatch spriteBatch)
         {
-            if (_drawToggleSwitch)
-                _levelTenToggleButton.Draw(spriteBatch);
-            DrawPrestigedIndicators(spriteBatch, _drawLeftPrestigedIndicator, _drawRightPrestigedIndicator);
+            if (this.DrawToggleSwitch)
+                this.LevelTenToggleButton.Draw(spriteBatch);
+            this.DrawPrestigedIndicators(spriteBatch, this.DrawLeftPrestigedIndicator, this.DrawRightPrestigedIndicator);
 
         }
 
@@ -235,37 +246,37 @@ namespace SkillPrestige.Menus
         {
             const string text = "Prestiged!";
             int textPadding = Game1.tileSize;
-            int yPositionOfText = _internalMenu.yPositionOnScreen + _internalMenu.height + textPadding;
+            int yPositionOfText = this.InternalMenu.yPositionOnScreen + this.InternalMenu.height + textPadding;
             if (left)
-                spriteBatch.DrawString(Game1.dialogueFont, text, new Vector2(_internalMenu.xPositionOnScreen + _internalMenu.width / 4 - Game1.dialogueFont.MeasureString(text).X / 2, yPositionOfText), Color.LimeGreen);
+                spriteBatch.DrawString(Game1.dialogueFont, text, new Vector2(this.InternalMenu.xPositionOnScreen + this.InternalMenu.width / 4 - Game1.dialogueFont.MeasureString(text).X / 2, yPositionOfText), Color.LimeGreen);
             if (right)
-                spriteBatch.DrawString(Game1.dialogueFont, text, new Vector2(_internalMenu.xPositionOnScreen + _internalMenu.width * 3 / 4 - Game1.dialogueFont.MeasureString(text).X / 2, yPositionOfText), Color.LimeGreen);
+                spriteBatch.DrawString(Game1.dialogueFont, text, new Vector2(this.InternalMenu.xPositionOnScreen + this.InternalMenu.width * 3 / 4 - Game1.dialogueFont.MeasureString(text).X / 2, yPositionOfText), Color.LimeGreen);
         }
 
         private void SetupLevelTenToggleButton()
         {
-            if (_levelTenToggleButton != null)
+            if (this.LevelTenToggleButton != null)
                 return;
             Logger.LogInformation("Level Up Menu - initiating level 10 toggle button...");
-            Vector2 position = new Vector2(_internalMenu.xPositionOnScreen + _internalMenu.width + Game1.tileSize, _internalMenu.yPositionOnScreen);
+            Vector2 position = new Vector2(this.InternalMenu.xPositionOnScreen + this.InternalMenu.width + Game1.tileSize, this.InternalMenu.yPositionOnScreen);
             Rectangle bounds = new Rectangle(position.X.Floor(), position.Y.Floor(), Game1.tileSize, Game1.tileSize);
-            _levelTenToggleButton = new TextureButton(bounds, Game1.mouseCursors, new Rectangle(0, 192, 64, 64), ToggleLevelTenMenu, "More professions...");
+            this.LevelTenToggleButton = new TextureButton(bounds, Game1.mouseCursors, new Rectangle(0, 192, 64, 64), this.ToggleLevelTenMenu, "More professions...");
             Logger.LogInformation("Level Up Menu - Level 10 toggle button initiated.");
         }
 
         private void ToggleLevelTenMenu()
         {
             Logger.LogInformation("Toggling level 10 menu...");
-            _isRightSideOfTree = !_isRightSideOfTree;
-            List<Profession> professionsToChoose = _currentSkill.Professions.Where(x => x is TierTwoProfession).Skip(_isRightSideOfTree ? 2 : 0).ToList();
-            _internalMenu.SetInstanceField(_professionsToChooseInternalName, professionsToChoose.Select(x => x.Id).ToList());
-            _internalMenu.SetInstanceField(_leftProfessionDescriptionInternalName, _getProfessionDescription.Invoke(professionsToChoose[0].Id));
-            _internalMenu.SetInstanceField(_rightProfessionDescriptionInternalName, _getProfessionDescription.Invoke(professionsToChoose[1].Id));
-            Prestige prestigeData = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == _currentSkill.Type);
-            List<Profession> prestigedProfessionsForThisSkillAndLevel = _currentSkill.Professions.Where(x => prestigeData.PrestigeProfessionsSelected.Contains(x.Id) && x.LevelAvailableAt == _currentLevel).ToList();
-            List<Profession> professionsToChooseFrom = _currentSkill.Professions.Where(x => x.LevelAvailableAt == _currentLevel).ToList();
-            _drawLeftPrestigedIndicator = prestigedProfessionsForThisSkillAndLevel.Contains(professionsToChooseFrom.Skip(_isRightSideOfTree == false ? 0 : 2).First());
-            _drawRightPrestigedIndicator = prestigedProfessionsForThisSkillAndLevel.Contains(professionsToChooseFrom.Skip(_isRightSideOfTree == false ? 1 : 3).First());
+            this.IsRightSideOfTree = !this.IsRightSideOfTree;
+            List<Profession> professionsToChoose = this.CurrentSkill.Professions.Where(x => x is TierTwoProfession).Skip(this.IsRightSideOfTree ? 2 : 0).ToList();
+            this.InternalMenu.SetInstanceField(this.ProfessionsToChooseInternalName, professionsToChoose.Select(x => x.Id).ToList());
+            this.InternalMenu.SetInstanceField(this.LeftProfessionDescriptionInternalName, this.GetProfessionDescription.Invoke(professionsToChoose[0].Id));
+            this.InternalMenu.SetInstanceField(this.RightProfessionDescriptionInternalName, this.GetProfessionDescription.Invoke(professionsToChoose[1].Id));
+            Prestige prestigeData = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == this.CurrentSkill.Type);
+            List<Profession> prestigedProfessionsForThisSkillAndLevel = this.CurrentSkill.Professions.Where(x => prestigeData.PrestigeProfessionsSelected.Contains(x.Id) && x.LevelAvailableAt == this.CurrentLevel).ToList();
+            List<Profession> professionsToChooseFrom = this.CurrentSkill.Professions.Where(x => x.LevelAvailableAt == this.CurrentLevel).ToList();
+            this.DrawLeftPrestigedIndicator = prestigedProfessionsForThisSkillAndLevel.Contains(professionsToChooseFrom.Skip(this.IsRightSideOfTree == false ? 0 : 2).First());
+            this.DrawRightPrestigedIndicator = prestigedProfessionsForThisSkillAndLevel.Contains(professionsToChooseFrom.Skip(this.IsRightSideOfTree == false ? 1 : 3).First());
         }
     }
 }

@@ -9,11 +9,18 @@ namespace SkillPrestige.Framework.Commands
     // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class ClearAllProfessionsCommand : SkillPrestigeCommand
     {
+        /*********
+        ** Public methods
+        *********/
+        /// <summary>Construct an instance.</summary>
         public ClearAllProfessionsCommand()
             : base("player_clearallprofessions", "Removes all professions for the current game file.\n\nUsage: player_clearallprofessions\n") { }
 
-        protected override bool TestingCommand => false;
 
+        /*********
+        ** Protected methods
+        *********/
+        /// <summary>Applies the effect of a command when it is called from the console.</summary>
         protected override void Apply(string[] args)
         {
             if (Game1.player == null)
@@ -21,7 +28,8 @@ namespace SkillPrestige.Framework.Commands
                 ModEntry.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
-            ModEntry.LogMonitor.Log("This command will remove all of your character's professions. " + Environment.NewLine + "If you have read this and wish to continue confirm with 'y' or 'yes'");
+
+            ModEntry.LogMonitor.Log("This command will remove all of your character's professions.\nIf you have read this and wish to continue confirm with 'y' or 'yes'");
             string response = Console.ReadLine();
             if (response == null || !response.Equals("y", StringComparison.InvariantCultureIgnoreCase) && !response.Equals("yes", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -30,16 +38,16 @@ namespace SkillPrestige.Framework.Commands
             }
             Logger.LogVerbose("Clearing all professions...");
 
-            var specialHandlingsForSkillsRemoved =
-                Skill.AllSkills.SelectMany(x => x.Professions)
-                    .Where(x => Game1.player.professions.Contains(x.Id) && x.SpecialHandling != null)
-                    .Select(x => x.SpecialHandling);
+            var specialHandlingsForSkillsRemoved = Skill
+                .AllSkills
+                .SelectMany(skill => skill.Professions)
+                .Where(prof => Game1.player.professions.Contains(prof.Id) && prof.SpecialHandling != null)
+                .Select(prof => prof.SpecialHandling);
 
             Game1.player.professions.Clear();
             foreach (var specialHandling in specialHandlingsForSkillsRemoved)
-            {
                 specialHandling.RemoveEffect();
-            }
+
             Logger.LogVerbose("Professions cleared.");
         }
     }

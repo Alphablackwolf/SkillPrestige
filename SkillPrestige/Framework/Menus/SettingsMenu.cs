@@ -12,17 +12,24 @@ namespace SkillPrestige.Framework.Menus
     /// <summary>Represents a menu where players can change their per-save settings.</summary>
     internal class SettingsMenu : IClickableMenu, IInputHandler
     {
-        private int _debounceTimer = 10;
-        private bool _inputInitiated;
+        /*********
+        ** Fields
+        *********/
+        private int DebounceTimer = 10;
+        private bool InputInitiated;
 
-        private Checkbox _resetRecipesCheckbox;
-        private Checkbox _useExperienceMultiplierCheckbox;
-        private Checkbox _painlessPrestigeModeCheckbox;
-        private IntegerEditor _tierOneCostEditor;
-        private IntegerEditor _tierTwoCostEditor;
-        private IntegerEditor _pointsPerPrestigeEditor;
-        private IntegerEditor _experiencePerPainlessPrestigeEditor;
+        private Checkbox ResetRecipesCheckbox;
+        private Checkbox UseExperienceMultiplierCheckbox;
+        private Checkbox PainlessPrestigeModeCheckbox;
+        private IntegerEditor TierOneCostEditor;
+        private IntegerEditor TierTwoCostEditor;
+        private IntegerEditor PointsPerPrestigeEditor;
+        private IntegerEditor ExperiencePerPainlessPrestigeEditor;
 
+
+        /*********
+        ** Public methods
+        *********/
         public SettingsMenu(Rectangle bounds)
             : base(bounds.X, bounds.Y, bounds.Width, bounds.Height, true)
         {
@@ -33,17 +40,17 @@ namespace SkillPrestige.Framework.Menus
         /// <param name="e">The event data.</param>
         public void OnCursorMoved(CursorMovedEventArgs e)
         {
-            if (_debounceTimer > 0)
+            if (this.DebounceTimer > 0)
                 return;
 
-            _resetRecipesCheckbox.OnCursorMoved(e);
-            _useExperienceMultiplierCheckbox.OnCursorMoved(e);
-            _painlessPrestigeModeCheckbox.OnCursorMoved(e);
+            this.ResetRecipesCheckbox.OnCursorMoved(e);
+            this.UseExperienceMultiplierCheckbox.OnCursorMoved(e);
+            this.PainlessPrestigeModeCheckbox.OnCursorMoved(e);
 
-            _tierOneCostEditor.OnCursorMoved(e);
-            _tierTwoCostEditor.OnCursorMoved(e);
-            _pointsPerPrestigeEditor.OnCursorMoved(e);
-            _experiencePerPainlessPrestigeEditor.OnCursorMoved(e);
+            this.TierOneCostEditor.OnCursorMoved(e);
+            this.TierTwoCostEditor.OnCursorMoved(e);
+            this.PointsPerPrestigeEditor.OnCursorMoved(e);
+            this.ExperiencePerPainlessPrestigeEditor.OnCursorMoved(e);
         }
 
         /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
@@ -51,46 +58,69 @@ namespace SkillPrestige.Framework.Menus
         /// <param name="isClick">Whether the button press is a click.</param>
         public void OnButtonPressed(ButtonPressedEventArgs e, bool isClick)
         {
-            if (_debounceTimer > 0)
+            if (this.DebounceTimer > 0)
                 return;
 
-            _resetRecipesCheckbox.OnButtonPressed(e, isClick);
-            _useExperienceMultiplierCheckbox.OnButtonPressed(e, isClick);
-            _painlessPrestigeModeCheckbox.OnButtonPressed(e, isClick);
+            this.ResetRecipesCheckbox.OnButtonPressed(e, isClick);
+            this.UseExperienceMultiplierCheckbox.OnButtonPressed(e, isClick);
+            this.PainlessPrestigeModeCheckbox.OnButtonPressed(e, isClick);
 
-            _tierOneCostEditor.OnButtonPressed(e, isClick);
-            _tierTwoCostEditor.OnButtonPressed(e, isClick);
-            _pointsPerPrestigeEditor.OnButtonPressed(e, isClick);
-            _experiencePerPainlessPrestigeEditor.OnButtonPressed(e, isClick);
+            this.TierOneCostEditor.OnButtonPressed(e, isClick);
+            this.TierTwoCostEditor.OnButtonPressed(e, isClick);
+            this.PointsPerPrestigeEditor.OnButtonPressed(e, isClick);
+            this.ExperiencePerPainlessPrestigeEditor.OnButtonPressed(e, isClick);
         }
 
+        public override void draw(SpriteBatch spriteBatch)
+        {
+            if (this.DebounceTimer > 0)
+                this.DebounceTimer--;
+
+            Game1.drawDialogueBox(this.xPositionOnScreen, this.yPositionOnScreen, this.width, this.height, false, true);
+            this.upperRightCloseButton?.draw(spriteBatch);
+            this.DrawHeader(spriteBatch);
+            if (!this.InputInitiated) this.InitiateInput();
+            this.ResetRecipesCheckbox.Draw(spriteBatch);
+            this.UseExperienceMultiplierCheckbox.Draw(spriteBatch);
+            this.TierOneCostEditor.Draw(spriteBatch);
+            this.TierTwoCostEditor.Draw(spriteBatch);
+            this.PointsPerPrestigeEditor.Draw(spriteBatch);
+            this.PainlessPrestigeModeCheckbox.Draw(spriteBatch);
+            this.ExperiencePerPainlessPrestigeEditor.Draw(spriteBatch);
+            Mouse.DrawCursor(spriteBatch);
+        }
+
+
+        /*********
+        ** Private methods
+        *********/
         private void InitiateInput()
         {
-            if (_inputInitiated)
+            if (this.InputInitiated)
                 return;
-            _inputInitiated = true;
+            this.InputInitiated = true;
             Logger.LogVerbose("Settings menu - intiating input.");
-            Rectangle resetRecipeCheckboxBounds = new Rectangle(xPositionOnScreen + spaceToClearSideBorder * 3, yPositionOnScreen + (Game1.tileSize * 3.5).Floor(), 9 * Game1.pixelZoom, 9 * Game1.pixelZoom);
-            _resetRecipesCheckbox = new Checkbox(PerSaveOptions.Instance.ResetRecipesOnPrestige, "Reset Recipes upon prestige.", resetRecipeCheckboxBounds, ChangeRecipeReset);
+            Rectangle resetRecipeCheckboxBounds = new Rectangle(this.xPositionOnScreen + spaceToClearSideBorder * 3, this.yPositionOnScreen + (Game1.tileSize * 3.5).Floor(), 9 * Game1.pixelZoom, 9 * Game1.pixelZoom);
+            this.ResetRecipesCheckbox = new Checkbox(PerSaveOptions.Instance.ResetRecipesOnPrestige, "Reset Recipes upon prestige.", resetRecipeCheckboxBounds, ChangeRecipeReset);
             int padding = 4 * Game1.pixelZoom;
             Rectangle useExperienceMultiplierCheckboxBounds = resetRecipeCheckboxBounds;
             useExperienceMultiplierCheckboxBounds.Y += resetRecipeCheckboxBounds.Height + padding;
-            _useExperienceMultiplierCheckbox = new Checkbox(PerSaveOptions.Instance.UseExperienceMultiplier, "Use prestige points experience multiplier.", useExperienceMultiplierCheckboxBounds, ChangeUseExperienceMultiplier);
+            this.UseExperienceMultiplierCheckbox = new Checkbox(PerSaveOptions.Instance.UseExperienceMultiplier, "Use prestige points experience multiplier.", useExperienceMultiplierCheckboxBounds, ChangeUseExperienceMultiplier);
             Vector2 tierOneEditorLocation = new Vector2(useExperienceMultiplierCheckboxBounds.X, useExperienceMultiplierCheckboxBounds.Y + useExperienceMultiplierCheckboxBounds.Height + padding);
-            _tierOneCostEditor = new IntegerEditor("Cost of Tier 1 Prestige", PerSaveOptions.Instance.CostOfTierOnePrestige, 1, 100, tierOneEditorLocation, ChangeTierOneCost);
+            this.TierOneCostEditor = new IntegerEditor("Cost of Tier 1 Prestige", PerSaveOptions.Instance.CostOfTierOnePrestige, 1, 100, tierOneEditorLocation, ChangeTierOneCost);
             Vector2 tierTwoEditorLocation = tierOneEditorLocation;
-            tierTwoEditorLocation.X += _tierOneCostEditor.Bounds.Width + padding;
-            _tierTwoCostEditor = new IntegerEditor("Cost of Tier 2 Prestige", PerSaveOptions.Instance.CostOfTierTwoPrestige, 1, 100, tierTwoEditorLocation, ChangeTierTwoCost);
+            tierTwoEditorLocation.X += this.TierOneCostEditor.Bounds.Width + padding;
+            this.TierTwoCostEditor = new IntegerEditor("Cost of Tier 2 Prestige", PerSaveOptions.Instance.CostOfTierTwoPrestige, 1, 100, tierTwoEditorLocation, ChangeTierTwoCost);
             Vector2 pointsPerPrestigeEditorLocation = tierTwoEditorLocation;
-            pointsPerPrestigeEditorLocation.Y += _tierTwoCostEditor.Bounds.Height + padding;
-            pointsPerPrestigeEditorLocation.X = _tierOneCostEditor.Bounds.X;
-            _pointsPerPrestigeEditor = new IntegerEditor("Points Per Prestige", PerSaveOptions.Instance.PointsPerPrestige, 1, 100, pointsPerPrestigeEditorLocation, ChangePointsPerPrestige);
-            Rectangle painlessPrestigeModeCheckboxBounds = new Rectangle(_pointsPerPrestigeEditor.Bounds.X, _pointsPerPrestigeEditor.Bounds.Y + _pointsPerPrestigeEditor.Bounds.Height + padding, 9 * Game1.pixelZoom, 9 * Game1.pixelZoom);
+            pointsPerPrestigeEditorLocation.Y += this.TierTwoCostEditor.Bounds.Height + padding;
+            pointsPerPrestigeEditorLocation.X = this.TierOneCostEditor.Bounds.X;
+            this.PointsPerPrestigeEditor = new IntegerEditor("Points Per Prestige", PerSaveOptions.Instance.PointsPerPrestige, 1, 100, pointsPerPrestigeEditorLocation, ChangePointsPerPrestige);
+            Rectangle painlessPrestigeModeCheckboxBounds = new Rectangle(this.PointsPerPrestigeEditor.Bounds.X, this.PointsPerPrestigeEditor.Bounds.Y + this.PointsPerPrestigeEditor.Bounds.Height + padding, 9 * Game1.pixelZoom, 9 * Game1.pixelZoom);
             const string painlessPrestigeModeCheckboxText = "Painless Prestige Mode";
-            _painlessPrestigeModeCheckbox = new Checkbox(PerSaveOptions.Instance.PainlessPrestigeMode, painlessPrestigeModeCheckboxText, painlessPrestigeModeCheckboxBounds, ChangePainlessPrestigeMode);
+            this.PainlessPrestigeModeCheckbox = new Checkbox(PerSaveOptions.Instance.PainlessPrestigeMode, painlessPrestigeModeCheckboxText, painlessPrestigeModeCheckboxBounds, ChangePainlessPrestigeMode);
             Vector2 experiencePerPainlessPrestigeEditorLocation = new Vector2(painlessPrestigeModeCheckboxBounds.X, painlessPrestigeModeCheckboxBounds.Y);
             experiencePerPainlessPrestigeEditorLocation.X += painlessPrestigeModeCheckboxBounds.Width + Game1.dialogueFont.MeasureString(painlessPrestigeModeCheckboxText).X + padding;
-            _experiencePerPainlessPrestigeEditor = new IntegerEditor("Extra Experience Cost", PerSaveOptions.Instance.ExperienceNeededPerPainlessPrestige, 1000, 100000, experiencePerPainlessPrestigeEditorLocation, ChangeExperiencePerPainlessPrestige, 1000);
+            this.ExperiencePerPainlessPrestigeEditor = new IntegerEditor("Extra Experience Cost", PerSaveOptions.Instance.ExperienceNeededPerPainlessPrestige, 1000, 100000, experiencePerPainlessPrestigeEditorLocation, ChangeExperiencePerPainlessPrestige, 1000);
         }
 
         private static void ChangeRecipeReset(bool resetRecipes)
@@ -135,31 +165,11 @@ namespace SkillPrestige.Framework.Menus
             PerSaveOptions.Save();
         }
 
-        public override void draw(SpriteBatch spriteBatch)
-        {
-            if (_debounceTimer > 0)
-                _debounceTimer--;
-
-            Game1.drawDialogueBox(xPositionOnScreen, yPositionOnScreen, width, height, false, true);
-            upperRightCloseButton?.draw(spriteBatch);
-            DrawHeader(spriteBatch);
-            if (!_inputInitiated)
-                InitiateInput();
-            _resetRecipesCheckbox.Draw(spriteBatch);
-            _useExperienceMultiplierCheckbox.Draw(spriteBatch);
-            _tierOneCostEditor.Draw(spriteBatch);
-            _tierTwoCostEditor.Draw(spriteBatch);
-            _pointsPerPrestigeEditor.Draw(spriteBatch);
-            _painlessPrestigeModeCheckbox.Draw(spriteBatch);
-            _experiencePerPainlessPrestigeEditor.Draw(spriteBatch);
-            Mouse.DrawCursor(spriteBatch);
-        }
-
         private void DrawHeader(SpriteBatch spriteBatch)
         {
             const string title = "Skill Prestige Settings";
-            spriteBatch.DrawString(Game1.dialogueFont, title, new Vector2(xPositionOnScreen + width / 2 - Game1.dialogueFont.MeasureString(title).X / 2f, yPositionOnScreen + spaceToClearTopBorder + Game1.tileSize / 4), Game1.textColor);
-            drawHorizontalPartition(spriteBatch, yPositionOnScreen + (Game1.tileSize * 2.5).Floor());
+            spriteBatch.DrawString(Game1.dialogueFont, title, new Vector2(this.xPositionOnScreen + this.width / 2 - Game1.dialogueFont.MeasureString(title).X / 2f, this.yPositionOnScreen + spaceToClearTopBorder + Game1.tileSize / 4), Game1.textColor);
+            this.drawHorizontalPartition(spriteBatch, this.yPositionOnScreen + (Game1.tileSize * 2.5).Floor());
         }
     }
 }

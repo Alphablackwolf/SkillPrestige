@@ -53,7 +53,7 @@ namespace SkillPrestige
         public override void Entry(IModHelper helper)
         {
             // init
-            LogMonitor = Monitor;
+            LogMonitor = this.Monitor;
             ModPath = helper.DirectoryPath;
             ModRegistry = helper.ModRegistry;
             PerSaveOptionsDirectory = Path.Combine(ModPath, "psconfigs/");
@@ -111,7 +111,7 @@ namespace SkillPrestige
             PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
             PerSaveOptions.Instance.Check();
             Profession.AddMissingProfessions();
-            SaveIsLoaded = true;
+            this.SaveIsLoaded = true;
         }
 
         /// <summary>Raised after the game returns to the title screen.</summary>
@@ -120,7 +120,7 @@ namespace SkillPrestige
         private void OnReturnedToTitle(object sender, ReturnedToTitleEventArgs e)
         {
             PrestigeSaveData.Instance.Read();
-            SaveIsLoaded = false;
+            this.SaveIsLoaded = false;
             Logger.LogInformation("Return To Title.");
             PerSaveOptions.ClearLoadedPerSaveOptionsFile();
             ExperienceHandler.ResetExperience();
@@ -158,14 +158,13 @@ namespace SkillPrestige
         private void OnGameLaunched(object sender, GameLaunchedEventArgs e)
         {
             // init mod
-            LoadSprites();
+            this.LoadSprites();
             PrestigeSaveData.Instance.Read();
             ModHandler.Initialise();
 
             // register commands
-            if (ModEntry.Config.TestingMode)
-                RegisterTestingCommands();
-            RegisterCommands();
+            if (Config.TestingMode) this.RegisterTestingCommands();
+            this.RegisterCommands();
         }
 
         /// <summary>Raised after the game state is updated (≈60 times per second).</summary>
@@ -173,10 +172,10 @@ namespace SkillPrestige
         /// <param name="e">The event data.</param>
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
-            CheckForGameSave();
-            CheckForLevelUpMenu();
+            this.CheckForGameSave();
+            this.CheckForLevelUpMenu();
 
-            if (e.IsOneSecond && SaveIsLoaded)
+            if (e.IsOneSecond && this.SaveIsLoaded)
                 ExperienceHandler.UpdateExperience(); //one second tick for this, as the detection of changed experience can happen as infrequently as possible. a 10 second tick would be well within tolerance.
         }
 

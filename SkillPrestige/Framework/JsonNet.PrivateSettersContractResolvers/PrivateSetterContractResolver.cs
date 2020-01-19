@@ -8,6 +8,9 @@ namespace SkillPrestige.Framework.JsonNet.PrivateSettersContractResolvers
     /// <summary>Json Contract resolver to set values of private fields when deserializing Json data.</summary>
     internal class PrivateSetterContractResolver : DefaultContractResolver
     {
+        /*********
+        ** Protected methods
+        *********/
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             JsonProperty property = base.CreateProperty(member, memberSerialization);

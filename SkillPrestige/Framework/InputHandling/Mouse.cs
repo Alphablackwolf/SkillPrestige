@@ -7,9 +7,12 @@ namespace SkillPrestige.Framework.InputHandling
     /// <summary>Handles mouse interactions with Stardew Valley.</summary>
     internal static class Mouse
     {
+        /*********
+        ** Public methods
+        *********/
         /// <summary>Draws the mouse cursor, which should be called last in any draw command so as to ensure the mouse is on top of the content.</summary>
         /// <param name="spriteBatch">The spriteBatch to draw to.</param>
-        internal static void DrawCursor(SpriteBatch spriteBatch)
+        public static void DrawCursor(SpriteBatch spriteBatch)
         {
             if (Game1.options.hardwareCursor)
                 return;

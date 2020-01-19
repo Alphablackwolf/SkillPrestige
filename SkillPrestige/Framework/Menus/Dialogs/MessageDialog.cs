@@ -12,75 +12,42 @@ namespace SkillPrestige.Framework.Menus.Dialogs
     /// <summary>Represents a message dialog box to display information to the user.</summary>
     internal class MessageDialog : IClickableMenu, IInputHandler
     {
-        private bool _buttonInstantiated;
-        private int _debounceTimer = 10;
-        private TextureButton _okayButton;
-        private readonly string _message;
+        /*********
+        ** Fields
+        *********/
+        private bool ButtonInstantiated;
+        private int DebounceTimer = 10;
+        private TextureButton OkayButton;
+        private readonly string Message;
 
-        protected MessageDialog(Rectangle bounds, string message)
-            : base(bounds.X, bounds.Y, bounds.Width, bounds.Height, true)
-        {
-            _message = message;
-        }
 
-        private void InstantiateButtons()
-        {
-            if (_buttonInstantiated)
-                return;
-            _buttonInstantiated = true;
-            Logger.LogVerbose("Message Dialog - Instantiating Okay button...");
-            int buttonSize = Game1.tileSize;
-            Rectangle okayButtonBounds = new Rectangle(xPositionOnScreen + width + Game1.tileSize / 4, yPositionOnScreen + height - buttonSize, buttonSize, buttonSize);
-            _okayButton = new TextureButton(okayButtonBounds, Game1.mouseCursors, new Rectangle(128, 256, 64, 64), Okay);
-            Logger.LogVerbose("Message Dialog - Okay button instantiated.");
-
-        }
-
-        private void Okay()
-        {
-            Logger.LogVerbose("Message Dialog - Okay button called.");
-            exitThisMenu(false);
-        }
-
+        /*********
+        ** Public methods
+        *********/
         public override void draw(SpriteBatch spriteBatch)
         {
-            if (_debounceTimer > 0)
-                _debounceTimer--;
+            if (this.DebounceTimer > 0)
+                this.DebounceTimer--;
 
-            Game1.drawDialogueBox(xPositionOnScreen, yPositionOnScreen, width, height, false, true);
-            upperRightCloseButton?.draw(spriteBatch);
-            DrawDecorations(spriteBatch);
-            DrawMessage(spriteBatch);
-            if (!_buttonInstantiated)
-                InstantiateButtons();
-            _okayButton.Draw(spriteBatch);
-            _okayButton.DrawHoverText(spriteBatch);
+            Game1.drawDialogueBox(this.xPositionOnScreen, this.yPositionOnScreen, this.width, this.height, false, true);
+            this.upperRightCloseButton?.draw(spriteBatch);
+            this.DrawDecorations(spriteBatch);
+            this.DrawMessage(spriteBatch);
+            if (!this.ButtonInstantiated)
+                this.InstantiateButtons();
+            this.OkayButton.Draw(spriteBatch);
+            this.OkayButton.DrawHoverText(spriteBatch);
             Mouse.DrawCursor(spriteBatch);
         }
-
-        protected virtual void DrawMessage(SpriteBatch spriteBatch)
-        {
-            int textPadding = 2 * Game1.pixelZoom;
-            int xLocationOfMessage = xPositionOnScreen + spaceToClearSideBorder * 2 + textPadding;
-            int yLocationOfMessage = yPositionOnScreen + spaceToClearTopBorder + textPadding;
-            DrawMessage(spriteBatch, Game1.dialogueFont, new Vector2(xLocationOfMessage, yLocationOfMessage), width - spaceToClearSideBorder * 2);
-        }
-
-        protected virtual void DrawMessage(SpriteBatch spriteBatch, SpriteFont font, Vector2 textPosition, int textWidth)
-        {
-            spriteBatch.DrawString(font, _message.WrapText(font, textWidth), textPosition, Game1.textColor);
-        }
-
-        protected virtual void DrawDecorations(SpriteBatch spriteBatch) { }
 
         /// <summary>Raised after the player moves the in-game cursor.</summary>
         /// <param name="e">The event data.</param>
         public void OnCursorMoved(CursorMovedEventArgs e)
         {
-            if (_debounceTimer > 0)
+            if (this.DebounceTimer > 0)
                 return;
 
-            _okayButton.OnCursorMoved(e);
+            this.OkayButton.OnCursorMoved(e);
         }
 
         /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
@@ -88,10 +55,53 @@ namespace SkillPrestige.Framework.Menus.Dialogs
         /// <param name="isClick">Whether the button press is a click.</param>
         public void OnButtonPressed(ButtonPressedEventArgs e, bool isClick)
         {
-            if (_debounceTimer > 0)
+            if (this.DebounceTimer > 0)
                 return;
 
-            _okayButton.OnButtonPressed(e, isClick);
+            this.OkayButton.OnButtonPressed(e, isClick);
+        }
+
+        /*********
+        ** Protected methods
+        *********/
+        protected MessageDialog(Rectangle bounds, string message)
+            : base(bounds.X, bounds.Y, bounds.Width, bounds.Height, true)
+        {
+            this.Message = message;
+        }
+
+        protected virtual void DrawMessage(SpriteBatch spriteBatch)
+        {
+            int textPadding = 2 * Game1.pixelZoom;
+            int xLocationOfMessage = this.xPositionOnScreen + spaceToClearSideBorder * 2 + textPadding;
+            int yLocationOfMessage = this.yPositionOnScreen + spaceToClearTopBorder + textPadding;
+            this.DrawMessage(spriteBatch, Game1.dialogueFont, new Vector2(xLocationOfMessage, yLocationOfMessage), this.width - spaceToClearSideBorder * 2);
+        }
+
+        protected virtual void DrawMessage(SpriteBatch spriteBatch, SpriteFont font, Vector2 textPosition, int textWidth)
+        {
+            spriteBatch.DrawString(font, this.Message.WrapText(font, textWidth), textPosition, Game1.textColor);
+        }
+
+        protected virtual void DrawDecorations(SpriteBatch spriteBatch) { }
+
+        private void Okay()
+        {
+            Logger.LogVerbose("Message Dialog - Okay button called.");
+            this.exitThisMenu(false);
+        }
+
+        private void InstantiateButtons()
+        {
+            if (this.ButtonInstantiated)
+                return;
+            this.ButtonInstantiated = true;
+            Logger.LogVerbose("Message Dialog - Instantiating Okay button...");
+            int buttonSize = Game1.tileSize;
+            Rectangle okayButtonBounds = new Rectangle(this.xPositionOnScreen + this.width + Game1.tileSize / 4, this.yPositionOnScreen + this.height - buttonSize, buttonSize, buttonSize);
+            this.OkayButton = new TextureButton(okayButtonBounds, Game1.mouseCursors, new Rectangle(128, 256, 64, 64), this.Okay);
+            Logger.LogVerbose("Message Dialog - Okay button instantiated.");
+
         }
     }
 }

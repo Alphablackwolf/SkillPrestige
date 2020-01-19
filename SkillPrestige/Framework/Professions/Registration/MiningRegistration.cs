@@ -7,6 +7,9 @@ namespace SkillPrestige.Framework.Professions.Registration
     // ReSharper disable once UnusedMember.Global - created through reflection.
     internal sealed class MiningRegistration : ProfessionRegistration
     {
+        /*********
+        ** Public methods
+        *********/
         public override void RegisterProfessions()
         {
             Logger.LogInformation("Registering Mining professions...");

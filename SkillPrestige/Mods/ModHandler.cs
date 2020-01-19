@@ -8,7 +8,7 @@ namespace SkillPrestige.Mods
     /// <summary>Handles registering skill mods for the prestige system.</summary>
     public static class ModHandler
     {
-        /**********
+        /*********
         ** Fields
         *********/
         /// <summary>Whether the mod is initialised and ready to register skill mods.</summary>
@@ -21,7 +21,7 @@ namespace SkillPrestige.Mods
         private static readonly List<ISkillMod> Mods = new List<ISkillMod>();
 
 
-        /**********
+        /*********
         ** Public methods
         *********/
         /// <summary>Register a skill mod for the prestige system.</summary>
@@ -45,10 +45,6 @@ namespace SkillPrestige.Mods
             ModHandler.PendingMods.Clear();
         }
 
-
-        /**********
-        ** Private methods
-        *********/
         /// <summary>Register a skill mod for the prestige system.</summary>
         /// <param name="mod">The mod you wish to register. the mod and its profession Ids cannot already exist in the system, 
         /// and the mod must implement ISkillMod. It is recommended to inherit from SkillPrestige's SkillMod class.</param>
@@ -87,6 +83,22 @@ namespace SkillPrestige.Mods
             }
         }
 
+        /// <summary>Get the empty prestiges from mods for saving.</summary>
+        public static IEnumerable<Prestige> GetAddedEmptyPrestiges()
+        {
+            return Mods.Where(x => x.AdditonalPrestiges != null).SelectMany(x => x.AdditonalPrestiges);
+        }
+
+        /// <summary>Get the skills added by other mods.</summary>
+        public static IEnumerable<Skill> GetAddedSkills()
+        {
+            return Mods.Where(x => x.AdditionalSkills != null).SelectMany(x => x.AdditionalSkills);
+        }
+
+
+        /*********
+        ** Private methods
+        *********/
         /// <summary>Get the mods and profession IDs which collide with an already-registered professions ID.</summary>
         /// <param name="mod">The mod to check.</param>
         private static IDictionary<ISkillMod, IEnumerable<int>> GetIntersectingModProfessions(ISkillMod mod)
@@ -105,18 +117,6 @@ namespace SkillPrestige.Mods
                     intersectingMods.Add(loadedMod, intersectingProfessions);
             }
             return intersectingMods;
-        }
-
-        /// <summary>Get the empty prestiges from mods for saving.</summary>
-        public static IEnumerable<Prestige> GetAddedEmptyPrestiges()
-        {
-            return Mods.Where(x => x.AdditonalPrestiges != null).SelectMany(x => x.AdditonalPrestiges);
-        }
-
-        /// <summary>Get the skills added by other mods.</summary>
-        public static IEnumerable<Skill> GetAddedSkills()
-        {
-            return Mods.Where(x => x.AdditionalSkills != null).SelectMany(x => x.AdditionalSkills);
         }
     }
 }

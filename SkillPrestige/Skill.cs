@@ -62,7 +62,7 @@ namespace SkillPrestige
                 SkillScreenPosition = 1,
                 SourceRectangleForSkillIcon = new Rectangle(0, 0, 16, 16),
                 Professions = Profession.FarmingProfessions,
-                SetSkillLevel = x => Game1.player.farmingLevel.Value = x,
+                SetSkillLevel = level => Game1.player.farmingLevel.Value = level,
                 GetSkillLevel = () => Game1.player.farmingLevel.Value
             },
             new Skill
@@ -71,7 +71,7 @@ namespace SkillPrestige
                 SkillScreenPosition = 4,
                 SourceRectangleForSkillIcon = new Rectangle(16, 0, 16, 16),
                 Professions = Profession.FishingProfessions,
-                SetSkillLevel = x => Game1.player.fishingLevel.Value = x,
+                SetSkillLevel = level => Game1.player.fishingLevel.Value = level,
                 GetSkillLevel = () => Game1.player.fishingLevel.Value
             },
             new Skill
@@ -80,7 +80,7 @@ namespace SkillPrestige
                 SkillScreenPosition = 3,
                 SourceRectangleForSkillIcon = new Rectangle(80, 0, 16, 16),
                 Professions = Profession.ForagingProfessions,
-                SetSkillLevel = x => Game1.player.foragingLevel.Value = x,
+                SetSkillLevel = level => Game1.player.foragingLevel.Value = level,
                 GetSkillLevel = () => Game1.player.foragingLevel.Value
             },
             new Skill
@@ -89,7 +89,7 @@ namespace SkillPrestige
                 SkillScreenPosition = 2,
                 SourceRectangleForSkillIcon = new Rectangle(32, 0, 16, 16),
                 Professions = Profession.MiningProfessions,
-                SetSkillLevel = x => Game1.player.miningLevel.Value = x,
+                SetSkillLevel = level => Game1.player.miningLevel.Value = level,
                 GetSkillLevel = () => Game1.player.miningLevel.Value
             },
             new Skill
@@ -98,7 +98,7 @@ namespace SkillPrestige
                 SkillScreenPosition = 5,
                 SourceRectangleForSkillIcon = new Rectangle(128, 16, 16, 16),
                 Professions = Profession.CombatProfessions,
-                SetSkillLevel = x => Game1.player.combatLevel.Value = x,
+                SetSkillLevel = level => Game1.player.combatLevel.Value = level,
                 GetSkillLevel = () => Game1.player.combatLevel.Value
             }
         };
@@ -119,27 +119,36 @@ namespace SkillPrestige
         /*********
         ** Public methods
         *********/
+        /// <summary>Construct an instance.</summary>
         public Skill()
         {
-            GetSkillExperience = () => Game1.player.experiencePoints[Type.Ordinal];
-            SetSkillExperience = x =>
+            this.GetSkillExperience = () => Game1.player.experiencePoints[this.Type.Ordinal];
+            this.SetSkillExperience = exp =>
             {
-                Game1.player.experiencePoints[Type.Ordinal] = 0;
-                Game1.player.gainExperience(Type.Ordinal, x);
+                Game1.player.experiencePoints[this.Type.Ordinal] = 0;
+                Game1.player.gainExperience(this.Type.Ordinal, exp);
             };
-            LevelUpManager = new LevelUpManager
+            this.LevelUpManager = new LevelUpManager
             {
                 IsMenu = menu => menu.GetType() == typeof(LevelUpMenu),
                 GetLevel = () => (int)(Game1.activeClickableMenu as LevelUpMenu).GetInstanceField("currentLevel"),
                 GetSkill = () => AllSkills.Single(y => y.Type.Ordinal == (int?)(Game1.activeClickableMenu as LevelUpMenu)?.GetInstanceField("currentSkill")),
-                CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<LevelUpMenu>(skill, level, new LevelUpMenu(skill.Type.Ordinal, level),
-                "professionsToChoose", "leftProfessionDescription", "rightProfessionDescription", LevelUpMenu.getProfessionDescription)
+                CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<LevelUpMenu>(
+                    skill: skill,
+                    level: level,
+                    internalMenu: new LevelUpMenu(skill.Type.Ordinal, level),
+                    professionsToChooseInternalName: "professionsToChoose",
+                    leftProfessionDescriptionInternalName: "leftProfessionDescription",
+                    rightProfessionDescriptionInternalName: "rightProfessionDescription",
+                    getProfessionDescription: LevelUpMenu.getProfessionDescription
+                )
             };
         }
 
+        /// <summary>Get the unique IDs for the skill's professions.</summary>
         public IEnumerable<int> GetAllProfessionIds()
         {
-            return Professions.Select(x => x.Id);
+            return this.Professions.Select(x => x.Id);
         }
     }
 }

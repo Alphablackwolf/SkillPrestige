@@ -9,20 +9,18 @@ namespace SkillPrestige.Framework.Commands
     // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class SetExperienceCommand : SkillPrestigeCommand
     {
+        /*********
+        ** Public methods
+        *********/
+        /// <summary>Construct an instance.</summary>
         public SetExperienceCommand()
-            : base("player_setexperience", GetDescription()) { }
+            : base("player_setexperience", GetDescription(), testingCommand: true) { }
 
-        private static string GetDescription()
-        {
-            string skillNames = string.Join(", ", Skill.AllSkills.Select(x => x.Type.Name));
-            return "Sets the player's specified skill to the specified level of experience.\n\n"
-                        + "Usage: player_setexperience <skill> <level>\n"
-                        + $"- skill: the name of the skill (one of {skillNames}).\n"
-                        + "- level: the target experience level.";
-        }
 
-        protected override bool TestingCommand => true;
-
+        /*********
+        ** Protected methods
+        *********/
+        /// <summary>Applies the effect of a command when it is called from the console.</summary>
         protected override void Apply(string[] args)
         {
             if (args.Length <= 1)
@@ -64,6 +62,19 @@ namespace SkillPrestige.Framework.Commands
 
         }
 
+        /// <summary>Get the command's help description.</summary>
+        private static string GetDescription()
+        {
+            string skillNames = string.Join(", ", Skill.AllSkills.Select(x => x.Type.Name));
+            return
+                "Sets the player's specified skill to the specified level of experience.\n\n"
+                + "Usage: player_setexperience <skill> <level>\n"
+                + $"- skill: the name of the skill (one of {skillNames}).\n"
+                + "- level: the target experience level.";
+        }
+
+        /// <summary>Get the level unlocked with the given experience.</summary>
+        /// <param name="experience">The total experience points.</param>
         private static int GetLevel(int experience)
         {
             if (experience < 100) return 0;

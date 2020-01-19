@@ -11,77 +11,55 @@ namespace SkillPrestige.Framework.Menus.Dialogs
 {
     internal class WarningDialog : IClickableMenu, IInputHandler
     {
-        public delegate void OkayCallback();
-
-        public delegate void CancelCallback();
-
+        /*********
+        ** Fields
+        *********/
         private OkayCallback OnOkay { get; }
         private CancelCallback OnCancel { get; }
-        private bool _buttonsInstantiated;
-        private int _debounceTimer = 10;
-        private TextureButton _okayButton;
-        private TextureButton _cancelButton;
-        private readonly string _message;
+        private bool ButtonsInstantiated;
+        private int DebounceTimer = 10;
+        private TextureButton OkayButton;
+        private TextureButton CancelButton;
+        private readonly string Message;
 
 
+        /*********
+        ** Accessors
+        *********/
+        public delegate void OkayCallback();
+        public delegate void CancelCallback();
+
+
+        /*********
+        ** Public methods
+        *********/
         public WarningDialog(Rectangle bounds, string message, OkayCallback okayCallback, CancelCallback cancelCallback)
             : base(bounds.X, bounds.Y, bounds.Width, bounds.Height, true)
         {
-            OnOkay = okayCallback;
-            OnCancel = cancelCallback;
-            exitFunction = Cancel;
-            _message = message;
-        }
-
-        private void Cancel()
-        {
-            Logger.LogInformation("Warning Dialog - Cancel/Close called.");
-            OnCancel.Invoke();
-        }
-
-        private void InstantiateButtons()
-        {
-            if (_buttonsInstantiated)
-                return;
-            _buttonsInstantiated = true;
-            Logger.LogVerbose("Warning Dialog - Instantiating Okay/Cancel buttons...");
-            int buttonSize = Game1.tileSize;
-            int buttonPadding = Game1.tileSize * 4;
-            Rectangle okayButtonBounds = new Rectangle(xPositionOnScreen + width - buttonSize - spaceToClearSideBorder * 3, yPositionOnScreen + height - (buttonSize * 1.5).Floor(), buttonSize, buttonSize);
-            _okayButton = new TextureButton(okayButtonBounds, Game1.mouseCursors, new Rectangle(128, 256, 64, 64), Okay, "Prestige Skill");
-            Logger.LogVerbose("Warning Dialog - Okay button instantiated.");
-            Rectangle cancelButtonBounds = okayButtonBounds;
-            cancelButtonBounds.X -= buttonSize + buttonPadding;
-            _cancelButton = new TextureButton(cancelButtonBounds, Game1.mouseCursors, new Rectangle(192, 256, 64, 64), () => exitThisMenu(false), "Cancel");
-            Logger.LogVerbose("Warning Dialog - Cancel button instantiated.");
-
-        }
-
-        private void Okay()
-        {
-            Logger.LogVerbose("Warning Dialog - Okay button called.");
-            OnOkay.Invoke();
-            exitThisMenu(false);
+            this.OnOkay = okayCallback;
+            this.OnCancel = cancelCallback;
+            this.exitFunction = this.Cancel;
+            this.Message = message;
         }
 
         public override void draw(SpriteBatch spriteBatch)
         {
-            if (_debounceTimer > 0)
-                _debounceTimer--;
+            if (this.DebounceTimer > 0)
+                this.DebounceTimer--;
 
-            Game1.drawDialogueBox(xPositionOnScreen, yPositionOnScreen, width, height, false, true);
+            Game1.drawDialogueBox(this.xPositionOnScreen, this.yPositionOnScreen, this.width, this.height, false, true);
             int textPadding = 2 * Game1.pixelZoom;
             Game1.spriteBatch.DrawString(Game1.dialogueFont,
-                _message.WrapText(Game1.dialogueFont, width - spaceToClearSideBorder * 2),
-                new Vector2(xPositionOnScreen + spaceToClearSideBorder * 2 + textPadding,
-                    yPositionOnScreen + spaceToClearTopBorder + textPadding), Game1.textColor);
-            upperRightCloseButton?.draw(spriteBatch);
-            if (!_buttonsInstantiated)
-                InstantiateButtons();
-            _okayButton.Draw(spriteBatch);
-            _cancelButton.Draw(spriteBatch);
-            _okayButton.DrawHoverText(spriteBatch);
-            _cancelButton.DrawHoverText(spriteBatch);
+                this.Message.WrapText(Game1.dialogueFont, this.width - spaceToClearSideBorder * 2),
+                new Vector2(this.xPositionOnScreen + spaceToClearSideBorder * 2 + textPadding,
+                    this.yPositionOnScreen + spaceToClearTopBorder + textPadding), Game1.textColor);
+            this.upperRightCloseButton?.draw(spriteBatch);
+            if (!this.ButtonsInstantiated)
+                this.InstantiateButtons();
+            this.OkayButton.Draw(spriteBatch);
+            this.CancelButton.Draw(spriteBatch);
+            this.OkayButton.DrawHoverText(spriteBatch);
+            this.CancelButton.DrawHoverText(spriteBatch);
             Mouse.DrawCursor(spriteBatch);
         }
 
@@ -89,11 +67,11 @@ namespace SkillPrestige.Framework.Menus.Dialogs
         /// <param name="e">The event data.</param>
         public void OnCursorMoved(CursorMovedEventArgs e)
         {
-            if (_debounceTimer > 0)
+            if (this.DebounceTimer > 0)
                 return;
 
-            _okayButton.OnCursorMoved(e);
-            _cancelButton.OnCursorMoved(e);
+            this.OkayButton.OnCursorMoved(e);
+            this.CancelButton.OnCursorMoved(e);
         }
 
         /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
@@ -102,11 +80,46 @@ namespace SkillPrestige.Framework.Menus.Dialogs
         public void OnButtonPressed(ButtonPressedEventArgs e, bool isClick)
         {
 
-            if (_debounceTimer > 0)
+            if (this.DebounceTimer > 0)
                 return;
 
-            _okayButton.OnButtonPressed(e, isClick);
-            _cancelButton.OnButtonPressed(e, isClick);
+            this.OkayButton.OnButtonPressed(e, isClick);
+            this.CancelButton.OnButtonPressed(e, isClick);
+        }
+
+
+        /*********
+        ** Private methods
+        *********/
+        private void Cancel()
+        {
+            Logger.LogInformation("Warning Dialog - Cancel/Close called.");
+            this.OnCancel.Invoke();
+        }
+
+        private void InstantiateButtons()
+        {
+            if (this.ButtonsInstantiated)
+                return;
+            this.ButtonsInstantiated = true;
+            Logger.LogVerbose("Warning Dialog - Instantiating Okay/Cancel buttons...");
+            int buttonSize = Game1.tileSize;
+            int buttonPadding = Game1.tileSize * 4;
+            Rectangle okayButtonBounds = new Rectangle(this.xPositionOnScreen + this.width - buttonSize - spaceToClearSideBorder * 3, this.yPositionOnScreen + this.height - (buttonSize * 1.5).Floor(), buttonSize, buttonSize);
+            this.OkayButton = new TextureButton(okayButtonBounds, Game1.mouseCursors, new Rectangle(128, 256, 64, 64), this.Okay, "Prestige Skill");
+            Logger.LogVerbose("Warning Dialog - Okay button instantiated.");
+            Rectangle cancelButtonBounds = okayButtonBounds;
+            cancelButtonBounds.X -= buttonSize + buttonPadding;
+            this.CancelButton = new TextureButton(cancelButtonBounds, Game1.mouseCursors, new Rectangle(192, 256, 64, 64), () => this.exitThisMenu(false), "Cancel");
+            Logger.LogVerbose("Warning Dialog - Cancel button instantiated.");
+
+        }
+
+        private void Okay()
+        {
+            Logger.LogVerbose("Warning Dialog - Okay button called.");
+            this.OnOkay.Invoke();
+            this.exitThisMenu(false);
         }
     }
 }

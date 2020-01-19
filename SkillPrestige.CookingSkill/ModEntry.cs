@@ -23,10 +23,16 @@ namespace SkillPrestige.CookingSkill
         private Texture2D IconTexture;
 
         /// <summary>The cooking skill type.</summary>
-        private SkillType CookingSkillType;
+        private SkillType SkillType;
 
         /// <summary>Whether the Luck Skill mod is loaded.</summary>
         private bool IsLuckSkillModLoaded;
+
+        /// <summary>The unique ID for the Cooking skill registered with SpaceCore.</summary>
+        private readonly string SpaceCoreSkillId = "spacechase0.Cooking";
+
+        /// <summary>The unique ID for the Cooking Skill mod.</summary>
+        private readonly string TargetModId = "spacechase0.CookingSkill";
 
 
         /*********
@@ -53,8 +59,8 @@ namespace SkillPrestige.CookingSkill
         public override void Entry(IModHelper helper)
         {
             this.IconTexture = helper.Content.Load<Texture2D>("assets/icon.png");
-            this.CookingSkillType = new SkillType("Cooking", 6);
-            this.IsFound = helper.ModRegistry.IsLoaded("spacechase0.CookingSkill");
+            this.SkillType = new SkillType("Cooking", 6);
+            this.IsFound = helper.ModRegistry.IsLoaded(this.TargetModId);
             this.IsLuckSkillModLoaded = helper.ModRegistry.IsLoaded("alphablackwolf.LuckSkillPrestigeAdapter");
 
             ModHandler.RegisterMod(this);
@@ -72,22 +78,29 @@ namespace SkillPrestige.CookingSkill
 
             yield return new Skill
             {
-                Type = this.CookingSkillType,
+                Type = this.SkillType,
                 SkillScreenPosition = this.IsLuckSkillModLoaded ? 7 : 6, // fix potential conflict with order due to luck skill mod
                 SourceRectangleForSkillIcon = new Rectangle(0, 0, 16, 16),
                 SkillIconTexture = this.IconTexture,
                 Professions = this.GetAddedProfessions(),
                 GetSkillLevel = this.GetLevel,
-                SetSkillLevel = x => { }, // no set necessary, as the level isn't stored independently from the experience
+                SetSkillLevel = level => { }, // no set necessary, as the level isn't stored independently from the experience
                 GetSkillExperience = this.GetExperience,
                 SetSkillExperience = this.SetExperience,
                 LevelUpManager = new LevelUpManager
                 {
-                    IsMenu = menu => menu is SkillLevelUpMenu && Helper.Reflection.GetField<string>(menu, "currentSkill").GetValue() == "spacechase0.Cooking",
-                    GetLevel = () => Game1.player.GetCustomSkillLevel(SpaceCore.Skills.GetSkill("spacechase0.Cooking")),
-                    GetSkill = () => Skill.AllSkills.Single(x => x.Type == this.CookingSkillType),
-                    CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<SkillLevelUpMenu>(skill, level, new SkillLevelUpMenu("spacechase0.Cooking", level),
-                        "professionsToChoose", "leftProfessionDescription", "rightProfessionDescription", SkillLevelUpMenu.getProfessionDescription)
+                    IsMenu = menu => menu is SkillLevelUpMenu && this.Helper.Reflection.GetField<string>(menu, "currentSkill").GetValue() == this.SpaceCoreSkillId,
+                    GetLevel = () => Game1.player.GetCustomSkillLevel(SpaceCore.Skills.GetSkill(this.SpaceCoreSkillId)),
+                    GetSkill = () => Skill.AllSkills.Single(skill => skill.Type == this.SkillType),
+                    CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<SkillLevelUpMenu>(
+                        skill: skill,
+                        level: level,
+                        internalMenu: new SkillLevelUpMenu(this.SpaceCoreSkillId, level),
+                        professionsToChooseInternalName: "professionsToChoose",
+                        leftProfessionDescriptionInternalName: "leftProfessionDescription",
+                        rightProfessionDescriptionInternalName: "rightProfessionDescription",
+                        getProfessionDescription: SkillLevelUpMenu.getProfessionDescription
+                    )
                 }
             };
         }
@@ -100,7 +113,7 @@ namespace SkillPrestige.CookingSkill
 
             yield return new Prestige
             {
-                SkillType = this.CookingSkillType
+                SkillType = this.SkillType
             };
         }
 
@@ -176,21 +189,21 @@ namespace SkillPrestige.CookingSkill
         private int GetLevel()
         {
             //this.FixExpLength();
-            return Game1.player.GetCustomSkillLevel("spacechase0.Cooking");
+            return Game1.player.GetCustomSkillLevel(this.SpaceCoreSkillId);
         }
 
         /// <summary>Get the current skill XP.</summary>
         private int GetExperience()
         {
-            return Game1.player.GetCustomSkillExperience("spacechase0.Cooking");
+            return Game1.player.GetCustomSkillExperience(this.SpaceCoreSkillId);
         }
 
         /// <summary>Set the current skill XP.</summary>
         /// <param name="amount">The amount to set.</param>
         private void SetExperience(int amount)
         {
-            int addedExperience = amount - Game1.player.GetCustomSkillExperience("spacechase0.Cooking");
-            Game1.player.AddCustomSkillExperience("spacechase0.Cooking", addedExperience);
+            int addedExperience = amount - Game1.player.GetCustomSkillExperience(this.SpaceCoreSkillId);
+            Game1.player.AddCustomSkillExperience(this.SpaceCoreSkillId, addedExperience);
         }
     }
 }
