@@ -66,6 +66,7 @@ namespace SkillPrestige.Menus
         *********/
         public LevelUpMenuDecorator(Skill skill, int level, T internalMenu, string professionsToChooseInternalName, string leftProfessionDescriptionInternalName, string rightProfessionDescriptionInternalName, Func<int, List<string>> getProfessionDescription)
         {
+            // init
             this.InternalMenu = internalMenu;
             this.CurrentSkill = skill;
             this.CurrentLevel = level;
@@ -73,6 +74,14 @@ namespace SkillPrestige.Menus
             this.LeftProfessionDescriptionInternalName = leftProfessionDescriptionInternalName;
             this.RightProfessionDescriptionInternalName = rightProfessionDescriptionInternalName;
             this.GetProfessionDescription = getProfessionDescription;
+
+            // exit decorator when the menu closes
+            onExit prevExitFunction = this.InternalMenu.exitFunction;
+            this.InternalMenu.exitFunction = () =>
+            {
+                prevExitFunction?.Invoke();
+                this.exitThisMenu();
+            };
         }
 
         public override void receiveRightClick(int x, int y, bool playSound = true)
