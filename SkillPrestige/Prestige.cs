@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SkillPrestige.Bonuses;
 using SkillPrestige.Framework;
 using SkillPrestige.Logging;
 using SkillPrestige.Professions;
@@ -27,9 +26,6 @@ namespace SkillPrestige
 
         /// <summary>Professions that have been chosen to be permanent using skill points.</summary>
         public IList<int> PrestigeProfessionsSelected { get; set; }
-
-        /// <summary>Bonuses that have been purchased for this prestige.</summary>
-        public IList<Bonus> Bonuses { get; set; }
 
         /// <summary>Purchases a profession to be part of the prestige set.</summary>
         public static void AddPrestigeProfession(int professionId)

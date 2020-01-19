@@ -1,5 +1,4 @@
 using System;
-using SkillPrestige.Framework;
 
 namespace SkillPrestige.Logging
 {
@@ -45,11 +44,6 @@ namespace SkillPrestige.Logging
         public static void LogDisplay(string message)
         {
             ModEntry.LogMonitor.Log(message);
-        }
-
-        public static void LogOptionsError(string message)
-        {
-            ModEntry.LogMonitor.Log(message.AddErrorText());
         }
 
         private static string AddErrorText(this string message)

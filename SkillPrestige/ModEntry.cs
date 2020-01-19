@@ -73,7 +73,6 @@ namespace SkillPrestige
             helper.Events.Display.RenderedActiveMenu += this.OnRenderedActiveMenu;
             helper.Events.GameLoop.GameLaunched += this.OnGameLaunched;
             helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
-            helper.Events.GameLoop.DayStarted += this.OnDayStarted;
             helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
             helper.Events.GameLoop.ReturnedToTitle += this.OnReturnedToTitle;
         }
@@ -102,15 +101,6 @@ namespace SkillPrestige
             SkillsMenuExtension.OnCursorMoved(e);
             if (Game1.activeClickableMenu is IInputHandler handler)
                 handler.OnCursorMoved(e);
-        }
-
-        /// <summary>Raised after the game begins a new day (including when the player loads a save).</summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event data.</param>
-        private void OnDayStarted(object sender, DayStartedEventArgs e)
-        {
-            Logger.LogVerbose("New Day Started");
-            AnimalProduceHandler.HandleSpawnedAnimalProductQuantityIncrease();
         }
 
         /// <summary>Raised after the player loads a save slot and the world is initialised.</summary>
@@ -186,16 +176,8 @@ namespace SkillPrestige
             CheckForGameSave();
             CheckForLevelUpMenu();
 
-            if (e.IsMultipleOf(30)) // half-second
-                ToolProficiencyHandler.HandleToolProficiency(); //from what I can tell of the original game code, tools cannot be used quicker than 600ms, so a half second tick is the largest tick that will always catch that the tool was used.
-            if (e.IsOneSecond)
-                UpdateExperience(); //one second tick for this, as the detection of changed experience can happen as infrequently as possible. a 10 second tick would be well within tolerance.
-        }
-
-        private void UpdateExperience()
-        {
-            if (SaveIsLoaded)
-                ExperienceHandler.UpdateExperience();
+            if (e.IsOneSecond && SaveIsLoaded)
+                ExperienceHandler.UpdateExperience(); //one second tick for this, as the detection of changed experience can happen as infrequently as possible. a 10 second tick would be well within tolerance.
         }
 
         private void CheckForGameSave()

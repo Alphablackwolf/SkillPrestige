@@ -98,32 +98,6 @@ namespace SkillPrestige
             }
         }
 
-        /// <summary>Replaces any method with another method, given that the signatures match.</summary>
-        public static void ReplaceMethod(this Type typeToReplace, string methodNameToReplace, Type replacementType, string replacementMethodName)
-        {
-            MethodInfo methodToReplace = typeToReplace.GetMethod(methodNameToReplace, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
-            MethodInfo methodToInject = replacementType.GetMethod(replacementMethodName, BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
-            RuntimeHelpers.PrepareMethod(methodToReplace.MethodHandle);
-            RuntimeHelpers.PrepareMethod(methodToInject.MethodHandle);
-
-            unsafe
-            {
-                if (IntPtr.Size == 4)
-                {
-                    int* injectedMethodPointer = (int*)methodToInject.MethodHandle.Value.ToPointer() + 2;
-                    int* targetMethodPointer = (int*)methodToReplace.MethodHandle.Value.ToPointer() + 2;
-                    *targetMethodPointer = *injectedMethodPointer;
-                }
-                else
-                {
-
-                    long* injectedMethodPointer = (long*)methodToInject.MethodHandle.Value.ToPointer() + 1;
-                    long* targetMethodPointer = (long*)methodToReplace.MethodHandle.Value.ToPointer() + 1;
-                    *targetMethodPointer = *injectedMethodPointer;
-                }
-            }
-        }
-
         /// <summary>Word-wraps text for XNA sprite fonts.</summary>
         /// <param name="text">the text that will be word-wrapped</param>
         /// <param name="font">the XNA Sprite Font to measure the string with.</param>
@@ -168,11 +142,6 @@ namespace SkillPrestige
         }
 
         public static bool IsOneOf<T>(this T item, params T[] itemsToCheck)
-        {
-            return itemsToCheck.Contains(item);
-        }
-
-        public static bool IsOneOf<T>(this T item, IEnumerable<T> itemsToCheck)
         {
             return itemsToCheck.Contains(item);
         }
@@ -236,12 +205,6 @@ namespace SkillPrestige
         }
 
         /// <summary>Returns Math.Ceiling as an integer.</summary>
-        public static int Ceiling(this decimal value)
-        {
-            return Convert.ToInt32(Math.Ceiling(value));
-        }
-
-        /// <summary>Returns Math.Ceiling as an integer.</summary>
         public static int Ceiling(this float value)
         {
             return Convert.ToInt32(Math.Ceiling(value));
@@ -251,19 +214,6 @@ namespace SkillPrestige
         public static int Ceiling(this double value)
         {
             return Convert.ToInt32(Math.Ceiling(value));
-        }
-
-        /// <summary>Removes all non-alphanumeric characters.</summary>
-        /// <param name="value">The string to manipulate.</param>
-        /// <returns>The value string given, sans any non-alphanumeric characters.</returns>
-        public static string RemoveNonAlphanumerics(this string value)
-        {
-            foreach (char character in value)
-            {
-                if (!char.IsLetterOrDigit(character))
-                    value = value.Replace(character.ToString(), "");
-            }
-            return value;
         }
     }
 }
