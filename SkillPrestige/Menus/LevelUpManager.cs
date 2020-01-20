@@ -12,9 +12,6 @@ namespace SkillPrestige.Menus
         /// <summary>Returns whether a given menu is the relevant level up menu.</summary>
         public Func<IClickableMenu, bool> IsMenu { get; set; }
 
-        /// <summary>Returns the skill being levelled up.</summary>
-        public Func<Skill> GetSkill { get; set; }
-
         /// <summary>Returns the level that has been reached.</summary>
         public Func<int> GetLevel { get; set; }
 

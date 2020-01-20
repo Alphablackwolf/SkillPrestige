@@ -130,20 +130,8 @@ namespace SkillPrestige
             };
             this.LevelUpManager = new LevelUpManager
             {
-                IsMenu = menu => {
-                    if (menu.GetType() != typeof(LevelUpMenu))
-                    {
-                        return false;
-                    }
-                    int currentSkill = (int)(Game1.activeClickableMenu as LevelUpMenu).GetInstanceField("currentSkill");
-                    if (currentSkill == this.Type.Ordinal)
-                    {
-                        return true;
-                    }
-                    return false;
-                },
+                IsMenu = menu => menu.GetType() == typeof(LevelUpMenu) && this.Type.Ordinal == (int)Game1.activeClickableMenu.GetInstanceField("currentSkill"),
                 GetLevel = () => (int)(Game1.activeClickableMenu as LevelUpMenu).GetInstanceField("currentLevel"),
-                GetSkill = () => this,
                 CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<LevelUpMenu>(
                     skill: skill,
                     level: level,

@@ -13,11 +13,6 @@ namespace SkillPrestige
     [Serializable]
     public class Prestige
     {
-        public Prestige()
-        {
-            PrestigeProfessionsSelected = new List<int>();
-        }
-
         /// <summary>The skill the prestige is for.</summary>
         public SkillType SkillType { get; set; }
 
@@ -25,7 +20,7 @@ namespace SkillPrestige
         public int PrestigePoints { get; set; }
 
         /// <summary>Professions that have been chosen to be permanent using skill points.</summary>
-        public IList<int> PrestigeProfessionsSelected { get; set; }
+        public IList<int> PrestigeProfessionsSelected { get; set; } = new List<int>();
 
         /// <summary>Purchases a profession to be part of the prestige set.</summary>
         public static void AddPrestigeProfession(int professionId)

@@ -91,7 +91,6 @@ namespace SkillPrestige.CookingSkill
                 {
                     IsMenu = menu => menu is SkillLevelUpMenu && this.Helper.Reflection.GetField<string>(menu, "currentSkill").GetValue() == this.SpaceCoreSkillId,
                     GetLevel = () => Game1.player.GetCustomSkillLevel(SpaceCore.Skills.GetSkill(this.SpaceCoreSkillId)),
-                    GetSkill = () => Skill.AllSkills.Single(skill => skill.Type == this.SkillType),
                     CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<SkillLevelUpMenu>(
                         skill: skill,
                         level: level,

@@ -1,5 +1,4 @@
 using System.IO;
-using System.Linq;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Framework;
 using SkillPrestige.Framework.Commands;
@@ -173,10 +172,7 @@ namespace SkillPrestige
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
             this.CheckForGameSave();
-            if (Game1.activeClickableMenu != null)
-            {
-                this.CheckForLevelUpMenu();
-            }
+            this.CheckForLevelUpMenu();
 
             if (e.IsOneSecond && this.SaveIsLoaded)
                 ExperienceHandler.UpdateExperience(); //one second tick for this, as the detection of changed experience can happen as infrequently as possible. a 10 second tick would be well within tolerance.
@@ -192,16 +188,21 @@ namespace SkillPrestige
 
         private void CheckForLevelUpMenu()
         {
-            foreach (LevelUpManager levelUpManager in Skill.AllSkills.Select(x => x.LevelUpManager))
+            if (Game1.activeClickableMenu == null)
+                return;
+
+            foreach (Skill skill in Skill.AllSkills)
             {
+                LevelUpManager levelUpManager = skill.LevelUpManager;
                 if (!levelUpManager.IsMenu(Game1.activeClickableMenu))
                     continue;
+
                 int currentLevel = levelUpManager.GetLevel.Invoke();
                 if (currentLevel % 5 != 0)
                     return;
+
                 Logger.LogInformation("Level up menu as profession chooser detected.");
-                Skill currentSkill = levelUpManager.GetSkill.Invoke();
-                Game1.activeClickableMenu = levelUpManager.CreateNewLevelUpMenu.Invoke(currentSkill, currentLevel);
+                Game1.activeClickableMenu = levelUpManager.CreateNewLevelUpMenu.Invoke(skill, currentLevel);
                 Logger.LogInformation("Replaced level up menu with custom menu.");
             }
         }
