@@ -173,7 +173,10 @@ namespace SkillPrestige
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
             this.CheckForGameSave();
-            this.CheckForLevelUpMenu();
+            if (Game1.activeClickableMenu != null)
+            {
+                this.CheckForLevelUpMenu();
+            }
 
             if (e.IsOneSecond && this.SaveIsLoaded)
                 ExperienceHandler.UpdateExperience(); //one second tick for this, as the detection of changed experience can happen as infrequently as possible. a 10 second tick would be well within tolerance.
@@ -191,7 +194,7 @@ namespace SkillPrestige
         {
             foreach (LevelUpManager levelUpManager in Skill.AllSkills.Select(x => x.LevelUpManager))
             {
-                if (Game1.activeClickableMenu == null || !levelUpManager.IsMenu(Game1.activeClickableMenu))
+                if (!levelUpManager.IsMenu(Game1.activeClickableMenu))
                     continue;
                 int currentLevel = levelUpManager.GetLevel.Invoke();
                 if (currentLevel % 5 != 0)

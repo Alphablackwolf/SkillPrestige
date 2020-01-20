@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using SkillPrestige.Framework;
 using SkillPrestige.Framework.InputHandling;
 using SkillPrestige.Framework.Menus.Dialogs;
@@ -123,6 +124,26 @@ namespace SkillPrestige.Menus
             this.LevelTenToggleButton?.OnButtonPressed(e, isClick);
         }
 
+        public override void receiveGamePadButton(Buttons b)
+        {
+            this.InternalMenu.receiveGamePadButton(b);
+        }
+
+        public override void snapToDefaultClickableComponent()
+        {
+            this.InternalMenu.snapToDefaultClickableComponent();
+        }
+
+        public override void applyMovementKey(int direction)
+        {
+            this.InternalMenu.applyMovementKey(direction);
+        }
+
+        public override void receiveKeyPress(Keys key)
+        {
+            this.InternalMenu.receiveKeyPress(key);
+        }
+
 
         /*********
         ** Private methods
@@ -153,6 +174,7 @@ namespace SkillPrestige.Menus
                     Game1.player.professions.Add(professionToAdd.Id);
                     professionToAdd.SpecialHandling?.ApplyEffect();
                     this.exitThisMenu(false);
+                    this.RemoveLevelFromLevelList(this.CurrentSkill.Type.Ordinal, this.CurrentLevel);
                     Game1.activeClickableMenu = new LevelUpMessageDialogWithProfession(this.MessageDialogBounds, $"You levelled your {this.CurrentSkill.Type.Name} skill to level {this.CurrentLevel} and gained a profession!", this.CurrentSkill, professionToAdd);
                     return;
                 }
@@ -160,6 +182,7 @@ namespace SkillPrestige.Menus
                 {
                     Logger.LogInformation("Level Up Menu - Both available level 5 professions are already prestiged.");
                     this.exitThisMenu(false);
+                    this.RemoveLevelFromLevelList(this.CurrentSkill.Type.Ordinal, this.CurrentLevel);
                     Game1.activeClickableMenu = new LevelUpMessageDialog(this.MessageDialogBounds, $"You levelled your {this.CurrentSkill.Type.Name} skill to level {this.CurrentLevel}!", this.CurrentSkill);
                     return;
                 }
@@ -191,6 +214,7 @@ namespace SkillPrestige.Menus
                     Game1.player.professions.Add(professionToAdd.Id);
                     professionToAdd.SpecialHandling?.ApplyEffect();
                     this.exitThisMenu(false);
+                    this.RemoveLevelFromLevelList(this.CurrentSkill.Type.Ordinal, this.CurrentLevel);
                     Game1.activeClickableMenu = new LevelUpMessageDialogWithProfession(this.ExtraTallMessageDialogBounds, $"You levelled your {this.CurrentSkill.Type.Name} skill to level {this.CurrentLevel} and gained a profession! {Environment.NewLine} You may now prestige this skill again!", this.CurrentSkill, professionToAdd);
                     return;
                 }
@@ -198,6 +222,7 @@ namespace SkillPrestige.Menus
                     return;
                 Logger.LogInformation("Level Up Menu - Only one level 5 profession found with both level 10 professions already prestiged (cheater!).");
                 this.exitThisMenu(false);
+                this.RemoveLevelFromLevelList(this.CurrentSkill.Type.Ordinal, this.CurrentLevel);
                 Game1.activeClickableMenu = new LevelUpMessageDialog(this.MessageDialogBounds, $"You levelled your {this.CurrentSkill.Type.Name} skill to level {this.CurrentLevel}!  {Environment.NewLine} You may now prestige this skill again!", this.CurrentSkill);
             }
             else
@@ -232,6 +257,7 @@ namespace SkillPrestige.Menus
                     Game1.player.professions.Add(professionToAdd.Id);
                     professionToAdd.SpecialHandling?.ApplyEffect();
                     this.exitThisMenu(false);
+                    this.RemoveLevelFromLevelList(this.CurrentSkill.Type.Ordinal, this.CurrentLevel);
                     Game1.activeClickableMenu = new LevelUpMessageDialogWithProfession(this.ExtraTallMessageDialogBounds, $"You levelled your {this.CurrentSkill.Type.Name} skill to level {this.CurrentLevel} and gained a profession!  {Environment.NewLine} You may now prestige this skill again!", this.CurrentSkill, professionToAdd);
                     return;
                 }
@@ -239,6 +265,7 @@ namespace SkillPrestige.Menus
                     return;
                 Logger.LogInformation("Level Up Menu - All professions already prestiged for this skill.");
                 this.exitThisMenu(false);
+                    this.RemoveLevelFromLevelList(this.CurrentSkill.Type.Ordinal, this.CurrentLevel);
                 Game1.activeClickableMenu = new LevelUpMessageDialog(this.ExtraTallMessageDialogBounds, $"You levelled your {this.CurrentSkill.Type.Name} skill to level {this.CurrentLevel}!  {Environment.NewLine} Congratulations! You have prestiged all of your professions and reached level 10 again! You may continue to earn prestige points if you wish, as more prestige options are coming soon!", this.CurrentSkill);
             }
         }
@@ -286,6 +313,19 @@ namespace SkillPrestige.Menus
             List<Profession> professionsToChooseFrom = this.CurrentSkill.Professions.Where(x => x.LevelAvailableAt == this.CurrentLevel).ToList();
             this.DrawLeftPrestigedIndicator = prestigedProfessionsForThisSkillAndLevel.Contains(professionsToChooseFrom.Skip(this.IsRightSideOfTree == false ? 0 : 2).First());
             this.DrawRightPrestigedIndicator = prestigedProfessionsForThisSkillAndLevel.Contains(professionsToChooseFrom.Skip(this.IsRightSideOfTree == false ? 1 : 3).First());
+        }
+
+        private void RemoveLevelFromLevelList(int skill, int level)
+        {
+            for (int index = 0; index < Game1.player.newLevels.Count; ++index)
+            {
+                Point newLevel = Game1.player.newLevels[index];
+                if (newLevel.X == skill && newLevel.Y == level)
+                {
+                    Game1.player.newLevels.RemoveAt(index);
+                    --index;
+                }
+            }
         }
     }
 }
