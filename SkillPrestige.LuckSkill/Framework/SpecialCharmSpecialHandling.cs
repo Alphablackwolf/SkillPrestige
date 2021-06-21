@@ -1,4 +1,4 @@
-﻿using SkillPrestige.Logging;
+using SkillPrestige.Logging;
 using SkillPrestige.Professions;
 using StardewValley;
 

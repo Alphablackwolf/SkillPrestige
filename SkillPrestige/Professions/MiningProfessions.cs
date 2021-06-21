@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace SkillPrestige.Professions
 {
     public partial class Profession
     {
+        /*********
+        ** Accessors
+        *********/
         public static IEnumerable<Profession> MiningProfessions => new List<Profession>
         {
             Miner,

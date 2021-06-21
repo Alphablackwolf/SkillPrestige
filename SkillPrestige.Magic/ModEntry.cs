@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using Magic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Magic.Framework;
@@ -12,11 +12,13 @@ using SpaceCore;
 using SpaceCore.Interface;
 using StardewModdingAPI;
 using StardewValley;
+using IMagicApi = Magic.IApi;
+using IManaBarApi = ManaBar.IApi;
 
 namespace SkillPrestige.Magic
 {
     /// <summary>The mod entry class.</summary>
-    public class ModEntry : StardewModdingAPI.Mod, ISkillMod
+    internal class ModEntry : Mod, ISkillMod
     {
         /*********
         ** Fields
@@ -32,6 +34,15 @@ namespace SkillPrestige.Magic
 
         /// <summary>Whether the Luck Skill mod is loaded.</summary>
         private bool IsLuckSkillModLoaded;
+
+        /// <summary>The unique ID for the Magic skill registered with SpaceCore.</summary>
+        private readonly string SpaceCoreSkillId = "spacechase0.Magic";
+
+        /// <summary>The unique ID for the Magic mod.</summary>
+        private readonly string MagicModId = "spacechase0.Magic";
+
+        /// <summary>The unique ID for the Mana Bar mod.</summary>
+        private readonly string ManaBarModId = "spacechase0.ManaBar";
 
 
         /*********
@@ -57,9 +68,9 @@ namespace SkillPrestige.Magic
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
         {
-            this.IconTexture = helper.Content.Load<Texture2D>("icon.png");
+            this.IconTexture = helper.Content.Load<Texture2D>("assets/icon.png");
             this.MagicSkillType = new SkillType("Magic", 8);
-            this.IsFound = helper.ModRegistry.IsLoaded("spacechase0.Magic");
+            this.IsFound = helper.ModRegistry.IsLoaded(this.MagicModId);
             this.IsCookingSkillModLoaded = helper.ModRegistry.IsLoaded("Alphablackwolf.CookingSkillPrestigeAdapter");
             this.IsLuckSkillModLoaded = helper.ModRegistry.IsLoaded("alphablackwolf.LuckSkillPrestigeAdapter");
 
@@ -89,17 +100,24 @@ namespace SkillPrestige.Magic
                 SourceRectangleForSkillIcon = new Rectangle(0, 0, 16, 16),
                 SkillIconTexture = this.IconTexture,
                 Professions = this.GetAddedProfessions(),
-                SetSkillLevel = x => { }, // no set necessary, as the level isn't stored independently from the experience
-                GetSkillLevel = this.GetMagicLevel,
-                SetSkillExperience = this.SetMagicExperience,
+                GetSkillLevel = this.GetLevel,
+                SetSkillLevel = level => { }, // no set necessary, as the level isn't stored independently from the experience
+                GetSkillExperience = this.GetExperience,
+                SetSkillExperience = this.SetExperience,
                 OnPrestige = this.OnPrestige,
                 LevelUpManager = new LevelUpManager
                 {
-                    IsMenu = menu => menu is SkillLevelUpMenu && this.Helper.Reflection.GetField<string>(menu, "currentSkill").GetValue() == "spacechase0.Cooking",
-                    GetLevel = () => Game1.player.GetCustomSkillLevel(SpaceCore.Skills.GetSkill("spacechase0.Magic")),
-                    GetSkill = () => Skill.AllSkills.Single(x => x.Type == this.MagicSkillType),
-                    CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<SkillLevelUpMenu>(skill, level, new SkillLevelUpMenu("spacechase0.Magic", level),
-                        "professionsToChoose", "leftProfessionDescription", "rightProfessionDescription", SkillLevelUpMenu.getProfessionDescription)
+                    IsMenu = menu => menu is SkillLevelUpMenu && this.Helper.Reflection.GetField<string>(menu, "currentSkill").GetValue() == this.SpaceCoreSkillId,
+                    GetLevel = () => Game1.player.GetCustomSkillLevel(SpaceCore.Skills.GetSkill(this.SpaceCoreSkillId)),
+                    CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<SkillLevelUpMenu>(
+                        skill: skill,
+                        level: level,
+                        internalMenu: new SkillLevelUpMenu(this.SpaceCoreSkillId, level),
+                        professionsToChooseInternalName: "professionsToChoose",
+                        leftProfessionDescriptionInternalName: "leftProfessionDescription",
+                        rightProfessionDescriptionInternalName: "rightProfessionDescription",
+                        getProfessionDescription: SkillLevelUpMenu.getProfessionDescription
+                    )
                 }
             };
         }
@@ -119,7 +137,7 @@ namespace SkillPrestige.Magic
         /// <summary>Get the professions added by this mod.</summary>
         private IEnumerable<Profession> GetAddedProfessions()
         {
-            var skill = SpaceCore.Skills.GetSkill("spacechase0.Magic");
+            var skill = SpaceCore.Skills.GetSkill(this.SpaceCoreSkillId);
 
             IList<Profession> professions = new List<Profession>();
             IList<TierOneProfession> tierOne = new List<TierOneProfession>();
@@ -173,40 +191,74 @@ namespace SkillPrestige.Magic
 
             foreach (var profession in professions)
             {
-                if (profession.DisplayName == "Mana Reserve")
-                    profession.SpecialHandling = new ManaCapSpecialHandling(500);
-                else if (profession.DisplayName == "Potential" || profession.DisplayName == "Prodigy")
-                    profession.SpecialHandling = new UpgradePointSpecialHandling(2);
+                switch (profession.DisplayName)
+                {
+                    case "Mana Reserve":
+                        profession.SpecialHandling = new ManaCapSpecialHandling(
+                            amount: 500,
+                            addMaxMana: points =>
+                            {
+                                IManaBarApi api = this.GetManaBarApi();
+                                int maxMana = api.GetMaxMana(Game1.player);
+                                api.SetMaxMana(Game1.player, maxMana + points);
+                            }
+                        );
+                        break;
+
+                    case "Potential":
+                    case "Prodigy":
+                        profession.SpecialHandling = new UpgradePointSpecialHandling(
+                            amount: 2,
+                            useSpellPoints: points => this.GetMagicApi().UseSpellPoints(this.ModManifest, points)
+                        );
+                        break;
+                }
             }
 
             return professions;
         }
 
-        /// <summary>Get the current cooking skill level.</summary>
-        private int GetMagicLevel()
+        /// <summary>Get the current skill level.</summary>
+        private int GetLevel()
         {
             //this.FixExpLength();
-            return Game1.player.GetCustomSkillLevel("spacechase0.Magic");
+            return Game1.player.GetCustomSkillLevel(this.SpaceCoreSkillId);
         }
 
-        /// <summary>Set the current cooking skill XP.</summary>
-        /// <param name="amount">The amount to set.</param>
-        private void SetMagicExperience(int amount)
+        /// <summary>Get the current skill XP.</summary>
+        private int GetExperience()
         {
-            int addedExperience = amount - Game1.player.GetCustomSkillExperience("spacechase0.Magic");
-            Game1.player.AddCustomSkillExperience("spacechase0.Magic", addedExperience);
+            return Game1.player.GetCustomSkillExperience(this.SpaceCoreSkillId);
+        }
+
+        /// <summary>Set the current skill XP.</summary>
+        /// <param name="amount">The amount to set.</param>
+        private void SetExperience(int amount)
+        {
+            int addedExperience = amount - Game1.player.GetCustomSkillExperience(this.SpaceCoreSkillId);
+            Game1.player.AddCustomSkillExperience(this.SpaceCoreSkillId, addedExperience);
+        }
+
+        /// <summary>Get the Magic mod's API.</summary>
+        private IMagicApi GetMagicApi()
+        {
+            return
+                this.Helper.ModRegistry.GetApi<IMagicApi>(this.MagicModId)
+                ?? throw new InvalidOperationException("Can't load the API for the Magic mod.");
+        }
+
+        /// <summary>Get the Mana Bar mod's API.</summary>
+        private IManaBarApi GetManaBarApi()
+        {
+            return
+                this.Helper.ModRegistry.GetApi<IManaBarApi>(this.ManaBarModId)
+                ?? throw new InvalidOperationException("Can't load the API for the Mana Bar mod.");
         }
 
         /// <summary>Reset the upgrade points of the player on prestige. Points from professions are handled in <see cref="UpgradePointSpecialHandling"/>.</summary>
         private void OnPrestige()
         {
-            SpellBook spells = Game1.player.getSpellBook();
-            foreach (var spell in new Dictionary<string, int>(spells.knownSpells))
-            {
-                if (spell.Value > 0)
-                    Game1.player.forgetSpell(spell.Key, 1, sync: false);
-            }
-            Game1.player.useSpellPoints(10, sync: true);
+            this.GetMagicApi().ResetProgress(this.ModManifest);
         }
     }
 }
