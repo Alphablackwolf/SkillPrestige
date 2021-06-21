@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Magic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Magic.Framework;
@@ -12,11 +12,13 @@ using SpaceCore;
 using SpaceCore.Interface;
 using StardewModdingAPI;
 using StardewValley;
+using IMagicApi = Magic.IApi;
+using IManaBarApi = ManaBar.IApi;
 
 namespace SkillPrestige.Magic
 {
     /// <summary>The mod entry class.</summary>
-    internal class ModEntry : StardewModdingAPI.Mod, ISkillMod
+    internal class ModEntry : Mod, ISkillMod
     {
         /*********
         ** Fields
@@ -33,11 +35,14 @@ namespace SkillPrestige.Magic
         /// <summary>Whether the Luck Skill mod is loaded.</summary>
         private bool IsLuckSkillModLoaded;
 
-        /// <summary>The unique ID for the Cooking skill registered with SpaceCore.</summary>
+        /// <summary>The unique ID for the Magic skill registered with SpaceCore.</summary>
         private readonly string SpaceCoreSkillId = "spacechase0.Magic";
 
-        /// <summary>The unique ID for the Cooking Skill mod.</summary>
-        private readonly string TargetModId = "spacechase0.Magic";
+        /// <summary>The unique ID for the Magic mod.</summary>
+        private readonly string MagicModId = "spacechase0.Magic";
+
+        /// <summary>The unique ID for the Mana Bar mod.</summary>
+        private readonly string ManaBarModId = "spacechase0.ManaBar";
 
 
         /*********
@@ -65,7 +70,7 @@ namespace SkillPrestige.Magic
         {
             this.IconTexture = helper.Content.Load<Texture2D>("assets/icon.png");
             this.MagicSkillType = new SkillType("Magic", 8);
-            this.IsFound = helper.ModRegistry.IsLoaded(this.TargetModId);
+            this.IsFound = helper.ModRegistry.IsLoaded(this.MagicModId);
             this.IsCookingSkillModLoaded = helper.ModRegistry.IsLoaded("Alphablackwolf.CookingSkillPrestigeAdapter");
             this.IsLuckSkillModLoaded = helper.ModRegistry.IsLoaded("alphablackwolf.LuckSkillPrestigeAdapter");
 
@@ -186,10 +191,28 @@ namespace SkillPrestige.Magic
 
             foreach (var profession in professions)
             {
-                if (profession.DisplayName == "Mana Reserve")
-                    profession.SpecialHandling = new ManaCapSpecialHandling(500);
-                else if (profession.DisplayName == "Potential" || profession.DisplayName == "Prodigy")
-                    profession.SpecialHandling = new UpgradePointSpecialHandling(2);
+                switch (profession.DisplayName)
+                {
+                    case "Mana Reserve":
+                        profession.SpecialHandling = new ManaCapSpecialHandling(
+                            amount: 500,
+                            addMaxMana: points =>
+                            {
+                                IManaBarApi api = this.GetManaBarApi();
+                                int maxMana = api.GetMaxMana(Game1.player);
+                                api.SetMaxMana(Game1.player, maxMana + points);
+                            }
+                        );
+                        break;
+
+                    case "Potential":
+                    case "Prodigy":
+                        profession.SpecialHandling = new UpgradePointSpecialHandling(
+                            amount: 2,
+                            useSpellPoints: points => this.GetMagicApi().UseSpellPoints(this.ModManifest, points)
+                        );
+                        break;
+                }
             }
 
             return professions;
@@ -216,16 +239,26 @@ namespace SkillPrestige.Magic
             Game1.player.AddCustomSkillExperience(this.SpaceCoreSkillId, addedExperience);
         }
 
+        /// <summary>Get the Magic mod's API.</summary>
+        private IMagicApi GetMagicApi()
+        {
+            return
+                this.Helper.ModRegistry.GetApi<IMagicApi>(this.MagicModId)
+                ?? throw new InvalidOperationException("Can't load the API for the Magic mod.");
+        }
+
+        /// <summary>Get the Mana Bar mod's API.</summary>
+        private IManaBarApi GetManaBarApi()
+        {
+            return
+                this.Helper.ModRegistry.GetApi<IManaBarApi>(this.ManaBarModId)
+                ?? throw new InvalidOperationException("Can't load the API for the Mana Bar mod.");
+        }
+
         /// <summary>Reset the upgrade points of the player on prestige. Points from professions are handled in <see cref="UpgradePointSpecialHandling"/>.</summary>
         private void OnPrestige()
         {
-            SpellBook spells = Game1.player.getSpellBook();
-            foreach (var spell in new Dictionary<string, int>(spells.knownSpells))
-            {
-                if (spell.Value > 0)
-                    Game1.player.forgetSpell(spell.Key, 1, sync: false);
-            }
-            Game1.player.useSpellPoints(10, sync: true);
+            this.GetMagicApi().ResetProgress(this.ModManifest);
         }
     }
 }

@@ -7,8 +7,16 @@
     "EntryDll": "SkillPrestige.Magic.dll",
     "MinimumApiVersion": "3.1.0",
     "Dependencies": [
-        { "UniqueID": "alphablackwolf.skillPrestige" },
-        { "UniqueID": "spacechase0.Magic" }
+        {
+            "UniqueID": "alphablackwolf.skillPrestige"
+        },
+        {
+            "UniqueID": "spacechase0.Magic",
+            "MinimumVersion": "0.4.0"
+        },
+        {
+            "UniqueID": "spacechase0.ManaBar"
+        }
     ],
     "UpdateKeys": [ "Nexus:569" ]
 }
