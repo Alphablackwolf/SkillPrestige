@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using LuckSkill;
 using Microsoft.Xna.Framework;
 using SkillPrestige.LuckSkill.Framework;
 using SkillPrestige.Mods;
@@ -6,7 +8,6 @@ using SkillPrestige.Professions;
 using SkillPrestige.SkillTypes;
 using StardewModdingAPI;
 using StardewValley;
-using TargetMod = LuckSkill.Mod;
 
 namespace SkillPrestige.LuckSkill
 {
@@ -88,47 +89,33 @@ namespace SkillPrestige.LuckSkill
         /// <summary>Get the professions added by this mod.</summary>
         private IEnumerable<Profession> GetAddedProfessions()
         {
-            var fortunate = new TierOneProfession
+            ILuckSkillApi api = this.GetLuckSkillApi();
+            IDictionary<int, IProfession> professions = api.GetProfessions();
+
+            TProfession Create<TProfession>(int id, IProfessionSpecialHandling specialHandling = null) where TProfession : Profession, new()
             {
-                Id = TargetMod.PROFESSION_DAILY_LUCK,
-                DisplayName = "Fortunate",
-                EffectText = new[] { "Better daily luck." }
-            };
-            var popularHelper = new TierOneProfession
-            {
-                Id = TargetMod.PROFESSION_MORE_QUESTS,
-                DisplayName = "Popular Helper",
-                EffectText = new[] { "Daily quests occur three times as often." },
-            };
-            var lucky = new TierTwoProfession
-            {
-                Id = TargetMod.PROFESSION_CHANCE_MAX_LUCK,
-                DisplayName = "Lucky",
-                EffectText = new[] { "20% chance for max daily luck." },
-                SpecialHandling = new SpecialCharmSpecialHandling(),
-                TierOneProfession = fortunate
-            };
-            var unUnlucky = new TierTwoProfession
-            {
-                Id = TargetMod.PROFESSION_NO_BAD_LUCK,
-                DisplayName = "Un-unlucky",
-                EffectText = new[] { "Never have bad luck." },
-                TierOneProfession = fortunate
-            };
-            var shootingStar = new TierTwoProfession
-            {
-                Id = TargetMod.PROFESSION_NIGHTLY_EVENTS,
-                DisplayName = "Shooting Star",
-                EffectText = new[] { "Nightly events occur twice as often." },
-                TierOneProfession = popularHelper
-            };
-            var spiritChild = new TierTwoProfession
-            {
-                Id = TargetMod.PROFESSION_JUNIMO_HELP,
-                DisplayName = "Spirit Child",
-                EffectText = new[] { "Giving fits makes junimos happy. They might help your farm.\n(15% chance for some form of farm advancement.)" },
-                TierOneProfession = popularHelper
-            };
+                var profession = professions[id];
+                return new TProfession
+                {
+                    Id = id,
+                    DisplayName = profession.Name,
+                    EffectText = new[] { profession.Description },
+                    SpecialHandling = specialHandling
+                };
+            }
+
+            var fortunate = Create<TierOneProfession>(api.FortunateProfessionId);
+            var popularHelper = Create<TierOneProfession>(api.PopularHelperProfessionId);
+            var lucky = Create<TierTwoProfession>(api.LuckyProfessionId, new SpecialCharmSpecialHandling());
+            var unUnlucky = Create<TierTwoProfession>(api.UnUnluckyProfessionId);
+            var shootingStar = Create<TierTwoProfession>(api.ShootingStarProfessionId);
+            var spiritChild = Create<TierTwoProfession>(api.SpiritChildProfessionId);
+
+            lucky.TierOneProfession = fortunate;
+            unUnlucky.TierOneProfession = fortunate;
+            shootingStar.TierOneProfession = popularHelper;
+            spiritChild.TierOneProfession = popularHelper;
+
             fortunate.TierTwoProfessions = new List<TierTwoProfession>
             {
                 lucky,
@@ -149,6 +136,14 @@ namespace SkillPrestige.LuckSkill
                 shootingStar,
                 spiritChild
             };
+        }
+
+        /// <summary>Get the Luck Skill mod's API.</summary>
+        private ILuckSkillApi GetLuckSkillApi()
+        {
+            return
+                this.Helper.ModRegistry.GetApi<ILuckSkillApi>(this.TargetModId)
+                ?? throw new InvalidOperationException("Can't load the API for the Luck Skill mod.");
         }
     }
 }

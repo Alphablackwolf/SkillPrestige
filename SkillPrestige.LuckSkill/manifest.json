@@ -7,8 +7,13 @@
     "EntryDll": "SkillPrestige.LuckSkill.dll",
     "MinimumApiVersion": "3.1.0",
     "Dependencies": [
-        { "UniqueID": "alphablackwolf.skillPrestige" },
-        { "UniqueID": "spacechase0.LuckSkill" }
+        {
+            "UniqueID": "alphablackwolf.skillPrestige"
+        },
+        {
+            "UniqueID": "spacechase0.LuckSkill",
+            "MinimumVersion": "1.1.0"
+        }
     ],
     "UpdateKeys": [ "Nexus:569" ]
 }
