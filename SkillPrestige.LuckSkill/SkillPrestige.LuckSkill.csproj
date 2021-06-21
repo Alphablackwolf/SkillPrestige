@@ -1,8 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <AssemblyName>SkillPrestige.LuckSkill</AssemblyName>
-    <RootNamespace>SkillPrestige.LuckSkill</RootNamespace>
     <Version>1.2.4</Version>
     <TargetFramework>net452</TargetFramework>
     <Platforms>x86</Platforms>
@@ -18,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="LuckSkill">
-      <HintPath>$(GamePath)\Mods\LuckSkill\LuckSkill.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="LuckSkill" HintPath="$(GamePath)\Mods\LuckSkill\LuckSkill.dll" Private="False" />
   </ItemGroup>
-
 </Project>
