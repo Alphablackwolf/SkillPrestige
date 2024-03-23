@@ -68,7 +68,10 @@ namespace SkillPrestige.Framework.Commands
                 .Select(prof => prof.SpecialHandling);
 
             Game1.player.professions.Clear();
-            Game1.player.professions.AddRange(professionsToKeep.Select(x => x.Id));
+            foreach (var profession in professionsToKeep)
+            {
+                Game1.player.professions.Add(profession.Id);
+            }
             foreach (var specialHandling in specialHandlingsForSkillsRemoved)
                 specialHandling.RemoveEffect();
             Logger.LogInformation("Professions reset.");

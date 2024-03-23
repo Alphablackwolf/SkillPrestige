@@ -9,9 +9,9 @@ namespace SkillPrestige.UnitTests
         public void SetInstanceFieldOfBase_SetsPrivateBaseClassProperty()
         {
             var item = new DerivedClass();
-            Assert.IsTrue(item.GetCost == 2);
+            Assert.That(item.GetCost == 2);
             item.SetProperty();
-            Assert.IsTrue(item.GetCost == 5);
+            Assert.That(item.GetCost == 5);
         }
 
         private class BaseClass
