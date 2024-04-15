@@ -1,7 +1,10 @@
-﻿namespace SkillPrestige.SkillTypes
+namespace SkillPrestige.SkillTypes
 {
     public partial class SkillType
     {
+        /*********
+        ** Accessors
+        *********/
         public static SkillType Farming { get; protected set; }
         public static SkillType Mining { get; protected set; }
         public static SkillType Fishing { get; protected set; }
@@ -9,4 +12,3 @@
         public static SkillType Combat { get; protected set; }
     }
 }
-
