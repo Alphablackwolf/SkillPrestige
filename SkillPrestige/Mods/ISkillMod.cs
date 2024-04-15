@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using SkillPrestige.PrestigeFramework;
+using SkillPrestige.Skills;
 
 namespace SkillPrestige.Mods
 {

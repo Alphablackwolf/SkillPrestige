@@ -58,22 +58,23 @@
     <Compile Include="Commands\SetExperienceCommand.cs" />
     <Compile Include="Commands\SkillPrestigeCommand.cs" />
     <Compile Include="Bonuses\TypeRegistration\IBonusTypeRegistration.cs" />
-    <Compile Include="CropRegrowthFactor.cs" />
-    <Compile Include="MathExtensions.cs" />
+    <Compile Include="Bonuses\Factors\CropRegrowthFactor.cs" />
+    <Compile Include="Extensions\MathExtensions.cs" />
     <Compile Include="Menus\Elements\Buttons\BonusButton.cs" />
+    <Compile Include="Menus\Elements\IArrangeableElement.cs" />
     <Compile Include="Menus\IMenuPage.cs" />
-    <Compile Include="Menus\PrestigeMenuButtonArranger.cs" />
+    <Compile Include="Menus\Elements\ElementArranger.cs" />
     <Compile Include="Menus\PrestigeMenuBonusPage.cs" />
     <Compile Include="Menus\PrestigeMenuProfessionsPage.cs" />
     <Compile Include="Menus\MenuPage.cs" />
-    <Compile Include="ReflectionExtensions.cs" />
-    <Compile Include="MilkPailReplacement.cs" />
-    <Compile Include="ShearsReplacement.cs" />
+    <Compile Include="Extensions\ReflectionExtensions.cs" />
+    <Compile Include="Bonuses\Replacements\MilkPailReplacement.cs" />
+    <Compile Include="Bonuses\Replacements\ShearsReplacement.cs" />
     <Compile Include="JsonNet.PrivateSettersContractResolvers\MemberInfoExtensions.cs" />
     <Compile Include="JsonNet.PrivateSettersContractResolvers\PrivateSetterContractResolver.cs" />
     <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Menus\Elements\Buttons\IntegerEditor.cs" />
-    <Compile Include="Menus\Elements\Buttons\MinimalistProfessionButton.cs" />
+    <Compile Include="Menus\Elements\Buttons\ProfessionButton.cs" />
     <Compile Include="Menus\Elements\Buttons\TextureButton.cs" />
     <Compile Include="Menus\Elements\Buttons\Checkbox.cs" />
     <Compile Include="Menus\LevelUpMenuDecorator.cs" />
@@ -85,8 +86,8 @@
     <Compile Include="Mods\MyLuckSkill\LuckSkillTypeRegistration.cs" />
     <Compile Include="Mods\MyLuckSkill\LuckRegistration.cs" />
     <Compile Include="Mods\MyLuckSkill\LuckProfessions.cs" />
-    <Compile Include="PerSaveOptions.cs" />
-    <Compile Include="PlayerManager.cs" />
+    <Compile Include="Options\PerSaveOptions.cs" />
+    <Compile Include="Managers\PlayerManager.cs" />
     <Compile Include="Professions\CombatProfessions.cs" />
     <Compile Include="Professions\MiningProfessions.cs" />
     <Compile Include="Professions\ForagingProfessions.cs" />
@@ -103,7 +104,7 @@
     <Compile Include="Professions\TierTwoProfession.cs" />
     <Compile Include="Professions\TierOneProfession.cs" />
     <Compile Include="Professions\Profession.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="Extensions\DisplayExtensions.cs" />
     <Compile Include="Professions\DefenderSpecialHandling.cs" />
     <Compile Include="Professions\FighterSpecialHandling.cs" />
     <Compile Include="InputHandling\MouseMoveEventArguments.cs" />
@@ -116,29 +117,29 @@
     <Compile Include="Professions\IProfessionSpecialHandling.cs" />
     <Compile Include="Menus\SkillsMenuExtension.cs" />
     <Compile Include="Menus\Elements\Buttons\Button.cs" />
-    <Compile Include="PrestigeSaveData.cs" />
-    <Compile Include="PrestigeSet.cs" />
+    <Compile Include="PrestigeFramework\PrestigeSaveData.cs" />
+    <Compile Include="PrestigeFramework\PrestigeSet.cs" />
     <Compile Include="Mods\ModHandler.cs" />
     <Compile Include="Logging\Logger.cs" />
-    <Compile Include="ExperienceHandler.cs" />
-    <Compile Include="LevelUpManager.cs" />
+    <Compile Include="Managers\ExperienceManager.cs" />
+    <Compile Include="Managers\LevelUpManager.cs" />
     <Compile Include="Bonuses\BonusType.cs" />
-    <Compile Include="Skill.cs" />
-    <Compile Include="Options.cs" />
-    <Compile Include="CropReplacement.cs" />
-    <Compile Include="CropQualityFactor.cs" />
-    <Compile Include="AnimalProduceHandler.cs" />
-    <Compile Include="ToolTypeLookup.cs" />
-    <Compile Include="ToolType.cs" />
-    <Compile Include="ToolProficiencyHandler.cs" />
+    <Compile Include="Skills\Skill.cs" />
+    <Compile Include="Options\Options.cs" />
+    <Compile Include="Bonuses\Replacements\CropReplacement.cs" />
+    <Compile Include="Bonuses\Factors\CropQualityFactor.cs" />
+    <Compile Include="Bonuses\Factors\AnimalProduceFactor.cs" />
+    <Compile Include="Bonuses\Handlers\ToolTypeLookup.cs" />
+    <Compile Include="Bonuses\Handlers\ToolType.cs" />
+    <Compile Include="Bonuses\Handlers\ToolProficiencyHandler.cs" />
     <Compile Include="SkillPrestigeMod.cs" />
     <Compile Include="Mods\MyLuckSkill\LuckSkillType.cs" />
-    <Compile Include="SkillTypes\DefaultSkillTypeRegistration.cs" />
-    <Compile Include="SkillTypes\DefaultSkillTypes.cs" />
-    <Compile Include="SkillTypes\ISkillTypeRegistration.cs" />
-    <Compile Include="SkillTypes\SkillType.cs" />
+    <Compile Include="Skills\Types\DefaultSkillTypeRegistration.cs" />
+    <Compile Include="Skills\Types\DefaultSkillTypes.cs" />
+    <Compile Include="Skills\Types\ISkillTypeRegistration.cs" />
+    <Compile Include="Skills\Types\SkillType.cs" />
     <Compile Include="Menus\PrestigeMenu.cs" />
-    <Compile Include="Prestige.cs" />
+    <Compile Include="PrestigeFramework\Prestige.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -150,15 +151,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Checkmark.png">
+    <Content Include="Images\Checkmark.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="PrestigeIcon.png">
+    <Content Include="Images\PrestigeIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Images\Checkmark.png" />
-    <Content Include="Images\PrestigeIcon.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

@@ -1,5 +1,6 @@
 ﻿using SkillPrestige.Logging;
-using SkillPrestige.SkillTypes;
+using SkillPrestige.Skills.Types;
+using SkillType = SkillPrestige.Skills.Types.SkillType;
 
 namespace SkillPrestige.Mods.MyLuckSkill
 {

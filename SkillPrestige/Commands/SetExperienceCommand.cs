@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Linq;
+using SkillPrestige.Extensions;
 using SkillPrestige.Logging;
+using SkillPrestige.Managers;
+using SkillPrestige.Skills;
 using StardewValley;
 
 namespace SkillPrestige.Commands
@@ -58,9 +61,9 @@ namespace SkillPrestige.Commands
             var playerSkillExperience = Game1.player.experiencePoints[skill.Type.Ordinal];
             Logger.LogVerbose($"Current experience level for {skill.Type.Name} skill: {playerSkillExperience}");
             Logger.LogVerbose($"Setting {skill.Type.Name} skill to {experienceArgument} experience.");
-            ExperienceHandler.DisableExperienceGains = true;
+            ExperienceManager.DisableExperienceGains = true;
             skill.SetSkillExperience(experienceArgument);
-            ExperienceHandler.DisableExperienceGains = false;
+            ExperienceManager.DisableExperienceGains = false;
             var skillLevel = GetLevel(experienceArgument);
             Logger.LogVerbose($"Setting skill level for {experienceArgument} experience: {skillLevel}");
             skill.SetSkillLevel(skillLevel);

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SkillPrestige.Extensions;
 using StardewValley;
 using StardewValley.Menus;
 
@@ -10,8 +11,8 @@ namespace SkillPrestige.Menus.Elements.Buttons
         private const int PixelsWide = 9;
         private static int Width => PixelsWide*Game1.pixelZoom;
         private bool _isChecked;
-        public override string HoverText => string.Empty;
-        public override string Text { get; }
+        protected override string HoverText => string.Empty;
+        protected override string Text { get; }
 
         public delegate void ClickCallback(bool isChecked);
 
@@ -39,5 +40,14 @@ namespace SkillPrestige.Menus.Elements.Buttons
             Utility.drawTextWithShadow(spriteBatch, Text, Game1.dialogueFont, new Vector2(location.X + Width + Game1.pixelZoom * 2, location.Y), Game1.textColor, 1f, 0.1f);
         }
 
+        public override int CalculateWidth()
+        {
+            return Width + Game1.pixelZoom * 2 + (Game1.dialogueFont.MeasureString(Text).X).Ceiling();
+        }
+
+        public override int CalculateHeight()
+        {
+            return Width;
+        }
     }
 }

@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SkillPrestige.Extensions;
 using SkillPrestige.Logging;
+using SkillPrestige.PrestigeFramework;
 using SkillPrestige.Professions.Registration;
+using SkillPrestige.Skills;
 using StardewValley;
 using StardewValley.Menus;
 
@@ -108,13 +111,13 @@ namespace SkillPrestige.Professions
         /// </summary>
         public static void AddMissingProfessions()
         {
-            Logger.LogInformation("Adding professions that should be loaded.");
+            Logger.LogTrace("Adding professions that should be loaded.");
             var professions = Game1.player.professions;
             foreach (var profession in Skill.AllSkills.SelectMany(x => x.Professions).Where(x => PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.SelectMany(y => y.PrestigeProfessionsSelected).Contains(x.Id)))
             {
                 if (professions.Contains(profession.Id))
                 {
-                    Logger.LogVerbose($"Profession {profession.DisplayName} already found.");
+                    Logger.LogTrace($"Profession {profession.DisplayName} already found.");
                     continue;
                 }
                 professions.Add(profession.Id);

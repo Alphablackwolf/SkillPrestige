@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using Moq;
 using NUnit.Framework;
-using SkillPrestige;
 using SkillPrestige.Mods;
 using SkillPrestige.Mods.MyLuckSkill;
-using SkillPrestige.SkillTypes;
+using SkillPrestige.Skills;
+using SkillType = SkillPrestige.Skills.Types.SkillType;
 
 
 namespace UnitTest

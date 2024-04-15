@@ -9,19 +9,19 @@ namespace SkillPrestige.Menus
 {
     internal abstract class MenuPage : IMenuPage
     {
-        public int PageIndex { get; set; }
+        public int PageIndex { get; protected set; }
 
         private bool _controlMouseEventsRegistered;
 
-        public IList<Button> Controls { get; set; } = new List<Button>();
+        protected IList<Button> Controls { get; } = new List<Button>();
 
-        public IList<Action<SpriteBatch>> BeforeControlsDrawnBehindControlsDrawFunctions{ get; set; } = new List<Action<SpriteBatch>>();
+        protected IList<Action<SpriteBatch>> BeforeControlsDrawnFunctions{ get; } = new List<Action<SpriteBatch>>();
 
-        public IList<Action<SpriteBatch>> AfterControlsDrawnFunctions { get; set; } = new List<Action<SpriteBatch>>();
+        //private IList<Action<SpriteBatch>> AfterControlsDrawnFunctions { get; } = new List<Action<SpriteBatch>>();
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (var action in BeforeControlsDrawnBehindControlsDrawFunctions)
+            foreach (var action in BeforeControlsDrawnFunctions)
             {
                 action.Invoke(spriteBatch);
             }
@@ -29,10 +29,10 @@ namespace SkillPrestige.Menus
             {
                 control.Draw(spriteBatch);
             }
-            foreach (var action in AfterControlsDrawnFunctions)
-            {
-                action.Invoke(spriteBatch);
-            }
+            //foreach (var action in AfterControlsDrawnFunctions)
+            //{
+            //    action.Invoke(spriteBatch);
+            //}
             DrawHoverText(spriteBatch);
             Mouse.DrawCursor(spriteBatch);
         }
@@ -63,7 +63,7 @@ namespace SkillPrestige.Menus
             Logger.LogVerbose("Menu Page mouse events deregistered.");
         }
 
-        public void DrawHoverText(SpriteBatch spriteBatch)
+        private void DrawHoverText(SpriteBatch spriteBatch)
         {
             foreach (var control in Controls)
             {

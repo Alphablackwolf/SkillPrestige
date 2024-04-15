@@ -4,7 +4,7 @@ namespace SkillPrestige.Menus
 {
     internal interface IMenuPage
     {
-        int PageIndex { get; set; }
+        int PageIndex { get; }
 
         void Draw(SpriteBatch spriteBatch);
 

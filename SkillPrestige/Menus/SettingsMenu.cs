@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SkillPrestige.Extensions;
 using SkillPrestige.InputHandling;
 using SkillPrestige.Logging;
 using SkillPrestige.Menus.Elements.Buttons;
+using SkillPrestige.Options;
 using StardewValley;
 using StardewValley.Menus;
 
@@ -20,8 +22,10 @@ namespace SkillPrestige.Menus
         private Checkbox _resetRecipesCheckbox;
         private Checkbox _useExperienceMultiplierCheckbox;
         private Checkbox _painlessPrestigeModeCheckbox;
+        private Checkbox _dropBonusRequirementsCheckbox;
         private IntegerEditor _tierOneCostEditor;
         private IntegerEditor _tierTwoCostEditor;
+        private IntegerEditor _bonusCostEditor;
         private IntegerEditor _pointsPerPrestigeEditor;
         private IntegerEditor _experiencePerPainlessPrestigeEditor;
 
@@ -43,8 +47,10 @@ namespace SkillPrestige.Menus
             Mouse.MouseClicked += _resetRecipesCheckbox.CheckForMouseClick;
             Mouse.MouseClicked += _useExperienceMultiplierCheckbox.CheckForMouseClick;
             Mouse.MouseClicked += _painlessPrestigeModeCheckbox.CheckForMouseClick;
+            Mouse.MouseClicked += _dropBonusRequirementsCheckbox.CheckForMouseClick;
             _tierOneCostEditor.RegisterMouseEvents();
             _tierTwoCostEditor.RegisterMouseEvents();
+            _bonusCostEditor.RegisterMouseEvents();
             _pointsPerPrestigeEditor.RegisterMouseEvents();
             _experiencePerPainlessPrestigeEditor.RegisterMouseEvents();
             Logger.LogVerbose("Settings menu - Mouse events registered.");
@@ -59,8 +65,10 @@ namespace SkillPrestige.Menus
             Mouse.MouseClicked -= _resetRecipesCheckbox.CheckForMouseClick;
             Mouse.MouseClicked -= _useExperienceMultiplierCheckbox.CheckForMouseClick;
             Mouse.MouseClicked -= _painlessPrestigeModeCheckbox.CheckForMouseClick;
+            Mouse.MouseClicked -= _dropBonusRequirementsCheckbox.CheckForMouseClick;
             _tierOneCostEditor.DeregisterMouseEvents();
             _tierTwoCostEditor.DeregisterMouseEvents();
+            _bonusCostEditor.DeregisterMouseEvents();
             _pointsPerPrestigeEditor.DeregisterMouseEvents();
             _experiencePerPainlessPrestigeEditor.DeregisterMouseEvents();
             _buttonClickRegistered = false;
@@ -90,12 +98,19 @@ namespace SkillPrestige.Menus
             pointsPerPrestigeEditorLocation.Y += _tierTwoCostEditor.Bounds.Height + padding;
             pointsPerPrestigeEditorLocation.X = _tierOneCostEditor.Bounds.X;
             _pointsPerPrestigeEditor = new IntegerEditor("Points Per Prestige", PerSaveOptions.Instance.PointsPerPrestige, 1, 100, pointsPerPrestigeEditorLocation, ChangePointsPerPrestige);
+            var bonusCostEditorLocation = pointsPerPrestigeEditorLocation;
+            bonusCostEditorLocation.X = tierTwoEditorLocation.X;
+            _bonusCostEditor = new IntegerEditor("Cost of Bonuses", PerSaveOptions.Instance.CostOfBonuses, 1, 100, bonusCostEditorLocation, ChangeBonusCost);
+
             var painlessPrestigeModeCheckboxBounds = new Rectangle(_pointsPerPrestigeEditor.Bounds.X, _pointsPerPrestigeEditor.Bounds.Y + _pointsPerPrestigeEditor.Bounds.Height + padding, 9 * Game1.pixelZoom, 9 * Game1.pixelZoom);
             const string painlessPrestigeModeCheckboxText = "Painless Prestige Mode";
             _painlessPrestigeModeCheckbox = new Checkbox(PerSaveOptions.Instance.PainlessPrestigeMode, painlessPrestigeModeCheckboxText, painlessPrestigeModeCheckboxBounds, ChangePainlessPrestigeMode);
             var experiencePerPainlessPrestigeEditorLocation = new Vector2(painlessPrestigeModeCheckboxBounds.X, painlessPrestigeModeCheckboxBounds.Y);
             experiencePerPainlessPrestigeEditorLocation.X += painlessPrestigeModeCheckboxBounds.Width + Game1.dialogueFont.MeasureString(painlessPrestigeModeCheckboxText).X + padding;
             _experiencePerPainlessPrestigeEditor = new IntegerEditor("Extra Experience Cost", PerSaveOptions.Instance.ExperienceNeededPerPainlessPrestige, 1000, 100000, experiencePerPainlessPrestigeEditorLocation, ChangeExperiencePerPainlessPrestige, 1000);
+            var dropBonusRequirementsCheckboxBounds = painlessPrestigeModeCheckboxBounds;
+            dropBonusRequirementsCheckboxBounds.Y = _painlessPrestigeModeCheckbox.Bounds.Y + _painlessPrestigeModeCheckbox.Bounds.Height * 2 + padding;
+            _dropBonusRequirementsCheckbox = new Checkbox(PerSaveOptions.Instance.DropBonusRequirements, "Drop Bonus Requirements", dropBonusRequirementsCheckboxBounds, ChangeDropBonusRequirements);
         }
 
         private static void ChangeRecipeReset(bool resetRecipes)
@@ -122,9 +137,21 @@ namespace SkillPrestige.Menus
             PerSaveOptions.Save();
         }
 
+        private static void ChangeBonusCost(int cost)
+        {
+            PerSaveOptions.Instance.CostOfBonuses = cost;
+            PerSaveOptions.Save();
+        }
+
         private static void ChangePointsPerPrestige(int points)
         {
             PerSaveOptions.Instance.PointsPerPrestige = points;
+            PerSaveOptions.Save();
+        }
+
+        private static void ChangeDropBonusRequirements(bool dropBonusRequirements)
+        {
+            PerSaveOptions.Instance.DropBonusRequirements = dropBonusRequirements;
             PerSaveOptions.Save();
         }
 
@@ -159,9 +186,11 @@ namespace SkillPrestige.Menus
             _useExperienceMultiplierCheckbox.Draw(spriteBatch);
             _tierOneCostEditor.Draw(spriteBatch);
             _tierTwoCostEditor.Draw(spriteBatch);
+            _bonusCostEditor.Draw(spriteBatch);
             _pointsPerPrestigeEditor.Draw(spriteBatch);
             _painlessPrestigeModeCheckbox.Draw(spriteBatch);
             _experiencePerPainlessPrestigeEditor.Draw(spriteBatch);
+            _dropBonusRequirementsCheckbox.Draw(spriteBatch);
             Mouse.DrawCursor(spriteBatch);
         }
 

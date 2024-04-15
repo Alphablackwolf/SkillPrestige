@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Logging;
-using SkillPrestige.SkillTypes;
 using SkillPrestige.Bonuses.TypeRegistration;
+using SkillPrestige.Extensions;
+using SkillPrestige.Skills;
+using SkillType = SkillPrestige.Skills.Types.SkillType;
 
 namespace SkillPrestige.Bonuses
 {
@@ -21,7 +23,7 @@ namespace SkillPrestige.Bonuses
             //gets all non abstract classes that implement IBonusTypeRegistration.
             var concreteBonusTypeRegistrations = AppDomain.CurrentDomain.GetNonSystemAssemblies().SelectMany(x => x.GetTypesSafely())
                 .Where(x => typeof(IBonusTypeRegistration).IsAssignableFrom(x) && x.IsClass && !x.IsAbstract).ToList();
-            Logger.LogVerbose($"{concreteBonusTypeRegistrations.Count} concrete bonus type registrations found.");
+            Logger.LogTrace($"{concreteBonusTypeRegistrations.Count} concrete bonus type registrations found.");
             foreach (var registration in concreteBonusTypeRegistrations)
             {
                 ((IBonusTypeRegistration)Activator.CreateInstance(registration)).RegisterBonusTypes();
@@ -59,7 +61,7 @@ namespace SkillPrestige.Bonuses
         /// </summary>
         public Action<int> ApplyEffect { get; set; }
 
-        public Func<int, string> GetNextLevelEffect { get; set; }
+        public Func<int, string> GetLevelEffect { get; set; }
 
         public static IEnumerable<BonusType> AllBonusTypes
         {

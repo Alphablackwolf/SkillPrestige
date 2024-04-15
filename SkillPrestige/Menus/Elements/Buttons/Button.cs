@@ -10,7 +10,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
     /// <summary>
     /// Represnets a button in Stardew Valley.
     /// </summary>
-    public abstract class Button
+    public abstract class Button : IArrangeableElement
     {
         /// <summary>
         /// The texture to draw for the button.
@@ -42,8 +42,8 @@ namespace SkillPrestige.Menus.Elements.Buttons
 
         private bool IsHovered { get; set; }
         protected SpriteFont TitleTextFont { get; set; }
-        public abstract string HoverText { get; }
-        public abstract string Text { get; }
+        protected abstract string HoverText { get; }
+        protected abstract string Text { get; }
 
         protected virtual void OnMouseHover()
         {
@@ -119,6 +119,15 @@ namespace SkillPrestige.Menus.Elements.Buttons
                 !ClickableTextureComponent.containsPoint(arguments.ReleasePoint.X, arguments.ReleasePoint.Y)) return;
             Logger.LogVerbose($"Mouse click of button {Text ?? HoverText} detected.");
             OnMouseClick();
+        }
+
+        public abstract int CalculateWidth();
+
+        public abstract int CalculateHeight();
+        
+        public void SetBounds(Rectangle bounds)
+        {
+            Bounds = bounds;
         }
     }
 }

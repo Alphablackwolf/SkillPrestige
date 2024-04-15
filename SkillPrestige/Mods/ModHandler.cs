@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using SkillPrestige.Extensions;
 using SkillPrestige.Logging;
+using SkillPrestige.PrestigeFramework;
+using SkillPrestige.Skills;
 
 namespace SkillPrestige.Mods
 {

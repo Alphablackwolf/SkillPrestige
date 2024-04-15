@@ -5,12 +5,20 @@ using StardewValley;
 using System;
 using System.IO;
 using System.Linq;
+using SkillPrestige.Bonuses.Factors;
+using SkillPrestige.Bonuses.Handlers;
+using SkillPrestige.Bonuses.Replacements;
 using SkillPrestige.Commands;
+using SkillPrestige.Extensions;
 using SkillPrestige.Logging;
+using SkillPrestige.Managers;
 using SkillPrestige.Menus;
 using SkillPrestige.Menus.Elements.Buttons;
 using SkillPrestige.Mods;
+using SkillPrestige.Options;
+using SkillPrestige.PrestigeFramework;
 using SkillPrestige.Professions;
+using SkillPrestige.Skills;
 using StardewValley.Tools;
 using static SkillPrestige.InputHandling.Mouse;
 
@@ -47,6 +55,9 @@ namespace SkillPrestige
 
         #endregion
 
+        private static bool _isEfficientAnimalsInventoryUpdateSubscribed;
+        private static uint _foragedItems;
+
         public override void Entry(IModHelper helper)
         {
             ModHelper = helper;
@@ -77,9 +88,8 @@ namespace SkillPrestige
             LocationEvents.CurrentLocationChanged += LocationChanged;
             GraphicsEvents.OnPostRenderGuiEvent += PostRenderGuiEvent;
             GameEvents.UpdateTick += GameUpdate;
-            GameEvents.HalfSecondTick += HalfSecondTick;
+            GameEvents.EighthUpdateTick += EigthSecondTick;
             GameEvents.OneSecondTick += OneSecondTick;
-            TimeEvents.AfterDayStarted += AfterDayStarted;
             Logger.LogInformation("Game events registered.");
             SaveEvents.AfterLoad += SaveFileLoaded;
             SaveEvents.AfterReturnToTitle += ReturnToTitle;
@@ -92,22 +102,34 @@ namespace SkillPrestige
 
         private static void LocationChanged(object sender, EventArgs args)
         {
-            Logger.LogVerbose("Location change detected.");
+            Logger.LogTrace("Location change detected.");
             CurrentSaveOptionsPath = Path.Combine(ModPath, "psconfigs/", $@"{Game1.player.name.RemoveNonAlphanumerics()}_{Game1.uniqueIDForThisGame}.json");
             PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
             PerSaveOptions.Instance.Check();
             Profession.AddMissingProfessions();
+            if (Game1.currentLocation.isFarmBuildingInterior() && Game1.currentLocation is AnimalHouse && !_isEfficientAnimalsInventoryUpdateSubscribed)
+            {
+                _isEfficientAnimalsInventoryUpdateSubscribed = true;
+                _foragedItems = Game1.stats.itemsForaged;
+                Logger.LogTrace("Adding handle for efficient animals.");
+                PlayerEvents.InventoryChanged += UpdateForEfficientAnimals;
+            }
+            else if(_isEfficientAnimalsInventoryUpdateSubscribed)
+            {
+                _isEfficientAnimalsInventoryUpdateSubscribed = false;
+                Logger.LogTrace("Removing handle for efficient animals.");
+                PlayerEvents.InventoryChanged -= UpdateForEfficientAnimals;
+            }
         }
 
-        private static void AfterDayStarted(object sender, EventArgs args)
-        {
-            Logger.LogVerbose("New Day Started");
-            AnimalProduceHandler.HandleSpawnedAnimalProductQuantityIncrease();
-        }
 
         private static void SaveFileLoaded(object sender, EventArgs args)
         {
             PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
+            foreach (var bonus in PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.SelectMany(x => x.Bonuses))
+            {
+                bonus.ApplyEffect();
+            }
             SaveIsLoaded = true;
         }
 
@@ -117,7 +139,7 @@ namespace SkillPrestige
             SaveIsLoaded = false;
             Logger.LogInformation("Return To Title.");
             PerSaveOptions.ClearLoadedPerSaveOptionsFile();
-            ExperienceHandler.ResetExperience();
+            ExperienceManager.ResetExperience();
         }
         private static void PostRenderGuiEvent(object sender, EventArgs args)
         {
@@ -128,7 +150,7 @@ namespace SkillPrestige
         {
             Logger.LogInformation("Loading sprites...");
             Button.DefaultButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\DialogBoxGreen");
-            MinimalistProfessionButton.ProfessionButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\boardGameBorder");
+            ProfessionButton.ProfessionButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\boardGameBorder");
             BonusButton.BonusButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\boardGameBorder");
 
             var prestigeIconFilePath = Path.Combine(ModPath, @"PrestigeIcon.png");
@@ -148,7 +170,7 @@ namespace SkillPrestige
             if (_isFirstUpdate)
             {
                 ModHandler.RegisterLoadedMods();
-                if (Options.Instance.TestingMode) RegisterTestingCommands();
+                if (Options.Options.Instance.TestingMode) RegisterTestingCommands();
                 RegisterCommands();
                 _isFirstUpdate = false;
             }
@@ -163,15 +185,26 @@ namespace SkillPrestige
             UpdateExperience();
         }
 
-        private static void HalfSecondTick(object sender, EventArgs args)
+        private static void EigthSecondTick(object sender, EventArgs args)
         {
             //from what I can tell of the original game code, tools cannot be used quicker than 600ms, so a half second tick is the largest tick that will always catch that the tool was used.
             ToolProficiencyHandler.HandleToolProficiency();
         }
 
+        private static void UpdateForEfficientAnimals(object sender, EventArgsInventoryChanged args)
+        {
+            Logger.LogTrace($"Inventory changed. {Game1.stats.itemsForaged - _foragedItems} spawned items obtained.");
+            if (Game1.stats.itemsForaged <= _foragedItems) return;
+            _foragedItems = Game1.stats.itemsForaged;
+            var itemToAdd = args.Added.FirstOrDefault() ?? args.QuantityChanged.FirstOrDefault();
+            if (!AnimalProduceFactor.ShouldAnimalProductQuanityIncrease() || itemToAdd == null) return;
+            Logger.LogTrace("Adding extra item for efficient animals skill");
+            Game1.player.addItemToInventoryBool(itemToAdd.Item.getOne());
+        }
+
         private static void UpdateExperience()
         {
-            if (SaveIsLoaded) ExperienceHandler.UpdateExperience();
+            if (SaveIsLoaded) ExperienceManager.UpdateExperience();
         }
 
         private static void CheckForGameSave()
@@ -199,7 +232,7 @@ namespace SkillPrestige
         {
             Logger.LogInformation("Registering Testing commands...");
             SkillPrestigeCommand.RegisterCommands(ModHelper.ConsoleCommands, true);
-            Logger.LogInformation("Testing commands registered.");
+            Logger.LogInformation("Testing commands registered."); 
         }
 
         private void RegisterCommands()
@@ -211,13 +244,13 @@ namespace SkillPrestige
 
         private static void ReplaceStardewValleyCode()
         {
-            Logger.LogInformation("Hijacking Methods...");
-            Logger.LogInformation("Hijacking Crop Harvest method...");
-            if(!typeof(Crop).HookToMethod("harvest").ReplaceWith<CropReplacement>("HarvestReplacement")) Logger.LogCriticalWarning("Harvest replacement failed!");
-            Logger.LogInformation("Hijacking Shears DoFunction method...");
-            if(!typeof(Shears).HookToMethod("DoFunction").Replace<ShearsReplacement>()) Logger.LogCriticalWarning("Shears DoFunction replacement failed!");
-            Logger.LogInformation("Hijacking Milk Pail DoFunction method...");
-            if(!typeof(Shears).HookToMethod("DoFunction").Replace<MilkPailReplacement>()) Logger.LogCriticalWarning("Milk Pail DoFunction replacement failed!");
+            Logger.LogVerbose("Hijacking Methods...");
+            Logger.LogVerbose("Hijacking Crop Harvest method...");
+            if(!typeof(Crop).HookToMethod("harvest").ReplaceWith<CropReplacement>("HarvestReplacement")) Logger.LogCriticalWarning("Crop Harvest replacement failed!");
+            Logger.LogVerbose("Hijacking Shears DoFunction method...");
+            if(!typeof(Shears).HookToMethod("DoFunction").ReplaceUsing<ShearsReplacement>()) Logger.LogCriticalWarning("Shears DoFunction replacement failed!");
+            //Logger.LogVerbose("Hijacking Milk Pail DoFunction method...");
+            //if(!typeof(MilkPail).HookToMethod("DoFunction").ReplaceUsing<MilkPailReplacement>()) Logger.LogCriticalWarning("Milk Pail DoFunction replacement failed!");
             Logger.LogInformation("Hijack attempts complete.");
         }
     }

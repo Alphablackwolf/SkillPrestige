@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using SkillPrestige.Logging;
+using SkillPrestige.PrestigeFramework;
+using SkillPrestige.Skills;
 using StardewValley;
 
 namespace SkillPrestige.Commands

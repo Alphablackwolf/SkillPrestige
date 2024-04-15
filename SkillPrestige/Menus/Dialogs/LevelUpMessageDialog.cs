@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SkillPrestige.Extensions;
+using SkillPrestige.Skills;
 using StardewValley;
 
 namespace SkillPrestige.Menus.Dialogs

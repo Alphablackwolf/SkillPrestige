@@ -2,8 +2,12 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SkillPrestige.Extensions;
 using SkillPrestige.Logging;
 using SkillPrestige.Menus.Dialogs;
+using SkillPrestige.Options;
+using SkillPrestige.PrestigeFramework;
+using SkillPrestige.Skills;
 using StardewValley;
 using StardewValley.Menus;
 
@@ -27,7 +31,7 @@ namespace SkillPrestige.Menus.Elements.Buttons
         private Color DisplayColor => IsDisabled ? Color.Gray : Color.White;
 
 
-        public override string HoverText
+        protected override string HoverText
         {
             get
             {
@@ -49,12 +53,22 @@ namespace SkillPrestige.Menus.Elements.Buttons
             }
         }
 
-        public override string Text => "Prestige";
+        protected override string Text => "Prestige";
 
         public override void Draw(SpriteBatch spriteBatch)  
         {
             spriteBatch.Draw(ButtonTexture, Bounds, DisplayColor);
             DrawTitleText(spriteBatch);
+        }
+
+        public override int CalculateWidth()
+        {
+            return 100 * Game1.pixelZoom;
+        }
+
+        public override int CalculateHeight()
+        {
+            return 20 * Game1.pixelZoom;
         }
 
         protected override void OnMouseHover()

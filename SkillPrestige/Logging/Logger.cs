@@ -7,34 +7,39 @@ namespace SkillPrestige.Logging
     /// </summary>
     public static class Logger
     {
+        public static void LogTrace(string message)
+        {
+            SkillPrestigeMod.LogMonitor.Log(message, StardewModdingAPI.LogLevel.Trace);
+        }
+
         public static void LogVerbose(string message)
         {
-            if(Options.Instance.LogLevel >= LogLevel.Verbose) SkillPrestigeMod.LogMonitor.Log(message, StardewModdingAPI.LogLevel.Trace);
+            if(Options.Options.Instance.LogLevel >= LogLevel.Verbose) SkillPrestigeMod.LogMonitor.Log(message);
         }
 
         public static void LogInformation(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Information) SkillPrestigeMod.LogMonitor.Log(message, StardewModdingAPI.LogLevel.Info);
+            if (Options.Options.Instance.LogLevel >= LogLevel.Information) SkillPrestigeMod.LogMonitor.Log(message, StardewModdingAPI.LogLevel.Info);
         }
 
         public static void LogWarning(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Warning) SkillPrestigeMod.LogMonitor.Log(message, StardewModdingAPI.LogLevel.Warn);
+            if (Options.Options.Instance.LogLevel >= LogLevel.Warning) SkillPrestigeMod.LogMonitor.Log(message, StardewModdingAPI.LogLevel.Warn);
         }
 
         public static void LogError(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Error) SkillPrestigeMod.LogMonitor.Log(message.AddErrorText(), StardewModdingAPI.LogLevel.Error);
+            if (Options.Options.Instance.LogLevel >= LogLevel.Error) SkillPrestigeMod.LogMonitor.Log(message.AddErrorText(), StardewModdingAPI.LogLevel.Error);
         }
 
         public static void LogCritical(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Critical) SkillPrestigeMod.LogMonitor.Log(message.AddErrorText(), StardewModdingAPI.LogLevel.Alert);
+            if (Options.Options.Instance.LogLevel >= LogLevel.Critical) SkillPrestigeMod.LogMonitor.Log(message.AddErrorText(), StardewModdingAPI.LogLevel.Alert);
         }
 
         public static void LogCriticalWarning(string message)
         {
-            if (Options.Instance.LogLevel >= LogLevel.Critical) SkillPrestigeMod.LogMonitor.Log(message, StardewModdingAPI.LogLevel.Alert);
+            if (Options.Options.Instance.LogLevel >= LogLevel.Critical) SkillPrestigeMod.LogMonitor.Log(message, StardewModdingAPI.LogLevel.Alert);
         }
 
         public static void LogDisplay(string message)

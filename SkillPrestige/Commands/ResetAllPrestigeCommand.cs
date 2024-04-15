@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SkillPrestige.Logging;
+using SkillPrestige.PrestigeFramework;
 using StardewValley;
 
 namespace SkillPrestige.Commands

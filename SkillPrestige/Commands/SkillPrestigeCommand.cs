@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using SkillPrestige.Extensions;
 using SkillPrestige.Logging;
 using StardewModdingAPI;
 
@@ -59,7 +60,7 @@ namespace SkillPrestige.Commands
             {
                 var command = (SkillPrestigeCommand)Activator.CreateInstance(commandType);
                 if (!(testCommands ^ command.TestingCommand)) command.RegisterCommand(helper);
-            }
+            }            
         }
     }
 }

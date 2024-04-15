@@ -2,9 +2,13 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SkillPrestige.Extensions;
 using SkillPrestige.InputHandling;
 using SkillPrestige.Logging;
 using SkillPrestige.Menus.Elements.Buttons;
+using SkillPrestige.Options;
+using SkillPrestige.PrestigeFramework;
+using SkillPrestige.Skills;
 using StardewValley;
 using StardewValley.Menus;
 
@@ -35,15 +39,18 @@ namespace SkillPrestige.Menus
             Logger.LogVerbose($"New {skill.Type.Name} Prestige Menu created.");
             _skill = skill;
             _prestige = prestige;
-            _pages = new List<IMenuPage>
-            {
-                new PrestigeMenuProfessionsPage(skill, prestige, bounds),
-                new PrestigeMenuBonusPage(skill, prestige, bounds)
-            };
             SetPrestigePointLocation();
             InitiateSettingsButton();
             InitiatePrestigeButton();
             InitiateNextPageButton();
+            var pageStartYPosition = _prestigeButton.Bounds.Y + _prestigeButton.Bounds.Height + 5* Game1.pixelZoom;
+            var pageHeight = bounds.Height - (pageStartYPosition - bounds.Y);
+            var pageBounds = new Rectangle(bounds.X, pageStartYPosition, bounds.Width, pageHeight);
+            _pages = new List<IMenuPage>
+            {
+                new PrestigeMenuProfessionsPage(skill, prestige, bounds),
+                new PrestigeMenuBonusPage(skill, prestige, pageBounds)
+            };
             exitFunction = DeregisterMouseEvents;
         }
 

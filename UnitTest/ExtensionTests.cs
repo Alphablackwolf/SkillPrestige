@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using SkillPrestige;
+using SkillPrestige.Extensions;
 
 
 namespace UnitTest

@@ -41,6 +41,7 @@ namespace SkillPrestige.InputHandling
         /// <param name="arguments"></param>
         internal static void HandleState(EventArgsMouseStateChanged arguments)
         {
+            //TODO: See if the update state is still needed. if not, remove it.
             UpdateState(arguments);
             CheckForClick();
             if (_lastMouseState.X != _currentMouseState.X || _lastMouseState.Y != _currentMouseState.Y)

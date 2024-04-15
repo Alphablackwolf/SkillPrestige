@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SkillPrestige.Extensions;
 using SkillPrestige.InputHandling;
 using SkillPrestige.Logging;
 using StardewValley;
@@ -11,8 +12,8 @@ namespace SkillPrestige.Menus.Elements.Buttons
 {
     internal class IntegerEditor : Button
     {
-        public override string HoverText => string.Empty;
-        public override string Text { get; }
+        protected override string HoverText => string.Empty;
+        protected override string Text { get; }
         private const int PixelsWide = 7;
         private const int PixelsHigh = 8;
         private readonly int _linePadding = 4 * Game1.pixelZoom;
@@ -113,6 +114,16 @@ namespace SkillPrestige.Menus.Elements.Buttons
             numberLocation.Y += _linePadding;
             NumberSprite.draw(Value, spriteBatch, numberLocation, Color.SandyBrown, 1f, .85f, 1f, 0);
             _plusButton.Draw(spriteBatch, Value == Maximum ? Color.Gray : Color.White);
+        }
+
+        public override int CalculateWidth()
+        {
+            return Bounds.Width;
+        }
+
+        public override int CalculateHeight()
+        {
+            return Bounds.Height;
         }
 
         /// <summary>

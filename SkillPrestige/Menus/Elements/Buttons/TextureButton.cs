@@ -27,9 +27,9 @@ namespace SkillPrestige.Menus.Elements.Buttons
 
         public Rectangle SourceRectangle;
 
-        public override string HoverText { get; }
+        protected override string HoverText { get; }
 
-        public override string Text => string.Empty;
+        protected override string Text => string.Empty;
 
         protected override void OnMouseHover()
         {
@@ -47,6 +47,16 @@ namespace SkillPrestige.Menus.Elements.Buttons
         public override void Draw(SpriteBatch spriteBatch)
         {
             ClickableTextureComponent.draw(spriteBatch);
+        }
+
+        public override int CalculateWidth()
+        {
+            return Bounds.Width;
+        }
+
+        public override int CalculateHeight()
+        {
+            return Bounds.Height;
         }
 
         public void Draw(SpriteBatch spriteBatch, Color color)

@@ -2,9 +2,13 @@
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SkillPrestige.Extensions;
 using SkillPrestige.Logging;
 using SkillPrestige.Menus.Elements.Buttons;
+using SkillPrestige.Options;
+using SkillPrestige.PrestigeFramework;
 using SkillPrestige.Professions;
+using SkillPrestige.Skills;
 using StardewValley;
 using StardewValley.Menus;
 
@@ -31,9 +35,9 @@ namespace SkillPrestige.Menus
             _prestige = prestige;
             SetLocationVariables(dialogBounds);
             InitiateProfessionButtons(dialogBounds);
-            BeforeControlsDrawnBehindControlsDrawFunctions.Add(x => UpdateProfessionButtonAvailability());
-            BeforeControlsDrawnBehindControlsDrawFunctions.Add(DrawLevelFiveProfessionCost);
-            BeforeControlsDrawnBehindControlsDrawFunctions.Add(DrawLevelTenProfessionCost);
+            BeforeControlsDrawnFunctions.Add(x => UpdateProfessionButtonAvailability());
+            BeforeControlsDrawnFunctions.Add(DrawLevelFiveProfessionCost);
+            BeforeControlsDrawnFunctions.Add(DrawLevelTenProfessionCost);
         }
 
         private void InitiateProfessionButtons(Rectangle dialogBounds)
@@ -52,7 +56,7 @@ namespace SkillPrestige.Menus
             var rightProfessionButtonXCenter = _leftProfessionStartingXLocation + (_xSpaceAvailableForProfessionButtons * .75d).Floor();
             var firstProfession = _skill.Professions.OrderBy(x => x.Id).First(x => x is TierOneProfession);
 
-            Controls.Add(new MinimalistProfessionButton
+            Controls.Add(new ProfessionButton
             {
 
                 Bounds = new Rectangle(leftProfessionButtonXCenter - ProfessionButtonWidth(firstProfession) / 2, (int)_professionButtonRowStartLocation.Y, ProfessionButtonWidth(firstProfession), ProfessionButtonHeight(firstProfession)),
@@ -62,7 +66,7 @@ namespace SkillPrestige.Menus
                 Profession = firstProfession
             });
             var secondProfession = _skill.Professions.OrderBy(x => x.Id).Skip(1).First(x => x is TierOneProfession);
-            Controls.Add(new MinimalistProfessionButton
+            Controls.Add(new ProfessionButton
             {
 
                 Bounds = new Rectangle(rightProfessionButtonXCenter - ProfessionButtonWidth(secondProfession) / 2, (int)_professionButtonRowStartLocation.Y, ProfessionButtonWidth(secondProfession), ProfessionButtonHeight(secondProfession)),
@@ -83,7 +87,7 @@ namespace SkillPrestige.Menus
             )
             {
                 var tierTwoProfession = (TierTwoProfession)profession;
-                Controls.Add(new MinimalistProfessionButton
+                Controls.Add(new ProfessionButton
                 {
                     Bounds = new Rectangle(_leftProfessionStartingXLocation + (_xSpaceAvailableForProfessionButtons * (buttonCenterIndex / 8d)).Floor() - ProfessionButtonWidth(profession) / 2, (int)_professionButtonRowStartLocation.Y + GetRowHeight<TierOneProfession>() + _rowPadding, ProfessionButtonWidth(profession), ProfessionButtonHeight(profession)),
                     CanBeAfforded = canBeAfforded,
@@ -148,7 +152,7 @@ namespace SkillPrestige.Menus
 
         private void UpdateProfessionButtonAvailability()
         {
-            foreach (var button in Controls.OfType<MinimalistProfessionButton>())
+            foreach (var button in Controls.OfType<ProfessionButton>())
             {
                 button.CanBeAfforded = _prestige.PrestigePoints >= PerSaveOptions.Instance.CostOfTierTwoPrestige || button.Profession is TierOneProfession && _prestige.PrestigePoints >= PerSaveOptions.Instance.CostOfTierOnePrestige;
                 button.IsObtainable = button.Profession is TierOneProfession || _prestige.PrestigeProfessionsSelected.Contains(((TierTwoProfession)button.Profession).TierOneProfession.Id);

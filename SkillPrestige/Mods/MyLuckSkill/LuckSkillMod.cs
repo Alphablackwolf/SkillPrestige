@@ -1,10 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using SkillPrestige.Extensions;
+using SkillPrestige.Managers;
 using SkillPrestige.Menus;
+using SkillPrestige.PrestigeFramework;
 using SkillPrestige.Professions;
+using SkillPrestige.Skills;
 using StardewValley;
 using OriginalMod = LuckSkill;
+using SkillType = SkillPrestige.Skills.Types.SkillType;
+
 namespace SkillPrestige.Mods.MyLuckSkill
 {
     /// <summary>
@@ -21,7 +27,7 @@ namespace SkillPrestige.Mods.MyLuckSkill
             {
                 new Skill
                 {
-                    Type = SkillTypes.SkillType.Luck,
+                    Type = SkillType.Luck,
                     SkillScreenPosition = 6,
                     SourceRectangleForSkillIcon = new Rectangle(64, 0, 16, 16),
                     Professions = Profession.LuckProfessions,
@@ -32,7 +38,7 @@ namespace SkillPrestige.Mods.MyLuckSkill
                     {
                         MenuType = typeof(OriginalMod.LuckLevelUpMenu),
                         GetLevel = () => (int)(Game1.activeClickableMenu as OriginalMod.LuckLevelUpMenu).GetInstanceField("currentLevel"),
-                        GetSkill = () => Skill.AllSkills.Single(x => x.Type == SkillTypes.SkillType.Luck),
+                        GetSkill = () => Skill.AllSkills.Single(x => x.Type == SkillType.Luck),
                         CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<OriginalMod.LuckLevelUpMenu>(skill, level, new OriginalMod.LuckLevelUpMenu(skill.Type.Ordinal, level),
                             "professionsToChoose", "leftProfessionDescription", "rightProfessionDescription", OriginalMod.LuckLevelUpMenu.getProfessionDescription)
                     }
@@ -44,19 +50,19 @@ namespace SkillPrestige.Mods.MyLuckSkill
         {
             new Prestige
             {
-                SkillType = SkillTypes.SkillType.Luck
+                SkillType = SkillType.Luck
             }
         } : null;
 
         private static void SetLuckExperience(int amount)
         {
-            if (amount <= Game1.player.experiencePoints[SkillTypes.SkillType.Luck.Ordinal])
+            if (amount <= Game1.player.experiencePoints[SkillType.Luck.Ordinal])
             {
-                Game1.player.experiencePoints[SkillTypes.SkillType.Luck.Ordinal] = amount;
+                Game1.player.experiencePoints[SkillType.Luck.Ordinal] = amount;
             }
             else
             {
-                var addedExperience = amount - Game1.player.experiencePoints[SkillTypes.SkillType.Luck.Ordinal];
+                var addedExperience = amount - Game1.player.experiencePoints[SkillType.Luck.Ordinal];
                 OriginalMod.Mod.gainLuckExp(addedExperience);
             }
         }
