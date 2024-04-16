@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Version>1.2.4</Version>
-    <TargetFramework>net452</TargetFramework>
+    <Version>1.2.5</Version>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="3.3.0" />
+    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <Reference Include="Magic" HintPath="$(GamePath)\Mods\Magic\Magic.dll" Private="False" />
+    <Reference Include="ManaBar" HintPath="$(GamePath)\Mods\ManaBar\ManaBar.dll" Private="False" />
     <Reference Include="SpaceCore" HintPath="$(GamePath)\Mods\SpaceCore\SpaceCore.dll" Private="False" />
   </ItemGroup>
 </Project>

@@ -6,6 +6,7 @@ using SkillPrestige.Logging;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
+// ReSharper disable PossibleLossOfFraction
 
 namespace SkillPrestige.Framework.Menus
 {
@@ -99,26 +100,26 @@ namespace SkillPrestige.Framework.Menus
             if (this.InputInitiated)
                 return;
             this.InputInitiated = true;
-            Logger.LogVerbose("Settings menu - intiating input.");
-            Rectangle resetRecipeCheckboxBounds = new Rectangle(this.xPositionOnScreen + spaceToClearSideBorder * 3, this.yPositionOnScreen + (Game1.tileSize * 3.5).Floor(), 9 * Game1.pixelZoom, 9 * Game1.pixelZoom);
+            Logger.LogVerbose("Settings menu - initiating input.");
+            var resetRecipeCheckboxBounds = new Rectangle(this.xPositionOnScreen + spaceToClearSideBorder * 3, this.yPositionOnScreen + (Game1.tileSize * 3.5).Floor(), 9 * Game1.pixelZoom, 9 * Game1.pixelZoom);
             this.ResetRecipesCheckbox = new Checkbox(PerSaveOptions.Instance.ResetRecipesOnPrestige, "Reset Recipes upon prestige.", resetRecipeCheckboxBounds, ChangeRecipeReset);
-            int padding = 4 * Game1.pixelZoom;
-            Rectangle useExperienceMultiplierCheckboxBounds = resetRecipeCheckboxBounds;
+            const int padding = 4 * Game1.pixelZoom;
+            var useExperienceMultiplierCheckboxBounds = resetRecipeCheckboxBounds;
             useExperienceMultiplierCheckboxBounds.Y += resetRecipeCheckboxBounds.Height + padding;
             this.UseExperienceMultiplierCheckbox = new Checkbox(PerSaveOptions.Instance.UseExperienceMultiplier, "Use prestige points experience multiplier.", useExperienceMultiplierCheckboxBounds, ChangeUseExperienceMultiplier);
-            Vector2 tierOneEditorLocation = new Vector2(useExperienceMultiplierCheckboxBounds.X, useExperienceMultiplierCheckboxBounds.Y + useExperienceMultiplierCheckboxBounds.Height + padding);
+            var tierOneEditorLocation = new Vector2(useExperienceMultiplierCheckboxBounds.X, useExperienceMultiplierCheckboxBounds.Y + useExperienceMultiplierCheckboxBounds.Height + padding);
             this.TierOneCostEditor = new IntegerEditor("Cost of Tier 1 Prestige", PerSaveOptions.Instance.CostOfTierOnePrestige, 1, 100, tierOneEditorLocation, ChangeTierOneCost);
-            Vector2 tierTwoEditorLocation = tierOneEditorLocation;
+            var tierTwoEditorLocation = tierOneEditorLocation;
             tierTwoEditorLocation.X += this.TierOneCostEditor.Bounds.Width + padding;
             this.TierTwoCostEditor = new IntegerEditor("Cost of Tier 2 Prestige", PerSaveOptions.Instance.CostOfTierTwoPrestige, 1, 100, tierTwoEditorLocation, ChangeTierTwoCost);
-            Vector2 pointsPerPrestigeEditorLocation = tierTwoEditorLocation;
+            var pointsPerPrestigeEditorLocation = tierTwoEditorLocation;
             pointsPerPrestigeEditorLocation.Y += this.TierTwoCostEditor.Bounds.Height + padding;
             pointsPerPrestigeEditorLocation.X = this.TierOneCostEditor.Bounds.X;
             this.PointsPerPrestigeEditor = new IntegerEditor("Points Per Prestige", PerSaveOptions.Instance.PointsPerPrestige, 1, 100, pointsPerPrestigeEditorLocation, ChangePointsPerPrestige);
-            Rectangle painlessPrestigeModeCheckboxBounds = new Rectangle(this.PointsPerPrestigeEditor.Bounds.X, this.PointsPerPrestigeEditor.Bounds.Y + this.PointsPerPrestigeEditor.Bounds.Height + padding, 9 * Game1.pixelZoom, 9 * Game1.pixelZoom);
+            var painlessPrestigeModeCheckboxBounds = new Rectangle(this.PointsPerPrestigeEditor.Bounds.X, this.PointsPerPrestigeEditor.Bounds.Y + this.PointsPerPrestigeEditor.Bounds.Height + padding, 9 * Game1.pixelZoom, 9 * Game1.pixelZoom);
             const string painlessPrestigeModeCheckboxText = "Painless Prestige Mode";
             this.PainlessPrestigeModeCheckbox = new Checkbox(PerSaveOptions.Instance.PainlessPrestigeMode, painlessPrestigeModeCheckboxText, painlessPrestigeModeCheckboxBounds, ChangePainlessPrestigeMode);
-            Vector2 experiencePerPainlessPrestigeEditorLocation = new Vector2(painlessPrestigeModeCheckboxBounds.X, painlessPrestigeModeCheckboxBounds.Y);
+            var experiencePerPainlessPrestigeEditorLocation = new Vector2(painlessPrestigeModeCheckboxBounds.X, painlessPrestigeModeCheckboxBounds.Y);
             experiencePerPainlessPrestigeEditorLocation.X += painlessPrestigeModeCheckboxBounds.Width + Game1.dialogueFont.MeasureString(painlessPrestigeModeCheckboxText).X + padding;
             this.ExperiencePerPainlessPrestigeEditor = new IntegerEditor("Extra Experience Cost", PerSaveOptions.Instance.ExperienceNeededPerPainlessPrestige, 1000, 100000, experiencePerPainlessPrestigeEditorLocation, ChangeExperiencePerPainlessPrestige, 1000);
         }

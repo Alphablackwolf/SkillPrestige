@@ -25,8 +25,8 @@ namespace SkillPrestige
         /// <summary>Purchases a profession to be part of the prestige set.</summary>
         public static void AddPrestigeProfession(int professionId)
         {
-            Skill skill = Skill.AllSkills.Single(x => x.Professions.Select(y => y.Id).Contains(professionId));
-            Prestige prestige = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == skill.Type);
+            var skill = Skill.AllSkills.Single(x => x.Professions.Select(y => y.Id).Contains(professionId));
+            var prestige = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == skill.Type);
             int originalPrestigePointsForSkill = prestige.PrestigePoints;
             if (skill.Professions.Where(x => x.LevelAvailableAt == 5).Select(x => x.Id).Contains(professionId))
             {

@@ -7,7 +7,7 @@ using StardewValley;
 
 namespace SkillPrestige.Framework.Menus.Dialogs
 {
-    /// <summary>represents a message dialog box for skil level up where a specific profession is granted.</summary>
+    /// <summary>represents a message dialog box for skill level up where a specific profession is granted.</summary>
     internal class LevelUpMessageDialogWithProfession : LevelUpMessageDialog
     {
         /*********
@@ -35,7 +35,7 @@ namespace SkillPrestige.Framework.Menus.Dialogs
         protected override void DrawMessage(SpriteBatch spriteBatch)
         {
             int xLocationOfMessage = this.xPositionOnScreen + spaceToClearSideBorder * 2 + TextPadding;
-            int yLocationOfMessage = this.YPostionOfHeaderPartition + spaceToClearTopBorder / 2;
+            int yLocationOfMessage = this.YPositionOfHeaderPartition + spaceToClearTopBorder / 2;
             this.DrawMessage(spriteBatch, Game1.dialogueFont, new Vector2(xLocationOfMessage, yLocationOfMessage), this.SectionWidth);
         }
 
@@ -48,7 +48,7 @@ namespace SkillPrestige.Framework.Menus.Dialogs
         private void DrawProfession(SpriteBatch spriteBatch)
         {
             int xLocationOfProfessionBox = this.xPositionOnScreen + this.SectionWidth + TextPadding;
-            int yLocationOfProfessionBox = this.YPostionOfHeaderPartition + spaceToClearTopBorder / 2 + TextPadding;
+            int yLocationOfProfessionBox = this.YPositionOfHeaderPartition + spaceToClearTopBorder / 2 + TextPadding;
             Rectangle professionBoxBounds = new Rectangle(xLocationOfProfessionBox, yLocationOfProfessionBox, this.SectionWidth, (Game1.tileSize * 3.5).Ceiling());
             this.DrawProfessionBox(spriteBatch, professionBoxBounds);
         }

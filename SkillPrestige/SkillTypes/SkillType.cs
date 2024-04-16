@@ -81,11 +81,11 @@ namespace SkillPrestige.SkillTypes
                 .SelectMany(x => x.GetTypesSafely())
                 .Where(x => typeof(ISkillTypeRegistration).IsAssignableFrom(x) && x.IsClass && !x.IsAbstract)
                 .ToList();
-            Logger.LogVerbose($"concerete skill type registration count: {concreteSkillTypeRegistrations.Count}");
+            Logger.LogVerbose($"concrete skill type registration count: {concreteSkillTypeRegistrations.Count}");
             foreach (var registration in concreteSkillTypeRegistrations)
             {
                 Logger.LogVerbose($"Creating instance of type {registration.FullName}...");
-                ((ISkillTypeRegistration)Activator.CreateInstance(registration)).RegisterSkillTypes();
+                ((ISkillTypeRegistration)Activator.CreateInstance(registration))?.RegisterSkillTypes();
             }
             Logger.LogInformation("Skill types registered.");
         }

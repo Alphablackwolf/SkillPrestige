@@ -19,19 +19,19 @@ namespace SkillPrestige
         ** Accessors
         *********/
         /// <summary>Metadata about a skill type.</summary>
-        public SkillType Type { get; set; }
+        public SkillType Type { get; init; }
 
         /// <summary>The professions for this skill.</summary>
-        public IEnumerable<Profession> Professions { get; set; }
+        public IEnumerable<Profession> Professions { get; init; }
 
         /// <summary>The location of the texture on the buffsIcons sprite sheet.</summary>
-        public Rectangle SourceRectangleForSkillIcon { get; set; }
+        public Rectangle SourceRectangleForSkillIcon { get; init; }
 
         /// <summary>The texture for the skill icon.</summary>
-        public Texture2D SkillIconTexture { get; set; } = Game1.buffsIcons;
+        public Texture2D SkillIconTexture { get; init; } = Game1.buffsIcons;
 
         /// <summary>The one-based index of where the skill appears on the screen (e.g. Farming is 1 and Fishing is 4). If your mod is creating a skill, you will need to detect where in the list your mod's skill(s) will be.</summary>
-        public int SkillScreenPosition { get; set; }
+        public int SkillScreenPosition { get; init; }
 
         /// <summary>An action to set the skill's level. For the unmodded game, this sets the relevant player field (e.g. <see cref="Farmer.farmingLevel"/>). If you are implementing this class for your mod it should be whatever would be needed to set the skill level to a given integer.</summary>
         public Action<int> SetSkillLevel;
@@ -42,21 +42,21 @@ namespace SkillPrestige
         /// <summary>An action to get the skill's experience. For the unmodded game, this updates the <see cref="Farmer.experiencePoints"/> array based on <see cref="SkillType.Ordinal"/>. If you are implementing this class for your mod it should be whatever would be needed to set the skill experience level to a given integer.</summary>
         // ReSharper disable once MemberCanBePrivate.Global used by other mods.
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
-        public Action<int> SetSkillExperience { get; set; }
+        public Action<int> SetSkillExperience { get; init; }
 
         /// <summary>An action to get the skill's experience. For the unmodded game, this reads the <see cref="Farmer.experiencePoints"/> array based on <see cref="SkillType.Ordinal"/>.</summary>
-        public Func<int> GetSkillExperience { get; set; }
+        public Func<int> GetSkillExperience { get; init; }
 
         /// <summary>An action triggered when prestiging is done. This allows extra handling if something else needs to be reset.</summary>
-        public Action OnPrestige { get; set; }
+        public Action OnPrestige { get; init; }
 
         /// <summary>The management class for any level up menu.</summary>
-        public LevelUpManager LevelUpManager { get; set; }
+        public LevelUpManager LevelUpManager { get; init; }
 
         /// <summary>The default skills available in the unmodded game.</summary>
         public static IEnumerable<Skill> DefaultSkills => new List<Skill>
         {
-            new Skill
+            new()
             {
                 Type = SkillType.Farming,
                 SkillScreenPosition = 1,
@@ -65,7 +65,7 @@ namespace SkillPrestige
                 SetSkillLevel = level => Game1.player.farmingLevel.Value = level,
                 GetSkillLevel = () => Game1.player.farmingLevel.Value
             },
-            new Skill
+            new()
             {
                 Type = SkillType.Fishing,
                 SkillScreenPosition = 4,
@@ -74,7 +74,7 @@ namespace SkillPrestige
                 SetSkillLevel = level => Game1.player.fishingLevel.Value = level,
                 GetSkillLevel = () => Game1.player.fishingLevel.Value
             },
-            new Skill
+            new()
             {
                 Type = SkillType.Foraging,
                 SkillScreenPosition = 3,
@@ -83,7 +83,7 @@ namespace SkillPrestige
                 SetSkillLevel = level => Game1.player.foragingLevel.Value = level,
                 GetSkillLevel = () => Game1.player.foragingLevel.Value
             },
-            new Skill
+            new()
             {
                 Type = SkillType.Mining,
                 SkillScreenPosition = 2,
@@ -92,7 +92,7 @@ namespace SkillPrestige
                 SetSkillLevel = level => Game1.player.miningLevel.Value = level,
                 GetSkillLevel = () => Game1.player.miningLevel.Value
             },
-            new Skill
+            new()
             {
                 Type = SkillType.Combat,
                 SkillScreenPosition = 5,
@@ -122,15 +122,15 @@ namespace SkillPrestige
         /// <summary>Construct an instance.</summary>
         public Skill()
         {
-            this.GetSkillExperience = () => Game1.player.experiencePoints[this.Type.Ordinal];
+            this.GetSkillExperience = () => Game1.player.experiencePoints[this.Type!.Ordinal];
             this.SetSkillExperience = exp =>
             {
-                Game1.player.experiencePoints[this.Type.Ordinal] = 0;
+                Game1.player.experiencePoints[this.Type!.Ordinal] = 0;
                 Game1.player.gainExperience(this.Type.Ordinal, exp);
             };
             this.LevelUpManager = new LevelUpManager
             {
-                IsMenu = menu => menu.GetType() == typeof(LevelUpMenu) && this.Type.Ordinal == (int)Game1.activeClickableMenu.GetInstanceField("currentSkill"),
+                IsMenu = menu => menu.GetType() == typeof(LevelUpMenu) && this.Type!.Ordinal == (int)Game1.activeClickableMenu.GetInstanceField("currentSkill"),
                 GetLevel = () => (int)(Game1.activeClickableMenu as LevelUpMenu).GetInstanceField("currentLevel"),
                 CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<LevelUpMenu>(
                     skill: skill,

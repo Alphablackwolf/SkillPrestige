@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Logging;
 
@@ -24,7 +23,7 @@ namespace SkillPrestige
         {
             //Logger.LogVerbose($"Obtaining instance field {fieldName} on object of type {instance.GetType().FullName}");
             const BindingFlags bindingAttributes = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-            FieldInfo memberInfo = instance.GetType().GetField(fieldName, bindingAttributes);
+            var memberInfo = instance.GetType().GetField(fieldName, bindingAttributes);
             return memberInfo?.GetValue(instance);
         }
 
@@ -39,7 +38,7 @@ namespace SkillPrestige
         {
             //Logger.LogVerbose($"Obtaining instance field {fieldName} on object of type {instance.GetType().FullName}");
             const BindingFlags bindingAttributes = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-            FieldInfo memberInfo = instance.GetType().GetField(fieldName, bindingAttributes);
+            var memberInfo = instance.GetType().GetField(fieldName, bindingAttributes);
             memberInfo?.SetValue(instance, value);
         }
 
@@ -53,10 +52,10 @@ namespace SkillPrestige
             try
             {
                 const BindingFlags bindingAttributes = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-                MethodInfo method = type.GetMethod(functionName, bindingAttributes);
+                var method = type.GetMethod(functionName, bindingAttributes);
                 if (method == null) return default;
                 object result = method.Invoke(null, arguments);
-                return !(result is TReturn) ? default : (TReturn)result;
+                return result is TReturn @return ? @return : default;
             }
             catch (Exception ex)
             {
@@ -75,7 +74,7 @@ namespace SkillPrestige
         {
             //Logger.LogVerbose($"Obtaining instance field {fieldName} on object of type {instance.GetType().FullName}");
             const BindingFlags bindingAttributes = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-            FieldInfo memberInfo = instance.GetType().BaseType?.GetField(fieldName, bindingAttributes);
+            var memberInfo = instance.GetType().BaseType?.GetField(fieldName, bindingAttributes);
             memberInfo?.SetValue(instance, value);
         }
 
@@ -107,13 +106,13 @@ namespace SkillPrestige
         public static string WrapText(this string text, SpriteFont font, float maxLineWidth)
         {
             string[] words = text.Split(' ');
-            StringBuilder stringBuilder = new StringBuilder();
+            var stringBuilder = new StringBuilder();
             float lineWidth = 0f;
             float spaceWidth = font.MeasureString(" ").X;
 
             foreach (string word in words)
             {
-                Vector2 size = font.MeasureString(word);
+                var size = font.MeasureString(word);
 
                 if (lineWidth + size.X < maxLineWidth)
                 {

@@ -1,6 +1,7 @@
 using NUnit.Framework;
+using SkillPrestige;
 
-namespace SkillPrestige.UnitTests
+namespace UnitTests
 {
     [TestFixture]
     public class ExtensionTests
@@ -9,13 +10,14 @@ namespace SkillPrestige.UnitTests
         public void SetInstanceFieldOfBase_SetsPrivateBaseClassProperty()
         {
             var item = new DerivedClass();
-            Assert.IsTrue(item.GetCost == 2);
+            Assert.That(item.GetCost == 2);
             item.SetProperty();
-            Assert.IsTrue(item.GetCost == 5);
+            Assert.That(item.GetCost == 5);
         }
 
         private class BaseClass
         {
+            // ReSharper disable once InconsistentNaming
             private readonly int _cost;
 
             // ReSharper disable once ConvertToAutoProperty - test requires the 'cost' property be private.

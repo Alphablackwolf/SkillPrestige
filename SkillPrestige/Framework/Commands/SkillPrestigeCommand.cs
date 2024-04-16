@@ -34,10 +34,10 @@ namespace SkillPrestige.Framework.Commands
                 .GetTypesSafely()
                 .Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(SkillPrestigeCommand)));
 
-            foreach (Type commandType in commandTypes)
+            foreach (var commandType in commandTypes)
             {
-                SkillPrestigeCommand command = (SkillPrestigeCommand)Activator.CreateInstance(commandType);
-                if (!(testCommands ^ command.TestingCommand))
+                var command = (SkillPrestigeCommand)Activator.CreateInstance(commandType);
+                if (command != null && !(testCommands ^ command.TestingCommand))
                     command.RegisterCommand(helper);
             }
         }
@@ -61,7 +61,7 @@ namespace SkillPrestige.Framework.Commands
         private void RegisterCommand(ICommandHelper helper)
         {
             Logger.LogInformation($"Registering {this.Name} command...");
-            helper.Add(this.Name, this.Description, (name, args) => this.Apply(args));
+            helper.Add(this.Name, this.Description, (_, args) => this.Apply(args));
             Logger.LogInformation($"{this.Name} command registered.");
         }
 

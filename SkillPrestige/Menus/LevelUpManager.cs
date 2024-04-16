@@ -10,12 +10,12 @@ namespace SkillPrestige.Menus
         ** Accessors
         *********/
         /// <summary>Returns whether a given menu is the relevant level up menu.</summary>
-        public Func<IClickableMenu, bool> IsMenu { get; set; }
+        public Func<IClickableMenu, bool> IsMenu { get; init; }
 
         /// <summary>Returns the level that has been reached.</summary>
-        public Func<int> GetLevel { get; set; }
+        public Func<int> GetLevel { get; init; }
 
         /// <summary>Returns the menu that will replace the original level up menu.</summary>
-        public Func<Skill, int, IClickableMenu> CreateNewLevelUpMenu { get; set; }
+        public Func<Skill, int, IClickableMenu> CreateNewLevelUpMenu { get; init; }
     }
 }

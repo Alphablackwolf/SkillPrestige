@@ -15,7 +15,7 @@ namespace SkillPrestige.Mods
         IEnumerable<Skill> AdditionalSkills { get; }
 
         /// <summary>Empty objects that contain a skill type for the saved data.</summary>
-        IEnumerable<Prestige> AdditonalPrestiges { get; }
+        IEnumerable<Prestige> AdditionalPrestiges { get; }
 
         bool IsFound { get; }
     }

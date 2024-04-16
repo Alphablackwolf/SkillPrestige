@@ -25,7 +25,7 @@ namespace SkillPrestige.Mods
         ** Public methods
         *********/
         /// <summary>Register a skill mod for the prestige system.</summary>
-        /// <param name="mod">The mod you wish to register. the mod and its profession Ids cannot already exist in the system, 
+        /// <param name="mod">The mod you wish to register. the mod and its profession Ids cannot already exist in the system,
         /// and the mod must implement ISkillMod. It is recommended to inherit from SkillPrestige's SkillMod class.</param>
         public static void RegisterMod(ISkillMod mod)
         {
@@ -38,19 +38,19 @@ namespace SkillPrestige.Mods
         /// <summary>Initialise the mod handler and add any pending mods.</summary>
         internal static void Initialise()
         {
-            ModHandler.IsInitialised = true;
+            IsInitialised = true;
 
-            foreach (ISkillMod mod in ModHandler.PendingMods)
-                ModHandler.RegisterModImpl(mod);
-            ModHandler.PendingMods.Clear();
+            foreach (var mod in PendingMods)
+                RegisterModImpl(mod);
+            PendingMods.Clear();
         }
 
         /// <summary>Register a skill mod for the prestige system.</summary>
-        /// <param name="mod">The mod you wish to register. the mod and its profession Ids cannot already exist in the system, 
+        /// <param name="mod">The mod you wish to register. the mod and its profession Ids cannot already exist in the system,
         /// and the mod must implement ISkillMod. It is recommended to inherit from SkillPrestige's SkillMod class.</param>
-        public static void RegisterModImpl(ISkillMod mod)
+        private static void RegisterModImpl(ISkillMod mod)
         {
-            if (!ModHandler.IsInitialised)
+            if (!IsInitialised)
                 throw new InvalidOperationException($"The mod handler is not ready to register skill mods yet.");
 
             if (!mod.IsFound)
@@ -86,7 +86,7 @@ namespace SkillPrestige.Mods
         /// <summary>Get the empty prestiges from mods for saving.</summary>
         public static IEnumerable<Prestige> GetAddedEmptyPrestiges()
         {
-            return Mods.Where(x => x.AdditonalPrestiges != null).SelectMany(x => x.AdditonalPrestiges);
+            return Mods.Where(x => x.AdditionalPrestiges != null).SelectMany(x => x.AdditionalPrestiges);
         }
 
         /// <summary>Get the skills added by other mods.</summary>

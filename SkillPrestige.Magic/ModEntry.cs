@@ -58,7 +58,7 @@ namespace SkillPrestige.Magic
         public IEnumerable<Skill> AdditionalSkills => this.GetAddedSkills();
 
         /// <summary>The prestiges added by this mod.</summary>
-        public IEnumerable<Prestige> AdditonalPrestiges => this.GetAddedPrestiges();
+        public IEnumerable<Prestige> AdditionalPrestiges => this.GetAddedPrestiges();
 
 
         /*********
@@ -68,7 +68,7 @@ namespace SkillPrestige.Magic
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
         {
-            this.IconTexture = helper.Content.Load<Texture2D>("assets/icon.png");
+            this.IconTexture = helper.ModContent.Load<Texture2D>("assets/icon.png");
             this.MagicSkillType = new SkillType("Magic", 8);
             this.IsFound = helper.ModRegistry.IsLoaded(this.MagicModId);
             this.IsCookingSkillModLoaded = helper.ModRegistry.IsLoaded("Alphablackwolf.CookingSkillPrestigeAdapter");
@@ -87,28 +87,28 @@ namespace SkillPrestige.Magic
             if (!this.IsFound)
                 yield break;
 
-            int skillPos = 6;
+            int skillPosition = 6;
             if (this.IsLuckSkillModLoaded)
-                ++skillPos;
+                ++skillPosition;
             if (this.IsCookingSkillModLoaded)
-                ++skillPos;
+                ++skillPosition;
 
             yield return new Skill
             {
                 Type = this.MagicSkillType,
-                SkillScreenPosition = skillPos, // fix potential conflict with order due to luck skill mod and cooking skill mod
+                SkillScreenPosition = skillPosition, // fix potential conflict with order due to luck skill mod and cooking skill mod
                 SourceRectangleForSkillIcon = new Rectangle(0, 0, 16, 16),
                 SkillIconTexture = this.IconTexture,
                 Professions = this.GetAddedProfessions(),
                 GetSkillLevel = this.GetLevel,
-                SetSkillLevel = level => { }, // no set necessary, as the level isn't stored independently from the experience
+                SetSkillLevel = _ => { }, // no set necessary, as the level isn't stored independently of the experience
                 GetSkillExperience = this.GetExperience,
                 SetSkillExperience = this.SetExperience,
                 OnPrestige = this.OnPrestige,
                 LevelUpManager = new LevelUpManager
                 {
                     IsMenu = menu => menu is SkillLevelUpMenu && this.Helper.Reflection.GetField<string>(menu, "currentSkill").GetValue() == this.SpaceCoreSkillId,
-                    GetLevel = () => Game1.player.GetCustomSkillLevel(SpaceCore.Skills.GetSkill(this.SpaceCoreSkillId)),
+                    GetLevel = () => Game1.player.GetCustomSkillLevel(Skills.GetSkill(this.SpaceCoreSkillId)),
                     CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<SkillLevelUpMenu>(
                         skill: skill,
                         level: level,
@@ -137,83 +137,75 @@ namespace SkillPrestige.Magic
         /// <summary>Get the professions added by this mod.</summary>
         private IEnumerable<Profession> GetAddedProfessions()
         {
-            var skill = SpaceCore.Skills.GetSkill(this.SpaceCoreSkillId);
+            var skill = Skills.GetSkill(this.SpaceCoreSkillId);
 
             IList<Profession> professions = new List<Profession>();
             IList<TierOneProfession> tierOne = new List<TierOneProfession>();
             foreach (var professionGroup in skill.ProfessionsForLevels)
-            {
-                if (professionGroup.Level == 5)
+                switch (professionGroup.Level)
                 {
-                    var professionA = new TierOneProfession
+                    case 5:
                     {
-                        DisplayName = professionGroup.First.GetName(),
-                        Id = professionGroup.First.GetVanillaId(),
-                        EffectText = new[] { professionGroup.First.GetDescription() },
-                    };
-                    var professionB = new TierOneProfession
-                    {
-                        DisplayName = professionGroup.Second.GetName(),
-                        Id = professionGroup.Second.GetVanillaId(),
-                        EffectText = new[] { professionGroup.Second.GetDescription() },
-                    };
+                        var professionA = new TierOneProfession
+                        {
+                            DisplayName = professionGroup.First.GetName(),
+                            Id = professionGroup.First.GetVanillaId(),
+                            EffectText = new[] { professionGroup.First.GetDescription() },
+                        };
+                        var professionB = new TierOneProfession
+                        {
+                            DisplayName = professionGroup.Second.GetName(),
+                            Id = professionGroup.Second.GetVanillaId(),
+                            EffectText = new[] { professionGroup.Second.GetDescription() },
+                        };
 
-                    professions.Add(professionA);
-                    professions.Add(professionB);
-                    tierOne.Add(professionA);
-                    tierOne.Add(professionB);
+                        professions.Add(professionA);
+                        professions.Add(professionB);
+                        tierOne.Add(professionA);
+                        tierOne.Add(professionB);
+                        break;
+                    }
+                    case 10:
+                    {
+                        var requiredProfession = tierOne.First(p => p.DisplayName == professionGroup.Requires.GetName());
+
+                        var professionA = new TierTwoProfession
+                        {
+                            DisplayName = professionGroup.First.GetName(),
+                            Id = professionGroup.First.GetVanillaId(),
+                            EffectText = new[] { professionGroup.First.GetDescription() },
+                            TierOneProfession = requiredProfession,
+                        };
+                        var professionB = new TierTwoProfession
+                        {
+                            DisplayName = professionGroup.Second.GetName(),
+                            Id = professionGroup.Second.GetVanillaId(),
+                            EffectText = new[] { professionGroup.Second.GetDescription() },
+                            TierOneProfession = requiredProfession,
+                        };
+
+                        professions.Add(professionA);
+                        professions.Add(professionB);
+
+                        requiredProfession.TierTwoProfessions = new[] { professionA, professionB };
+                        break;
+                    }
                 }
-                else if (professionGroup.Level == 10)
-                {
-                    TierOneProfession requiredProfession = tierOne.First(p => p.DisplayName == professionGroup.Requires.GetName());
-
-                    var professionA = new TierTwoProfession
-                    {
-                        DisplayName = professionGroup.First.GetName(),
-                        Id = professionGroup.First.GetVanillaId(),
-                        EffectText = new[] { professionGroup.First.GetDescription() },
-                        TierOneProfession = requiredProfession,
-                    };
-                    var professionB = new TierTwoProfession
-                    {
-                        DisplayName = professionGroup.Second.GetName(),
-                        Id = professionGroup.Second.GetVanillaId(),
-                        EffectText = new[] { professionGroup.Second.GetDescription() },
-                        TierOneProfession = requiredProfession,
-                    };
-
-                    professions.Add(professionA);
-                    professions.Add(professionB);
-
-                    requiredProfession.TierTwoProfessions = new[] { professionA, professionB };
-                }
-            }
 
             foreach (var profession in professions)
-            {
-                switch (profession.DisplayName)
+                profession.SpecialHandling = profession.DisplayName switch
                 {
-                    case "Mana Reserve":
-                        profession.SpecialHandling = new ManaCapSpecialHandling(
-                            amount: 500,
-                            addMaxMana: points =>
-                            {
-                                IManaBarApi api = this.GetManaBarApi();
-                                int maxMana = api.GetMaxMana(Game1.player);
-                                api.SetMaxMana(Game1.player, maxMana + points);
-                            }
-                        );
-                        break;
+                    "Mana Reserve" => new ManaCapSpecialHandling(amount: 500, addMaxMana: points =>
+                    {
+                        var api = this.GetManaBarApi();
+                        int maxMana = api.GetMaxMana(Game1.player);
+                        api.SetMaxMana(Game1.player, maxMana + points);
+                    }),
+                    "Potential" or "Prodigy" => new UpgradePointSpecialHandling(amount: 2,
+                        useSpellPoints: points => this.GetMagicApi().UseSpellPoints(this.ModManifest, points)),
+                    _ => profession.SpecialHandling
+                };
 
-                    case "Potential":
-                    case "Prodigy":
-                        profession.SpecialHandling = new UpgradePointSpecialHandling(
-                            amount: 2,
-                            useSpellPoints: points => this.GetMagicApi().UseSpellPoints(this.ModManifest, points)
-                        );
-                        break;
-                }
-            }
 
             return professions;
         }

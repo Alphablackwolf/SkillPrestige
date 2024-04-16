@@ -42,7 +42,7 @@ namespace SkillPrestige.Framework.Commands
                 Logger.LogVerbose("Cancelled all prestige reset.");
                 return;
             }
-            Logger.LogInformation("Resetting all skill prestiges...");
+            Logger.LogInformation($"Resetting all skill prestiges...");
             foreach (var prestige in PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges)
             {
                 prestige.PrestigePoints = 0;

@@ -4,6 +4,7 @@ using SkillPrestige.Logging;
 using SkillPrestige.Professions;
 using StardewModdingAPI.Events;
 using StardewValley;
+// ReSharper disable PossibleLossOfFraction
 
 namespace SkillPrestige.Framework.Menus.Elements.Buttons
 {
@@ -23,7 +24,7 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         protected override Texture2D ButtonTexture
         {
             get => ProfessionButtonTexture;
-            set => ProfessionButtonTexture = value;
+            init => ProfessionButtonTexture = value;
         }
 
         protected override string HoverText => $"{this.HoverTextPrefix}\n\n{(this.Profession?.EffectText == null ? string.Empty : string.Join("\n", this.Profession.EffectText))}";
@@ -44,7 +45,7 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         *********/
         public static Texture2D ProfessionButtonTexture { get; set; }
 
-        public Profession Profession { get; set; }
+        public Profession Profession { get; init; }
         public bool Selected { private get; set; }
         public bool IsObtainable { private get; set; }
         public bool CanBeAfforded { private get; set; }
@@ -75,6 +76,7 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
             if (this.IsDisabled)
                 return;
 
+            // ReSharper disable once InvertIf
             if (isClick && this.IsHovered)
             {
                 Game1.playSound("bigSelect");
@@ -89,8 +91,8 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         *********/
         private void DrawIcon(SpriteBatch spriteBatch)
         {
-            Vector2 locationOfIconRelativeToButton = new Vector2(this.Bounds.Width / 2 - this.Profession.IconSourceRectangle.Width * Game1.pixelZoom / 2, TextYOffset);
-            Vector2 buttonLocation = new Vector2(this.Bounds.X, this.Bounds.Y);
+            var locationOfIconRelativeToButton = new Vector2(this.Bounds.Width / 2 - this.Profession.IconSourceRectangle.Width * Game1.pixelZoom / 2, TextYOffset);
+            var buttonLocation = new Vector2(this.Bounds.X, this.Bounds.Y);
             this.IconLocation = buttonLocation + locationOfIconRelativeToButton;
             spriteBatch.Draw(this.Profession.Texture, this.IconLocation, this.Profession.IconSourceRectangle, this.DrawColor, 0.0f, Vector2.Zero, 4f, SpriteEffects.None, 1f);
         }
@@ -101,7 +103,7 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
             float textCenter = this.TitleTextFont.MeasureString(this.Text).X / 2;
             float textXLocationRelativeToButton = buttonXCenter - textCenter;
             int textYLocationRelativeToButton = TextYOffset * 2 + this.Profession.IconSourceRectangle.Height * Game1.pixelZoom;
-            Vector2 locationOfTextRelativeToButton = new Vector2(textXLocationRelativeToButton, textYLocationRelativeToButton);
+            var locationOfTextRelativeToButton = new Vector2(textXLocationRelativeToButton, textYLocationRelativeToButton);
             this.DrawTitleText(spriteBatch, locationOfTextRelativeToButton);
         }
 
@@ -109,9 +111,9 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         {
             if (!this.Selected)
                 return;
-            Vector2 locationOfCheckmarkRelativeToButton = new Vector2(this.Bounds.Width - this.CheckmarkSourceRectangle.Width * Game1.pixelZoom / 8, 0);
-            Vector2 buttonLocation = new Vector2(this.Bounds.X, this.Bounds.Y);
-            Vector2 checkmarkLocation = buttonLocation + locationOfCheckmarkRelativeToButton;
+            var locationOfCheckmarkRelativeToButton = new Vector2(this.Bounds.Width - this.CheckmarkSourceRectangle.Width * Game1.pixelZoom / 8, 0);
+            var buttonLocation = new Vector2(this.Bounds.X, this.Bounds.Y);
+            var checkmarkLocation = buttonLocation + locationOfCheckmarkRelativeToButton;
             spriteBatch.Draw(ModEntry.CheckmarkTexture, checkmarkLocation, this.CheckmarkSourceRectangle, Color.White, 0f, Vector2.Zero, Game1.pixelZoom / 4f, SpriteEffects.None, 1f);
         }
 

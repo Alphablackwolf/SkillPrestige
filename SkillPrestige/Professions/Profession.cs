@@ -17,15 +17,15 @@ namespace SkillPrestige.Professions
         /*********
         ** Accessors
         *********/
-        /// <summary>The profession Id used by Stardew Valley.</summary>
-        public int Id { get; set; }
+        /// <summary>The profession ID used by Stardew Valley.</summary>
+        public int Id { get; init; }
 
         /// <summary>The level the profession is available at, should only be 5 or 10.</summary>
         public abstract int LevelAvailableAt { get; }
 
         public string DisplayName { get; set; }
 
-        public IEnumerable<string> EffectText { get; set; }
+        public IEnumerable<string> EffectText { get; set; } = new List<string>();
 
         /// <summary>Any special handling the profession may need in order to be implemented and/or removed.</summary>
         public IProfessionSpecialHandling SpecialHandling { get; set; }
@@ -64,14 +64,14 @@ namespace SkillPrestige.Professions
             var professions = Game1.player.professions;
             foreach (var profession in Skill.AllSkills.SelectMany(x => x.Professions).Where(x => PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.SelectMany(y => y.PrestigeProfessionsSelected).Contains(x.Id)))
             {
-                if (professions.Contains(profession.Id))
+                if (professions.Add(profession.Id))
+                {
+                    Logger.LogVerbose($"Profession {profession.DisplayName} added.");
+                    profession.SpecialHandling?.ApplyEffect();
+                } else
                 {
                     Logger.LogVerbose($"Profession {profession.DisplayName} already found.");
-                    continue;
                 }
-                professions.Add(profession.Id);
-                Logger.LogVerbose($"Profession {profession.DisplayName} added.");
-                profession.SpecialHandling?.ApplyEffect();
             }
         }
 
@@ -83,7 +83,7 @@ namespace SkillPrestige.Professions
         static Profession()
         {
             Logger.LogInformation("Registering professions...");
-            //gets all non abstract classes that implement IProfessionRegistration.
+            //gets all non-abstract classes that implement IProfessionRegistration.
             var concreteProfessionRegistrations = AppDomain.CurrentDomain
                 .GetNonSystemAssemblies()
                 .SelectMany(x => x.GetTypesSafely())
@@ -91,7 +91,7 @@ namespace SkillPrestige.Professions
                 .ToList();
             Logger.LogVerbose($"{concreteProfessionRegistrations.Count} concrete profession registrations found.");
             foreach (var registration in concreteProfessionRegistrations)
-                ((IProfessionRegistration)Activator.CreateInstance(registration)).RegisterProfessions();
+                ((IProfessionRegistration)Activator.CreateInstance(registration))?.RegisterProfessions();
 
             foreach (var profession in Skill.AllSkills.Where(x => Skill.DefaultSkills.Select(y => y.Type).Contains(x.Type)).SelectMany(x => x.Professions).Where(x => string.IsNullOrWhiteSpace(x.DisplayName) || x.EffectText == null || !x.EffectText.Any()))
             {
@@ -106,11 +106,6 @@ namespace SkillPrestige.Professions
                 }
             }
             Logger.LogInformation("Professions registered.");
-        }
-
-        protected Profession()
-        {
-            this.EffectText = new List<string>();
         }
     }
 }

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Menus;
@@ -14,6 +14,8 @@ using StardewValley;
 namespace SkillPrestige.CookingSkill
 {
     /// <summary>The mod entry class.</summary>
+    // ReSharper disable once UnusedType.Global
+    [SuppressMessage("Performance", "CA1822:Mark members as static")]
     internal class ModEntry : Mod, ISkillMod
     {
         /*********
@@ -29,17 +31,17 @@ namespace SkillPrestige.CookingSkill
         private bool IsLuckSkillModLoaded;
 
         /// <summary>The unique ID for the Cooking skill registered with SpaceCore.</summary>
-        private readonly string SpaceCoreSkillId = "spacechase0.Cooking";
+        private const string SpaceCoreSkillId = "spacechase0.Cooking";
 
         /// <summary>The unique ID for the Cooking Skill mod.</summary>
-        private readonly string TargetModId = "spacechase0.CookingSkill";
+        private const string TargetModId = "spacechase0.CookingSkill";
 
 
         /*********
         ** Accessors
         *********/
         /// <summary>The name to display for the mod in the log.</summary>
-        public string DisplayName { get; } = "Cooking Skill";
+        public string DisplayName => "Cooking Skill";
 
         /// <summary>Whether the mod is found in SMAPI.</summary>
         public bool IsFound { get; private set; }
@@ -48,7 +50,7 @@ namespace SkillPrestige.CookingSkill
         public IEnumerable<Skill> AdditionalSkills => this.GetAddedSkills();
 
         /// <summary>The prestiges added by this mod.</summary>
-        public IEnumerable<Prestige> AdditonalPrestiges => this.GetAddedPrestiges();
+        public IEnumerable<Prestige> AdditionalPrestiges => this.GetAddedPrestiges();
 
 
         /*********
@@ -58,9 +60,9 @@ namespace SkillPrestige.CookingSkill
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
         {
-            this.IconTexture = helper.Content.Load<Texture2D>("assets/icon.png");
+            this.IconTexture = this.Helper.ModContent.Load<Texture2D>("assets/icon.png");
             this.SkillType = new SkillType("Cooking", 6);
-            this.IsFound = helper.ModRegistry.IsLoaded(this.TargetModId);
+            this.IsFound = helper.ModRegistry.IsLoaded(TargetModId);
             this.IsLuckSkillModLoaded = helper.ModRegistry.IsLoaded("alphablackwolf.LuckSkillPrestigeAdapter");
 
             ModHandler.RegisterMod(this);
@@ -84,17 +86,17 @@ namespace SkillPrestige.CookingSkill
                 SkillIconTexture = this.IconTexture,
                 Professions = this.GetAddedProfessions(),
                 GetSkillLevel = this.GetLevel,
-                SetSkillLevel = level => { }, // no set necessary, as the level isn't stored independently from the experience
+                SetSkillLevel = _ => { }, // no set necessary, as the level isn't stored independently of the experience
                 GetSkillExperience = this.GetExperience,
                 SetSkillExperience = this.SetExperience,
                 LevelUpManager = new LevelUpManager
                 {
-                    IsMenu = menu => menu is SkillLevelUpMenu && this.Helper.Reflection.GetField<string>(menu, "currentSkill").GetValue() == this.SpaceCoreSkillId,
-                    GetLevel = () => Game1.player.GetCustomSkillLevel(SpaceCore.Skills.GetSkill(this.SpaceCoreSkillId)),
+                    IsMenu = menu => menu is SkillLevelUpMenu && this.Helper.Reflection.GetField<string>(menu, "currentSkill").GetValue() == SpaceCoreSkillId,
+                    GetLevel = () => Game1.player.GetCustomSkillLevel(Skills.GetSkill(SpaceCoreSkillId)),
                     CreateNewLevelUpMenu = (skill, level) => new LevelUpMenuDecorator<SkillLevelUpMenu>(
                         skill: skill,
                         level: level,
-                        internalMenu: new SkillLevelUpMenu(this.SpaceCoreSkillId, level),
+                        internalMenu: new SkillLevelUpMenu(SpaceCoreSkillId, level),
                         professionsToChooseInternalName: "professionsToChoose",
                         leftProfessionDescriptionInternalName: "leftProfessionDescription",
                         rightProfessionDescriptionInternalName: "rightProfessionDescription",
@@ -188,21 +190,21 @@ namespace SkillPrestige.CookingSkill
         private int GetLevel()
         {
             //this.FixExpLength();
-            return Game1.player.GetCustomSkillLevel(this.SpaceCoreSkillId);
+            return Game1.player.GetCustomSkillLevel(SpaceCoreSkillId);
         }
 
         /// <summary>Get the current skill XP.</summary>
         private int GetExperience()
         {
-            return Game1.player.GetCustomSkillExperience(this.SpaceCoreSkillId);
+            return Game1.player.GetCustomSkillExperience(SpaceCoreSkillId);
         }
 
         /// <summary>Set the current skill XP.</summary>
         /// <param name="amount">The amount to set.</param>
         private void SetExperience(int amount)
         {
-            int addedExperience = amount - Game1.player.GetCustomSkillExperience(this.SpaceCoreSkillId);
-            Game1.player.AddCustomSkillExperience(this.SpaceCoreSkillId, addedExperience);
+            int addedExperience = amount - Game1.player.GetCustomSkillExperience(SpaceCoreSkillId);
+            Game1.player.AddCustomSkillExperience(SpaceCoreSkillId, addedExperience);
         }
     }
 }

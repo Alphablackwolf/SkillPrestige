@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley;
+// ReSharper disable PossibleLossOfFraction
 
 namespace SkillPrestige.Framework.Menus.Dialogs
 {
@@ -11,7 +12,8 @@ namespace SkillPrestige.Framework.Menus.Dialogs
         ** Fields
         *********/
         private readonly Skill Skill;
-        protected readonly int YPostionOfHeaderPartition;
+        // ReSharper disable once MemberCanBePrivate.Global
+        protected readonly int YPositionOfHeaderPartition;
 
 
         /*********
@@ -21,7 +23,7 @@ namespace SkillPrestige.Framework.Menus.Dialogs
             : base(bounds, message)
         {
             this.Skill = skill;
-            this.YPostionOfHeaderPartition = this.yPositionOnScreen + (Game1.tileSize * 2.5).Floor();
+            this.YPositionOfHeaderPartition = this.yPositionOnScreen + (Game1.tileSize * 2.5).Floor();
         }
 
 
@@ -52,7 +54,7 @@ namespace SkillPrestige.Framework.Menus.Dialogs
         {
             int textPadding = 2 * Game1.pixelZoom;
             int xLocationOfMessage = this.xPositionOnScreen + borderWidth + textPadding;
-            int yLocationOfMessage = this.YPostionOfHeaderPartition + spaceToClearTopBorder;
+            int yLocationOfMessage = this.YPositionOfHeaderPartition + spaceToClearTopBorder;
             this.DrawMessage(spriteBatch, Game1.dialogueFont, new Vector2(xLocationOfMessage, yLocationOfMessage), this.width - borderWidth * 2);
         }
     }

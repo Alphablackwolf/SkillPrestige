@@ -6,6 +6,7 @@ using SkillPrestige.Logging;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
+// ReSharper disable PossibleLossOfFraction
 
 namespace SkillPrestige.Framework.Menus.Elements.Buttons
 {
@@ -18,7 +19,7 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         protected override string Text { get; }
         private const int PixelsWide = 7;
         private const int PixelsHigh = 8;
-        private readonly int _linePadding = 4 * Game1.pixelZoom;
+        private const int LinePadding = 4 * Game1.pixelZoom;
         private int Value { get; set; }
         private int Minimum { get; }
         private int Maximum { get; }
@@ -48,7 +49,7 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
             this.Maximum = maximum;
             this.Text = text;
             this.Increment = increment;
-            int buttonYOffset = Game1.smallFont.MeasureString(text).Y.Ceiling() + this._linePadding;
+            int buttonYOffset = Game1.smallFont.MeasureString(text).Y.Ceiling() + LinePadding;
             this.MinusButton = new TextureButton(new Rectangle(location.X.Floor(), location.Y.Floor() + buttonYOffset, PixelsWide * Game1.pixelZoom, PixelsHigh * Game1.pixelZoom), Game1.mouseCursors, OptionsPlusMinus.minusButtonSource, this.MinusButtonClicked);
             int plusButtonOffset = MeasureNumberWidth(this.Maximum) + this.MinusButton.Bounds.Width;
             this.PlusButton = new TextureButton(new Rectangle(location.X.Floor() + plusButtonOffset, location.Y.Floor() + buttonYOffset, PixelsWide * Game1.pixelZoom, PixelsHigh * Game1.pixelZoom), Game1.mouseCursors, OptionsPlusMinus.plusButtonSource, this.PlusButtonClicked);
@@ -82,12 +83,12 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         {
             Vector2 location = new Vector2(this.Bounds.X, this.Bounds.Y);
             spriteBatch.DrawString(Game1.smallFont, this.Text, location, Game1.textColor);
-            location.Y += Game1.smallFont.MeasureString(this.Text).Y + this._linePadding;
+            location.Y += Game1.smallFont.MeasureString(this.Text).Y + LinePadding;
             this.MinusButton.Draw(spriteBatch, this.Value == this.Minimum ? Color.Gray : Color.White);
             Vector2 numberLocation = location;
             int controlAreaWidth = this.PlusButton.Bounds.X + this.PlusButton.Bounds.Width - this.Bounds.X;
             numberLocation.X += controlAreaWidth / 2 + GetNumberXOffset(this.Value) / 2;
-            numberLocation.Y += this._linePadding;
+            numberLocation.Y += LinePadding;
             NumberSprite.draw(this.Value, spriteBatch, numberLocation, Color.SandyBrown, 1f, .85f, 1f, 0);
             this.PlusButton.Draw(spriteBatch, this.Value == this.Maximum ? Color.Gray : Color.White);
         }

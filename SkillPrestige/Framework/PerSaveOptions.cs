@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Newtonsoft.Json;
 using SkillPrestige.Framework.JsonNet.PrivateSettersContractResolvers;
@@ -13,6 +14,7 @@ namespace SkillPrestige.Framework
         /*********
         ** Fields
         *********/
+        // ReSharper disable once InconsistentNaming
         private static PerSaveOptions _instance;
 
 
@@ -23,11 +25,9 @@ namespace SkillPrestige.Framework
         {
             get
             {
-                if (_instance == null)
-                {
-                    _instance = new PerSaveOptions();
-                    LoadPerSaveOptions();
-                }
+                if (_instance != null) return _instance;
+                _instance = new PerSaveOptions();
+                LoadPerSaveOptions();
                 return _instance;
             }
         }
@@ -68,7 +68,7 @@ namespace SkillPrestige.Framework
         }
 
         /// <summary>Empty procedure to force the lazy load of the instance.</summary>
-        // ReSharper disable once MemberCanBeMadeStatic.Global - the whole point of this is to force the load of the instance.
+        [SuppressMessage("Performance", "CA1822:Mark members as static")] //the whole point of the method is to force the load, cannot be static.
         public void Check() { }
 
 

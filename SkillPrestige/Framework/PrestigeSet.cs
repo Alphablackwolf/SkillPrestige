@@ -17,7 +17,7 @@ namespace SkillPrestige.Framework
 
         /// <summary>the default prestige set that contains prestiges for each of the skills in the unmodded version Stardew Valley.</summary>
         private static List<Prestige> DefaultPrestiges =>
-            new List<Prestige>
+            new()
             {
                 new Prestige
                 {

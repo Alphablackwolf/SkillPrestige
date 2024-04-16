@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Framework;
@@ -12,10 +13,13 @@ using SkillPrestige.Professions;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+// ReSharper disable MemberCanBeMadeStatic.Local
 
 namespace SkillPrestige
 {
     /// <summary>The mod entry class.</summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
+    [SuppressMessage("Performance", "CA1822:Mark members as static")]
     internal class ModEntry : Mod
     {
         /**********
@@ -33,7 +37,7 @@ namespace SkillPrestige
 
         public static IMonitor LogMonitor { get; private set; }
 
-        public static string CurrentSaveOptionsPath => Path.Combine(ModPath, "psconfigs/", Constants.SaveFolderName);
+        public static string CurrentSaveOptionsPath => Path.Combine(ModPath, "psconfigs/", Constants.SaveFolderName!);
 
         public static string PerSaveOptionsDirectory { get; private set; }
 
@@ -141,12 +145,12 @@ namespace SkillPrestige
 
             string prestigeIconFilePath = Path.Combine(ModPath, "assets", "prestige-icon.png");
             Logger.LogInformation($"Prestige Icon Path: {prestigeIconFilePath}");
-            FileStream prestigeIconFileStream = new FileStream(prestigeIconFilePath, FileMode.Open);
+            var prestigeIconFileStream = new FileStream(prestigeIconFilePath, FileMode.Open);
             PrestigeIconTexture = Texture2D.FromStream(Game1.graphics.GraphicsDevice, prestigeIconFileStream);
 
             string checkmarkFilePath = Path.Combine(ModPath, "assets", "checkmark.png");
             Logger.LogInformation($"Checkmark Path: {checkmarkFilePath}");
-            FileStream checkmarkFileStream = new FileStream(checkmarkFilePath, FileMode.Open);
+            var checkmarkFileStream = new FileStream(checkmarkFilePath, FileMode.Open);
             CheckmarkTexture = Texture2D.FromStream(Game1.graphics.GraphicsDevice, checkmarkFileStream);
             Logger.LogInformation("Sprites loaded.");
         }

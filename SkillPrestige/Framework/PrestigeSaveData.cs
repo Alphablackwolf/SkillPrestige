@@ -21,6 +21,7 @@ namespace SkillPrestige.Framework
         public static PrestigeSet CurrentlyLoadedPrestigeSet => Instance.PrestigeSaveFiles[CurrentlyLoadedSaveFileUniqueId];
         private static ulong CurrentlyLoadedSaveFileUniqueId { get; set; }
 
+        // ReSharper disable once InconsistentNaming
         private static PrestigeSaveData _instance;
 
 
@@ -39,12 +40,12 @@ namespace SkillPrestige.Framework
         // ReSharper disable once MemberCanBePrivate.Global - used publically, resharper is wrong.
         public static PrestigeSaveData Instance
         {
-            get => _instance ?? (_instance = new PrestigeSaveData());
+            get => _instance ??= new PrestigeSaveData();
             // ReSharper disable once UnusedMember.Global - used by deseralizer.
             set => _instance = value;
         }
 
-        // ReSharper disable once MemberCanBeMadeStatic.Global - removing this removes lazy load in accessor for the instance. 
+        // ReSharper disable once MemberCanBeMadeStatic.Global - removing this removes lazy load in accessor for the instance.
         public void Save()
         {
             Logger.LogInformation("Writing prestige save data to disk...");

@@ -6,6 +6,7 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
+// ReSharper disable InconsistentNaming
 
 namespace SkillPrestige.Framework.Menus.Elements.Buttons
 {
@@ -22,11 +23,11 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         protected virtual Texture2D ButtonTexture
         {
             get => this._buttonTexture ?? DefaultButtonTexture;
-            set => this._buttonTexture = value;
+            init => this._buttonTexture = value;
         }
 
         protected bool IsHovered { get; private set; }
-        protected SpriteFont TitleTextFont { get; set; }
+        protected SpriteFont TitleTextFont { get; init; }
         protected abstract string HoverText { get; }
         protected abstract string Text { get; }
 
@@ -43,7 +44,7 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         public Rectangle Bounds
         {
             get => this._bounds;
-            set
+            init
             {
                 this._bounds = value;
                 this.ClickableTextureComponent = new ClickableTextureComponent(string.Empty, this._bounds, string.Empty, this.HoverText, this.ButtonTexture, new Rectangle(0, 0, 0, 0), 1f);
@@ -72,6 +73,7 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         public virtual void OnCursorMoved(CursorMovedEventArgs e)
         {
             this.IsHovered = this.ContainsPoint(e.NewPosition);
+            // ReSharper disable once InvertIf - easier to read intent this way
             if (this.IsHovered && !this.ContainsPoint(e.OldPosition))
             {
                 Logger.LogVerbose($"{this.Text ?? this.HoverText} button has focus.");
@@ -91,10 +93,10 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         *********/
         protected void DrawTitleText(SpriteBatch spriteBatch, Vector2? locationRelativeToButton = null)
         {
-            Vector2? textLocation = locationRelativeToButton;
+            var textLocation = locationRelativeToButton;
             if (locationRelativeToButton == null)
             {
-                Vector2 textSize = this.TitleTextFont.MeasureString(this.Text);
+                var textSize = this.TitleTextFont.MeasureString(this.Text);
                 int buttonXCenter = this.Bounds.X + this.Bounds.Width / 2;
                 int buttonYCenter = this.Bounds.Y + this.Bounds.Height / 2;
                 float textX = buttonXCenter - textSize.X / 2f;
@@ -111,10 +113,11 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         protected virtual void OnMouseHovered() { }
 
         /// <summary>Get whether the cursor position is over the button.</summary>
-        /// <param name="pos">The cursor position.</param>
-        protected bool ContainsPoint(ICursorPosition pos)
+        /// <param name="position">The cursor position.</param>
+        // ReSharper disable once MemberCanBePrivate.Global
+        protected bool ContainsPoint(ICursorPosition position)
         {
-            return this.ClickableTextureComponent.containsPoint((int)pos.ScreenPixels.X, (int)pos.ScreenPixels.Y);
+            return this.ClickableTextureComponent.containsPoint((int)position.ScreenPixels.X, (int)position.ScreenPixels.Y);
         }
     }
 }

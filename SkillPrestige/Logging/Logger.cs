@@ -11,6 +11,7 @@ namespace SkillPrestige.Logging
         public static void LogVerbose(string message)
         {
             if (ModEntry.Config.LogLevel >= LogLevel.Verbose)
+                // ReSharper disable once RedundantArgumentDefaultValue - Default values can change
                 ModEntry.LogMonitor.Log(message, StardewModdingAPI.LogLevel.Trace);
         }
 

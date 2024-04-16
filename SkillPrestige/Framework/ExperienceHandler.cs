@@ -10,6 +10,7 @@ namespace SkillPrestige.Framework
         /*********
         ** Fields
         *********/
+        // ReSharper disable once InconsistentNaming
         private static bool _disableExperienceGains;
         private static bool ExperienceLoaded { get; set; }
         private static int[] LastExperiencePoints { get; set; }

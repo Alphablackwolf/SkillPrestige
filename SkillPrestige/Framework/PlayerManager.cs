@@ -10,7 +10,7 @@ namespace SkillPrestige.Framework
         /*********
         ** Fields
         *********/
-        private static int OriginalMaxHealth = 100;
+        private const int OriginalMaxHealth = 100;
 
 
         /*********

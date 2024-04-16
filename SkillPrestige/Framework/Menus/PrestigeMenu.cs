@@ -10,6 +10,7 @@ using SkillPrestige.Professions;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
+// ReSharper disable PossibleLossOfFraction
 
 namespace SkillPrestige.Framework.Menus
 {

@@ -21,7 +21,7 @@ namespace SkillPrestige.LuckSkill
         private SkillType SkillType;
 
         /// <summary>The unique ID for the Luck Skill mod.</summary>
-        private readonly string TargetModId = "spacechase0.LuckSkill";
+        private const string TargetModId = "spacechase0.LuckSkill";
 
 
         /*********
@@ -37,7 +37,7 @@ namespace SkillPrestige.LuckSkill
         public IEnumerable<Skill> AdditionalSkills => this.GetAddedSkills();
 
         /// <summary>The prestiges added by this mod.</summary>
-        public IEnumerable<Prestige> AdditonalPrestiges => this.GetAddedPrestiges();
+        public IEnumerable<Prestige> AdditionalPrestiges => this.GetAddedPrestiges();
 
 
         /*********
@@ -48,7 +48,7 @@ namespace SkillPrestige.LuckSkill
         public override void Entry(IModHelper helper)
         {
             this.SkillType = new SkillType("Luck", 5);
-            this.IsFound = helper.ModRegistry.IsLoaded(this.TargetModId);
+            this.IsFound = helper.ModRegistry.IsLoaded(TargetModId);
 
             ModHandler.RegisterMod(this);
         }
@@ -89,9 +89,10 @@ namespace SkillPrestige.LuckSkill
         /// <summary>Get the professions added by this mod.</summary>
         private IEnumerable<Profession> GetAddedProfessions()
         {
-            ILuckSkillApi api = this.GetLuckSkillApi();
-            IDictionary<int, IProfession> professions = api.GetProfessions();
+            var api = this.GetLuckSkillApi();
+            var professions = api.GetProfessions();
 
+            // ReSharper disable once MoveLocalFunctionAfterJumpStatement
             TProfession Create<TProfession>(int id, IProfessionSpecialHandling specialHandling = null) where TProfession : Profession, new()
             {
                 var profession = professions[id];
@@ -142,7 +143,7 @@ namespace SkillPrestige.LuckSkill
         private ILuckSkillApi GetLuckSkillApi()
         {
             return
-                this.Helper.ModRegistry.GetApi<ILuckSkillApi>(this.TargetModId)
+                this.Helper.ModRegistry.GetApi<ILuckSkillApi>(TargetModId)
                 ?? throw new InvalidOperationException("Can't load the API for the Luck Skill mod.");
         }
     }
