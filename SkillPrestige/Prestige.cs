@@ -101,8 +101,9 @@ namespace SkillPrestige
                 var recipe in
                 CraftingRecipe.craftingRecipes.Where(
                     x =>
-                        x.Value.Split('/')[4].Contains(skillType.Name) &&
-                        Game1.player.craftingRecipes.ContainsKey(x.Key)))
+                        x.Value.Split('/').Length > 4
+                        && x.Value.Split('/')[4].Contains(skillType.Name)
+                        && Game1.player.craftingRecipes.ContainsKey(x.Key)))
             {
                 Logger.LogVerbose($"Removing {skillType.Name} crafting recipe {recipe.Value}");
                 Game1.player.craftingRecipes.Remove(recipe.Key);

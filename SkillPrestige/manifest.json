@@ -6,5 +6,12 @@
     "UniqueID": "alphablackwolf.skillPrestige",
     "EntryDll": "SkillPrestige.dll",
     "MinimumApiVersion": "4.0.0",
-    "UpdateKeys": [ "Nexus:569" ]
+    "UpdateKeys": [
+        "Nexus:569"
+    ],
+    "Dependencies": [
+        {
+            "UniqueID": "Pathoschild.ContentPatcher"
+        }
+    ]
 }

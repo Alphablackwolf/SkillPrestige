@@ -78,7 +78,7 @@ namespace SkillPrestige.Menus
             this.GetProfessionDescription = getProfessionDescription;
 
             // exit decorator when the menu closes
-            onExit prevExitFunction = this.InternalMenu.exitFunction;
+            var prevExitFunction = this.InternalMenu.exitFunction;
             this.InternalMenu.exitFunction = () =>
             {
                 prevExitFunction?.Invoke();

@@ -32,7 +32,7 @@ namespace SkillPrestige.Professions
 
         /// <summary>The location of the professions icon in Stardew Valley's cursors texture file image. If you are implementing this for your own mod, override this and supply the source rectangle for the texture you wish to use. If you have a custom texture, also override the Texture property.</summary>
         // ReSharper disable once VirtualMemberNeverOverridden.Global - expected to be overridden in externally inherited class.
-        public virtual Rectangle IconSourceRectangle => new Rectangle(this.Id % 6 * 16, 624 + this.Id / 6 * 16, 16, 16);
+        public virtual Rectangle IconSourceRectangle => new (this.Id % 6 * 16, 624 + this.Id / 6 * 16, 16, 16);
 
         /// <summary>The texture that contains the profession's icon.</summary>
         // ReSharper disable once VirtualMemberNeverOverridden.Global - expected to be overridden in externally inherited class.

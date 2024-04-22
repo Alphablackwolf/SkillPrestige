@@ -45,6 +45,7 @@ namespace SkillPrestige.Framework.Menus
         public static void AddPrestigeButtonsToMenu()
         {
             var activeClickableMenu = Game1.activeClickableMenu as GameMenu;
+
             if (activeClickableMenu is not { currentTab: 1 })
             {
                 if (SkillsMenuInitialized)
@@ -143,9 +144,8 @@ namespace SkillPrestige.Framework.Menus
 
             int menuXCenter = (menuWidth + IClickableMenu.borderWidth * 2) / 2;
             int menuYCenter = (menuHeight + IClickableMenu.borderWidth * 2) / 2;
-            var viewport = Game1.graphics.GraphicsDevice.Viewport;
-            int screenXCenter = (int)(viewport.Width * (1.0 / Game1.options.zoomLevel)) / 2;
-            int screenYCenter = (int)(viewport.Height * (1.0 / Game1.options.zoomLevel)) / 2;
+            int screenXCenter = Game1.uiViewport.Width / 2;
+            int screenYCenter = Game1.uiViewport.Height / 2;
             var bounds = new Rectangle(screenXCenter - menuXCenter, screenYCenter - menuYCenter, menuWidth + IClickableMenu.borderWidth * 2, menuHeight + IClickableMenu.borderWidth * 2);
             Game1.playSound("bigSelect");
             Logger.LogVerbose("Getting currently loaded prestige data...");

@@ -48,7 +48,7 @@ namespace SkillPrestige.Framework.Menus.Dialogs
                 this.DebounceTimer--;
 
             Game1.drawDialogueBox(this.xPositionOnScreen, this.yPositionOnScreen, this.width, this.height, false, true);
-            int textPadding = 2 * Game1.pixelZoom;
+            const int textPadding = 2 * Game1.pixelZoom;
             Game1.spriteBatch.DrawString(Game1.dialogueFont,
                 this.Message.WrapText(Game1.dialogueFont, this.width - spaceToClearSideBorder * 2),
                 new Vector2(this.xPositionOnScreen + spaceToClearSideBorder * 2 + textPadding,
@@ -103,12 +103,12 @@ namespace SkillPrestige.Framework.Menus.Dialogs
                 return;
             this.ButtonsInstantiated = true;
             Logger.LogVerbose("Warning Dialog - Instantiating Okay/Cancel buttons...");
-            int buttonSize = Game1.tileSize;
-            int buttonPadding = Game1.tileSize * 4;
-            Rectangle okayButtonBounds = new Rectangle(this.xPositionOnScreen + this.width - buttonSize - spaceToClearSideBorder * 3, this.yPositionOnScreen + this.height - (buttonSize * 1.5).Floor(), buttonSize, buttonSize);
+            const int buttonSize = Game1.tileSize;
+            const int buttonPadding = Game1.tileSize * 4;
+            var okayButtonBounds = new Rectangle(this.xPositionOnScreen + this.width - buttonSize - spaceToClearSideBorder * 3, this.yPositionOnScreen + this.height - (buttonSize * 1.5).Floor(), buttonSize, buttonSize);
             this.OkayButton = new TextureButton(okayButtonBounds, Game1.mouseCursors, new Rectangle(128, 256, 64, 64), this.Okay, "Prestige Skill");
             Logger.LogVerbose("Warning Dialog - Okay button instantiated.");
-            Rectangle cancelButtonBounds = okayButtonBounds;
+            var cancelButtonBounds = okayButtonBounds;
             cancelButtonBounds.X -= buttonSize + buttonPadding;
             this.CancelButton = new TextureButton(cancelButtonBounds, Game1.mouseCursors, new Rectangle(192, 256, 64, 64), () => this.exitThisMenu(false), "Cancel");
             Logger.LogVerbose("Warning Dialog - Cancel button instantiated.");

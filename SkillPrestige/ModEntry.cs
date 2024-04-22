@@ -7,7 +7,6 @@ using SkillPrestige.Framework.InputHandling;
 using SkillPrestige.Framework.Menus;
 using SkillPrestige.Framework.Menus.Elements.Buttons;
 using SkillPrestige.Logging;
-using SkillPrestige.Menus;
 using SkillPrestige.Mods;
 using SkillPrestige.Professions;
 using StardewModdingAPI;
@@ -195,9 +194,9 @@ namespace SkillPrestige
             if (Game1.activeClickableMenu == null)
                 return;
 
-            foreach (Skill skill in Skill.AllSkills)
+            foreach (var skill in Skill.AllSkills)
             {
-                LevelUpManager levelUpManager = skill.LevelUpManager;
+                var levelUpManager = skill.LevelUpManager;
                 if (!levelUpManager.IsMenu(Game1.activeClickableMenu))
                     continue;
 

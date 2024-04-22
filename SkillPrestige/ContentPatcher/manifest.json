@@ -1,0 +1,16 @@
+{
+    "Name": "[CP] Skill Prestige",
+    "Author": "CinderGarde",
+    "Version": "1.2.6",
+    "Description": "SkillPrestige Content Patcher",
+    "UniqueID": "CinderGarde.SkillPrestige.CP",
+    "ContentPackFor": {
+        "UniqueID": "Pathoschild.ContentPatcher"
+    },
+    "UpdateKeys": [],
+    "Dependencies": [
+        {
+            "UniqueID": "alphablackwolf.SkillPrestige"
+        }
+    ]
+}

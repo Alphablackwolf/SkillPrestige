@@ -97,8 +97,8 @@ namespace SkillPrestige.Framework.Menus.Dialogs
                 return;
             this.ButtonInstantiated = true;
             Logger.LogVerbose("Message Dialog - Instantiating Okay button...");
-            int buttonSize = Game1.tileSize;
-            Rectangle okayButtonBounds = new Rectangle(this.xPositionOnScreen + this.width + Game1.tileSize / 4, this.yPositionOnScreen + this.height - buttonSize, buttonSize, buttonSize);
+            const int buttonSize = Game1.tileSize;
+            var okayButtonBounds = new Rectangle(this.xPositionOnScreen + this.width + Game1.tileSize / 4, this.yPositionOnScreen + this.height - buttonSize, buttonSize, buttonSize);
             this.OkayButton = new TextureButton(okayButtonBounds, Game1.mouseCursors, new Rectangle(128, 256, 64, 64), this.Okay);
             Logger.LogVerbose("Message Dialog - Okay button instantiated.");
 

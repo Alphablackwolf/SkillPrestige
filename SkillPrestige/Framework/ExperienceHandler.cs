@@ -71,7 +71,8 @@ namespace SkillPrestige.Framework
                 if (gainedExperience <= 0 || skillExperienceFactor <= 0)
                     continue;
                 Logger.LogVerbose($"Detected {gainedExperience} experience gained in {Skill.AllSkills.Single(x => x.Type.Ordinal == skillIndex).Type.Name} skill.");
-                int extraExperience = (gainedExperience * skillExperienceFactor).Floor();
+                const int maxExtraExperience = 100000;
+                int extraExperience = (gainedExperience * skillExperienceFactor).Floor().Clamp(0, maxExtraExperience);
                 Logger.LogVerbose($"Adding {extraExperience} experience to {Skill.AllSkills.Single(x => x.Type.Ordinal == skillIndex).Type.Name} skill.");
                 Game1.player.gainExperience(skillIndex, extraExperience);
             }

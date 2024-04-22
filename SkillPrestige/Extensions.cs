@@ -190,7 +190,10 @@ namespace SkillPrestige
         /// <summary>Returns Math.Floor as an integer.</summary>
         public static int Floor(this decimal value)
         {
-            return Convert.ToInt32(Math.Floor(value));
+            decimal valueFloor = Math.Floor(value);
+            return valueFloor < int.MaxValue
+                ? Convert.ToInt32(valueFloor)
+                : int.MaxValue;
         }
 
         /// <summary>Returns Math.Floor as an integer.</summary>

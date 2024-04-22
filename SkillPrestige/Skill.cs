@@ -123,10 +123,15 @@ namespace SkillPrestige
         public Skill()
         {
             this.GetSkillExperience = () => Game1.player.experiencePoints[this.Type!.Ordinal];
-            this.SetSkillExperience = exp =>
+            this.SetSkillExperience = (exp) =>
             {
-                Game1.player.experiencePoints[this.Type!.Ordinal] = 0;
-                Game1.player.gainExperience(this.Type.Ordinal, exp);
+                if (exp > 15000 && Game1.player.experiencePoints[this.Type!.Ordinal] > 15000)
+                    Game1.player.experiencePoints[this.Type!.Ordinal] = exp;
+                else
+                {
+                    Game1.player.experiencePoints[this.Type!.Ordinal] = 0;
+                    Game1.player.gainExperience(this.Type.Ordinal, exp);
+                }
             };
             this.LevelUpManager = new LevelUpManager
             {

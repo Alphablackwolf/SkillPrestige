@@ -60,7 +60,7 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
 
         public void Draw(SpriteBatch spriteBatch, Color color)
         {
-            Vector2 location = new Vector2(this.ClickableTextureComponent.bounds.X, this.ClickableTextureComponent.bounds.Y);
+            var location = new Vector2(this.ClickableTextureComponent.bounds.X, this.ClickableTextureComponent.bounds.Y);
             spriteBatch.Draw(this.ClickableTextureComponent.texture, location, this.ClickableTextureComponent.sourceRect, color, 0.0f, Vector2.Zero, Game1.pixelZoom, SpriteEffects.None, 0.4f);
         }
 

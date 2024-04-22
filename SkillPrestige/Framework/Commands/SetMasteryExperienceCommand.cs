@@ -1,20 +1,19 @@
-using System;
 using System.Linq;
 using SkillPrestige.Logging;
 using StardewValley;
 
 namespace SkillPrestige.Framework.Commands
 {
-    /// <summary>A command that sets experience levels for a player.</summary>
+    /// <summary>A command that sets mastery experience levels for a player.</summary>
     // ReSharper disable once UnusedMember.Global - referenced via reflection
-    internal class SetExperienceCommand : SkillPrestigeCommand
+    internal class SetMasteryExperienceCommand : SkillPrestigeCommand
     {
         /*********
         ** Public methods
         *********/
         /// <summary>Construct an instance.</summary>
-        public SetExperienceCommand()
-            : base("player_setexperience", GetDescription(), testingCommand: true) { }
+        public SetMasteryExperienceCommand()
+            : base("player_setmasteryexperience", GetDescription(), testingCommand: true) { }
 
 
         /*********
@@ -23,18 +22,12 @@ namespace SkillPrestige.Framework.Commands
         /// <summary>Applies the effect of a command when it is called from the console.</summary>
         protected override void Apply(string[] args)
         {
-            if (args.Length <= 1)
+            if (args.Length < 1)
             {
-                ModEntry.LogMonitor.Log("<skill> and <value> must be specified");
+                ModEntry.LogMonitor.Log(" <value> must be specified");
                 return;
             }
-            string skillArgument = args[0];
-            if (!Skill.AllSkills.Select(x => x.Type.Name).Contains(skillArgument, StringComparer.InvariantCultureIgnoreCase))
-            {
-                ModEntry.LogMonitor.Log("<skill> is invalid");
-                return;
-            }
-            if (!int.TryParse(args[1], out int experienceArgument))
+            if (!int.TryParse(args[0], out int experienceArgument))
             {
                 ModEntry.LogMonitor.Log("experience must be an integer.");
                 return;
@@ -44,21 +37,12 @@ namespace SkillPrestige.Framework.Commands
                 ModEntry.LogMonitor.Log("A game file must be loaded in order to run this command.");
                 return;
             }
-            Logger.LogInformation("Setting experience level...");
+            Logger.LogInformation("Setting mastery experience ...");
             Logger.LogVerbose($"experience argument: {experienceArgument}");
             experienceArgument = experienceArgument.Clamp(0, 100000);
             Logger.LogVerbose($"experience used: {experienceArgument}");
-            var skill = Skill.AllSkills.Single(x => x.Type.Name.Equals(skillArgument, StringComparison.InvariantCultureIgnoreCase));
 
-            int playerSkillExperience = skill.GetSkillExperience();
-            Logger.LogVerbose($"Current experience level for {skill.Type.Name} skill: {playerSkillExperience}");
-            Logger.LogVerbose($"Setting {skill.Type.Name} skill to {experienceArgument} experience.");
-            ExperienceHandler.DisableExperienceGains = true;
-            skill.SetSkillExperience(experienceArgument);
-            ExperienceHandler.DisableExperienceGains = false;
-            int skillLevel = GetLevel(experienceArgument);
-            Logger.LogVerbose($"Setting skill level for {experienceArgument} experience: {skillLevel}");
-            skill.SetSkillLevel(skillLevel);
+            Game1.stats.Set("MasteryExp", experienceArgument);
 
         }
 

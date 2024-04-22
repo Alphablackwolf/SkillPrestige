@@ -9,4 +9,17 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.1.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="SpaceCore" HintPath="$(GamePath)\Mods\SpaceCore\SpaceCore.dll" Private="False" />
+  </ItemGroup>
+
+  <Target Name="DeployPack" AfterTargets="Build">
+    <Message Text="Running DeployPack target..." />
+    <ItemGroup>
+      <_ContentPatcherFiles Include="$(ProjectDir)ContentPatcher/**/*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(_ContentPatcherFiles)" DestinationFiles="@(_ContentPatcherFiles->'$(GameModsPath)/$(AssemblyName) [CP]/%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
 </Project>

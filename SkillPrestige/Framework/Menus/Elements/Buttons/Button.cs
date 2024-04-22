@@ -2,7 +2,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Framework.InputHandling;
 using SkillPrestige.Logging;
-using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
@@ -72,9 +71,13 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         /// <param name="e">The event data.</param>
         public virtual void OnCursorMoved(CursorMovedEventArgs e)
         {
-            this.IsHovered = this.ContainsPoint(e.NewPosition);
+            var newMousePosition = Game1.getMousePosition(true);
+            int oldMouseX = Game1.getOldMouseX(true);
+            int oldMouseY = Game1.getOldMouseY(true);
+            var oldMousePosition = new Point(oldMouseX, oldMouseY);
+            this.IsHovered = this.ContainsPoint(newMousePosition);
             // ReSharper disable once InvertIf - easier to read intent this way
-            if (this.IsHovered && !this.ContainsPoint(e.OldPosition))
+            if (this.IsHovered && !this.ContainsPoint(oldMousePosition))
             {
                 Logger.LogVerbose($"{this.Text ?? this.HoverText} button has focus.");
                 this.OnMouseHovered();
@@ -115,9 +118,9 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
         /// <summary>Get whether the cursor position is over the button.</summary>
         /// <param name="position">The cursor position.</param>
         // ReSharper disable once MemberCanBePrivate.Global
-        protected bool ContainsPoint(ICursorPosition position)
+        protected bool ContainsPoint(Point position)
         {
-            return this.ClickableTextureComponent.containsPoint((int)position.ScreenPixels.X, (int)position.ScreenPixels.Y);
+            return this.ClickableTextureComponent.containsPoint(position.X, position.Y);
         }
     }
 }

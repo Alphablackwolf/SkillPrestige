@@ -48,7 +48,7 @@ namespace SkillPrestige.Framework.Commands
                 return;
             }
             Logger.LogInformation($"Resetting prestige data for {skillArgument} skill...");
-            Prestige prestige = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType.Name.Equals(skillArgument, StringComparison.InvariantCultureIgnoreCase));
+            var prestige = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType.Name.Equals(skillArgument, StringComparison.InvariantCultureIgnoreCase));
             prestige.PrestigePoints = 0;
             prestige.PrestigeProfessionsSelected = new List<int>();
             PrestigeSaveData.Instance.Save();
