@@ -20,9 +20,6 @@ namespace SkillPrestige.Magic
     /// <summary>The mod entry class.</summary>
     internal class ModEntry : Mod, ISkillMod
     {
-        /*********
-        ** Fields
-        *********/
         /// <summary>The cooking skill icon.</summary>
         private Texture2D IconTexture;
 
@@ -44,10 +41,6 @@ namespace SkillPrestige.Magic
         /// <summary>The unique ID for the Mana Bar mod.</summary>
         private readonly string ManaBarModId = "spacechase0.ManaBar";
 
-
-        /*********
-        ** Accessors
-        *********/
         /// <summary>The name to display for the mod in the log.</summary>
         public string DisplayName { get; } = "Magic Skill";
 
@@ -60,10 +53,6 @@ namespace SkillPrestige.Magic
         /// <summary>The prestiges added by this mod.</summary>
         public IEnumerable<Prestige> AdditionalPrestiges => this.GetAddedPrestiges();
 
-
-        /*********
-        ** Public methods
-        *********/
         /// <summary>The mod entry point, called after the mod is first loaded.</summary>
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
@@ -77,10 +66,6 @@ namespace SkillPrestige.Magic
             ModHandler.RegisterMod(this);
         }
 
-
-        /*********
-        ** Private methods
-        *********/
         /// <summary>Get the skills added by this mod.</summary>
         private IEnumerable<Skill> GetAddedSkills()
         {

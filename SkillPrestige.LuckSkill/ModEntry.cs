@@ -14,19 +14,12 @@ namespace SkillPrestige.LuckSkill
     /// <summary>The mod entry class.</summary>
     internal class ModEntry : Mod, ISkillMod
     {
-        /*********
-        ** Fields
-        *********/
         /// <summary>The luck skill type.</summary>
         private SkillType SkillType;
 
         /// <summary>The unique ID for the Luck Skill mod.</summary>
         private const string TargetModId = "spacechase0.LuckSkill";
 
-
-        /*********
-        ** Accessors
-        *********/
         /// <summary>The name to display for the mod in the log.</summary>
         public string DisplayName { get; } = "Luck Skill";
 
@@ -39,10 +32,6 @@ namespace SkillPrestige.LuckSkill
         /// <summary>The prestiges added by this mod.</summary>
         public IEnumerable<Prestige> AdditionalPrestiges => this.GetAddedPrestiges();
 
-
-        /*********
-        ** Public methods
-        *********/
         /// <summary>The mod entry point, called after the mod is first loaded.</summary>
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
@@ -53,10 +42,6 @@ namespace SkillPrestige.LuckSkill
             ModHandler.RegisterMod(this);
         }
 
-
-        /*********
-        ** Private methods
-        *********/
         /// <summary>Get the skills added by this mod.</summary>
         private IEnumerable<Skill> GetAddedSkills()
         {

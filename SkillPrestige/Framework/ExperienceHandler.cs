@@ -7,18 +7,11 @@ namespace SkillPrestige.Framework
     /// <summary>Handles experience adjustments for skills.</summary>
     internal static class ExperienceHandler
     {
-        /*********
-        ** Fields
-        *********/
         // ReSharper disable once InconsistentNaming
         private static bool _disableExperienceGains;
         private static bool ExperienceLoaded { get; set; }
         private static int[] LastExperiencePoints { get; set; }
 
-
-        /*********
-        ** Accessors
-        *********/
         public static bool DisableExperienceGains
         {
             private get => _disableExperienceGains;
@@ -31,10 +24,6 @@ namespace SkillPrestige.Framework
             }
         }
 
-
-        /*********
-        ** Public methods
-        *********/
         public static void ResetExperience()
         {
             ExperienceLoaded = false;

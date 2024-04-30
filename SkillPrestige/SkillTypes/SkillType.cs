@@ -9,9 +9,6 @@ namespace SkillPrestige.SkillTypes
     [Serializable]
     public partial class SkillType
     {
-        /*********
-        ** Accessors
-        *********/
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local - setter used by deserializer.
         public string Name { get; private set; }
 
@@ -19,10 +16,6 @@ namespace SkillPrestige.SkillTypes
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local - setter used by deserializer.
         public int Ordinal { get; private set; }
 
-
-        /*********
-        ** Public methods
-        *********/
         public SkillType() { }
 
         // ReSharper disable once MemberCanBeProtected.Global - this time resharper is just out of it's gourd. this is used publically.
@@ -69,10 +62,6 @@ namespace SkillPrestige.SkillTypes
             return !(left == right);
         }
 
-
-        /*********
-        ** Private methods
-        *********/
         static SkillType()
         {
             Logger.LogInformation("Registering skill types...");

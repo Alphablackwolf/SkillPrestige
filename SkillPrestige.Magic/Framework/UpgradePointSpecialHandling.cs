@@ -6,19 +6,12 @@ namespace SkillPrestige.Magic.Framework
     /// <summary>Special handling for adding to the spell points from a Magic profession.</summary>
     internal class UpgradePointSpecialHandling : IProfessionSpecialHandling
     {
-        /*********
-        ** Fields
-        *********/
         /// <summary>The spell points to add.</summary>
         private readonly int Amount;
 
         /// <summary>Reduce the player's spell points by the given amount (or add spell points if the number is negative).</summary>
         private readonly Action<int> UseSpellPoints;
 
-
-        /*********
-        ** Public methods
-        *********/
         /// <summary>Construct an instance.</summary>
         /// <param name="amount">The spell points to add.</param>
         /// <param name="useSpellPoints">Reduce the player's spell points by the given amount (or add spell points if the number is negative).</param>

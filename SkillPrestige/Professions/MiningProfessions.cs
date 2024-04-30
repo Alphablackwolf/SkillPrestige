@@ -4,9 +4,6 @@ namespace SkillPrestige.Professions
 {
     public partial class Profession
     {
-        /*********
-        ** Accessors
-        *********/
         public static IEnumerable<Profession> MiningProfessions => new List<Profession>
         {
             Miner,

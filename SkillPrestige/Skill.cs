@@ -15,9 +15,6 @@ namespace SkillPrestige
     /// <summary>Represents a skill in Stardew Valley.</summary>
     public class Skill
     {
-        /*********
-        ** Accessors
-        *********/
         /// <summary>Metadata about a skill type.</summary>
         public SkillType Type { get; init; }
 
@@ -103,22 +100,22 @@ namespace SkillPrestige
             }
         };
 
+        private static List<Skill> _allSkills;
         /// <summary>Returns all skills loaded and registered into this mod, default and mod.</summary>
         public static IEnumerable<Skill> AllSkills
         {
             get
             {
+                if (_allSkills is not null && _allSkills.Any()) return _allSkills;
                 var skills = new List<Skill>(DefaultSkills);
                 var addedSkills = ModHandler.GetAddedSkills().ToList();
                 if (addedSkills.Any())
                     skills.AddRange(addedSkills);
-                return skills;
+                _allSkills = skills;
+                return _allSkills;
             }
         }
 
-        /*********
-        ** Public methods
-        *********/
         /// <summary>Construct an instance.</summary>
         public Skill()
         {

@@ -5,9 +5,6 @@ namespace SkillPrestige.Logging
     /// <summary>A wrapper for the Stardew Valley logger to simplify the interface and restrict what is logged.</summary>
     public static class Logger
     {
-        /*********
-        ** Public methods
-        *********/
         public static void LogVerbose(string message)
         {
             if (ModEntry.Config.LogLevel >= LogLevel.Verbose)
@@ -49,11 +46,6 @@ namespace SkillPrestige.Logging
         {
             ModEntry.LogMonitor.Log(message);
         }
-
-
-        /*********
-        ** Private methods
-        *********/
         private static string AddErrorText(this string message)
         {
             return $"{message}{Environment.NewLine}Please file a bug report on NexusMods.";

@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SkillPrestige.Framework;
 using SkillPrestige.Framework.Commands;
@@ -12,6 +14,8 @@ using SkillPrestige.Professions;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.Menus;
+
 // ReSharper disable MemberCanBeMadeStatic.Local
 
 namespace SkillPrestige
@@ -21,15 +25,8 @@ namespace SkillPrestige
     [SuppressMessage("Performance", "CA1822:Mark members as static")]
     internal class ModEntry : Mod
     {
-        /**********
-        ** Fields
-        *********/
         private bool SaveIsLoaded { get; set; }
 
-
-        /**********
-        ** Accessors
-        *********/
         public static string ModPath { get; private set; }
 
         public static ModConfig Config { get; private set; }
@@ -46,10 +43,6 @@ namespace SkillPrestige
 
         public static IModRegistry ModRegistry { get; private set; }
 
-
-        /**********
-        ** Public methods
-        *********/
         /// <summary>The mod entry point, called after the mod is first loaded.</summary>
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
         public override void Entry(IModHelper helper)
@@ -79,20 +72,46 @@ namespace SkillPrestige
             helper.Events.GameLoop.ReturnedToTitle += this.OnReturnedToTitle;
         }
 
-
-        /**********
-        ** Private methods
-        *********/
         /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event data.</param>
         private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-            bool isClick = e.Button == SButton.MouseLeft;
+            bool isClick = e.Button.IsOneOf(SButton.MouseLeft, SButton.ControllerA);
 
-            SkillsMenuExtension.OnButtonPressed(e, isClick);
-            if (Game1.activeClickableMenu is IInputHandler handler)
-                handler.OnButtonPressed(e, isClick);
+            if (Game1.activeClickableMenu is null
+                && this.SaveIsLoaded
+                && isClick)
+            {
+                var tileToCheck = e.Button switch
+                {
+                    SButton.MouseLeft => Game1.currentCursorTile,
+                    SButton.ControllerA => Game1.player.GetGrabTile(),
+                    _ => Vector2.Zero
+                };
+                if(Game1.currentLocation.objects.ContainsKey(tileToCheck)
+                    && Game1.currentLocation.objects[tileToCheck].name == "Prestige Statue")
+                    this.OpenSelectionMenu();
+            }
+
+            // ReSharper disable once InvertIf
+            if (Game1.activeClickableMenu is not null && Game1.activeClickableMenu is IInputHandler handler)
+                    handler.OnButtonPressed(e, isClick);
+        }
+
+        private void OpenSelectionMenu(bool playSound = true)
+        {
+            Logger.LogVerbose("Opening Selection Menu...");
+            const int menuWidth = Game1.tileSize * 10;
+            const int menuHeight = Game1.tileSize * 10;
+
+            int menuXCenter = (menuWidth + IClickableMenu.borderWidth * 2) / 2;
+            int menuYCenter = (menuHeight + IClickableMenu.borderWidth * 2) / 2;
+            int screenXCenter = Game1.uiViewport.Width / 2;
+            int screenYCenter = Game1.uiViewport.Height / 2;
+            var bounds = new Rectangle(screenXCenter - menuXCenter, screenYCenter - menuYCenter, menuWidth + IClickableMenu.borderWidth * 2, menuHeight + IClickableMenu.borderWidth * 2);
+            if(playSound) Game1.playSound("bigSelect");
+            Game1.activeClickableMenu = new SelectionMenu(bounds);
         }
 
         /// <summary>Raised after the player moves the in-game cursor.</summary>
@@ -100,7 +119,6 @@ namespace SkillPrestige
         /// <param name="e">The event data.</param>
         private void OnCursorMoved(object sender, CursorMovedEventArgs e)
         {
-            SkillsMenuExtension.OnCursorMoved(e);
             if (Game1.activeClickableMenu is IInputHandler handler)
                 handler.OnCursorMoved(e);
         }
@@ -128,12 +146,36 @@ namespace SkillPrestige
             ExperienceHandler.ResetExperience();
         }
 
+        private bool SelectionMenuPendingReopen;
+        private bool PrestigeMenuPendingReopen;
         /// <summary>When a menu is open (<see cref="Game1.activeClickableMenu"/> isn't null), raised after that menu is drawn to the sprite batch but before it's rendered to the screen.</summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event data.</param>
         private void OnRenderedActiveMenu(object sender, RenderedActiveMenuEventArgs e)
         {
-            SkillsMenuExtension.AddPrestigeButtonsToMenu();
+            if (this.SelectionMenuPendingReopen && Game1.activeClickableMenu is SelectionMenu)
+            {
+                this.OpenSelectionMenu(false);
+                this.SelectionMenuPendingReopen = false;
+            }
+
+            if (this.PrestigeMenuPendingReopen && Game1.activeClickableMenu is PrestigeMenu)
+            {
+                var currentPrestigeMenu = (PrestigeMenu)Game1.activeClickableMenu;
+                var currentPrestigeMenuBounds = new Rectangle(currentPrestigeMenu.xPositionOnScreen, currentPrestigeMenu.yPositionOnScreen, currentPrestigeMenu.width, currentPrestigeMenu.height);
+                var prestige = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == currentPrestigeMenu.Skill.Type);
+                Game1.activeClickableMenu = new PrestigeMenu(currentPrestigeMenuBounds, currentPrestigeMenu.Skill, prestige);
+                this.PrestigeMenuPendingReopen = false;
+            }
+            switch (Game1.nextClickableMenu.FirstOrDefault())
+            {
+                case SelectionMenu:
+                    this.SelectionMenuPendingReopen = true;
+                    break;
+                case PrestigeMenu:
+                    this.PrestigeMenuPendingReopen = true;
+                    break;
+            }
         }
 
         private void LoadSprites()
@@ -176,7 +218,6 @@ namespace SkillPrestige
         {
             this.CheckForGameSave();
             this.CheckForLevelUpMenu();
-
             if (e.IsOneSecond && this.SaveIsLoaded)
                 ExperienceHandler.UpdateExperience(); //one second tick for this, as the detection of changed experience can happen as infrequently as possible. a 10 second tick would be well within tolerance.
         }

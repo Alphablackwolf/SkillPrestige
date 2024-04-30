@@ -8,9 +8,6 @@ namespace SkillPrestige.Mods
     /// <summary>Handles registering skill mods for the prestige system.</summary>
     public static class ModHandler
     {
-        /*********
-        ** Fields
-        *********/
         /// <summary>Whether the mod is initialised and ready to register skill mods.</summary>
         private static bool IsInitialised;
 
@@ -20,10 +17,6 @@ namespace SkillPrestige.Mods
         /// <summary>The registered mods.</summary>
         private static readonly List<ISkillMod> Mods = new List<ISkillMod>();
 
-
-        /*********
-        ** Public methods
-        *********/
         /// <summary>Register a skill mod for the prestige system.</summary>
         /// <param name="mod">The mod you wish to register. the mod and its profession Ids cannot already exist in the system,
         /// and the mod must implement ISkillMod. It is recommended to inherit from SkillPrestige's SkillMod class.</param>
@@ -95,10 +88,6 @@ namespace SkillPrestige.Mods
             return Mods.Where(x => x.AdditionalSkills != null).SelectMany(x => x.AdditionalSkills);
         }
 
-
-        /*********
-        ** Private methods
-        *********/
         /// <summary>Get the mods and profession IDs which collide with an already-registered professions ID.</summary>
         /// <param name="mod">The mod to check.</param>
         private static IDictionary<ISkillMod, IEnumerable<int>> GetIntersectingModProfessions(ISkillMod mod)

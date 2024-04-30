@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -13,9 +14,6 @@ namespace SkillPrestige.Framework
     [Serializable]
     internal class PrestigeSaveData
     {
-        /*********
-        ** Fields
-        *********/
         private const string DataFileName = @"Data.json";
         private static readonly string DataFilePath = Path.Combine(ModEntry.ModPath, DataFileName);
         public static PrestigeSet CurrentlyLoadedPrestigeSet => Instance.PrestigeSaveFiles[CurrentlyLoadedSaveFileUniqueId];
@@ -24,19 +22,11 @@ namespace SkillPrestige.Framework
         // ReSharper disable once InconsistentNaming
         private static PrestigeSaveData _instance;
 
-
-        /*********
-        ** Accessors
-        *********/
         /// <summary>Set of prestige data saved per save file unique ID.</summary>
         // ReSharper disable once MemberCanBePrivate.Global - no, it can't be made private or it won't be serialized.
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - setter used by deserializer.
         public IDictionary<ulong, PrestigeSet> PrestigeSaveFiles { get; set; }
 
-
-        /*********
-        ** Public methods
-        *********/
         // ReSharper disable once MemberCanBePrivate.Global - used publically, resharper is wrong.
         public static PrestigeSaveData Instance
         {
@@ -45,7 +35,7 @@ namespace SkillPrestige.Framework
             set => _instance = value;
         }
 
-        // ReSharper disable once MemberCanBeMadeStatic.Global - removing this removes lazy load in accessor for the instance.
+        [SuppressMessage("Performance", "CA1822:Mark members as static")]
         public void Save()
         {
             Logger.LogInformation("Writing prestige save data to disk...");
@@ -79,10 +69,6 @@ namespace SkillPrestige.Framework
             this.Read();
         }
 
-
-        /*********
-        ** Private methods
-        *********/
         private PrestigeSaveData()
         {
             this.PrestigeSaveFiles = new Dictionary<ulong, PrestigeSet>();

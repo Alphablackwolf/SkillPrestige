@@ -7,9 +7,6 @@ namespace SkillPrestige.Framework.SkillTypes
     // ReSharper disable once UnusedMember.Global - created through reflection.
     internal sealed class DefaultSkillTypeRegistration : SkillType, ISkillTypeRegistration
     {
-        /*********
-        ** Public methods
-        *********/
         public void RegisterSkillTypes()
         {
             Logger.LogInformation("Registering default skill types...");

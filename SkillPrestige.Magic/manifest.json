@@ -1,7 +1,7 @@
 {
     "Name": "Skill Prestige for Magic",
     "Author": "CinderGarde",
-    "Version": "1.2.6",
+    "Version": "1.3.0",
     "Description": "Extends Skill Prestige to support the Magic mod.",
     "UniqueID": "alphablackwolf.MagicPrestigeAdapter",
     "EntryDll": "SkillPrestige.Magic.dll",

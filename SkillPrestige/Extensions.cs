@@ -11,9 +11,6 @@ namespace SkillPrestige
     /// <summary>Extension methods created and used for SkillPrestige.</summary>
     public static class Extensions
     {
-        /*********
-        ** Public methods
-        *********/
         /// <summary>gets the field from an object through reflection, even if it is a private field.</summary>
         /// <typeparam name="T">The type that contains the parameter member</typeparam>
         /// <param name="instance">The instance of the type you wish to get the field from.</param>

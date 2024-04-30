@@ -14,9 +14,6 @@ namespace SkillPrestige.Professions
     /// <summary>Represents a profession in Stardew Valley.</summary>
     public abstract partial class Profession
     {
-        /*********
-        ** Accessors
-        *********/
         /// <summary>The profession ID used by Stardew Valley.</summary>
         public int Id { get; init; }
 
@@ -39,10 +36,6 @@ namespace SkillPrestige.Professions
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global - expected to be set in external project.
         public virtual Texture2D Texture { get; set; } = Game1.mouseCursors;
 
-
-        /*********
-        ** Public methods
-        *********/
         /// <summary>Removes all professions from a skill.</summary>
         /// <param name="skill">the skill you wish to remove all professions for.</param>
         public static void RemoveProfessions(Skill skill)
@@ -75,10 +68,6 @@ namespace SkillPrestige.Professions
             }
         }
 
-
-        /*********
-        ** Private methods
-        *********/
         /// <summary>Static constructor to, when the profession class is first called, use reflection to register all static profession variables declared in partial methods.</summary>
         static Profession()
         {

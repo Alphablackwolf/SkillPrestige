@@ -6,19 +6,12 @@ namespace SkillPrestige.Magic.Framework
     /// <summary>Special handling for adding to the mana cap from a Magic profession.</summary>
     internal class ManaCapSpecialHandling : IProfessionSpecialHandling
     {
-        /*********
-        ** Fields
-        *********/
         /// <summary>The mana points to add.</summary>
         private readonly int Amount;
 
         /// <summary>Adjust the player's max mana points by the given amount.</summary>
         private readonly Action<int> AddMaxMana;
 
-
-        /*********
-        ** Public methods
-        *********/
         /// <summary>Construct an instance.</summary>
         /// <param name="amount">The mana points to add.</param>
         /// <param name="addMaxMana">Adjust the player's max mana points by the given amount.</param>

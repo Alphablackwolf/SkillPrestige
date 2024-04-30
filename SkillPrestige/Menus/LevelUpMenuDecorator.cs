@@ -20,9 +20,6 @@ namespace SkillPrestige.Menus
     /// <summary>Decorates the Level Up Menu with a prestiged! indicator on prestiged professions.</summary>
     public class LevelUpMenuDecorator<T> : IClickableMenu, IInputHandler where T : IClickableMenu
     {
-        /*********
-        ** Fields
-        *********/
         private readonly Skill CurrentSkill;
         private readonly int CurrentLevel;
         private bool IsRightSideOfTree;
@@ -41,9 +38,8 @@ namespace SkillPrestige.Menus
         {
             get
             {
-                var viewport = Game1.graphics.GraphicsDevice.Viewport;
-                int screenXCenter = (int)(viewport.Width * (1.0 / Game1.options.zoomLevel)) / 2;
-                int screenYCenter = (int)(viewport.Height * (1.0 / Game1.options.zoomLevel)) / 2;
+                int screenXCenter = Game1.uiViewport.Width / 2;
+                int screenYCenter = Game1.uiViewport.Height / 2;
                 const int dialogWidth = Game1.tileSize * 10;
                 const int dialogHeight = Game1.tileSize * 8;
                 int xLocation = screenXCenter - this.InternalMenu.width / 2;
@@ -62,10 +58,6 @@ namespace SkillPrestige.Menus
             }
         }
 
-
-        /*********
-        ** Public methods
-        *********/
         public LevelUpMenuDecorator(Skill skill, int level, T internalMenu, string professionsToChooseInternalName, string leftProfessionDescriptionInternalName, string rightProfessionDescriptionInternalName, Func<int, List<string>> getProfessionDescription)
         {
             // init
@@ -145,10 +137,6 @@ namespace SkillPrestige.Menus
             this.InternalMenu.receiveKeyPress(key);
         }
 
-
-        /*********
-        ** Private methods
-        *********/
         private void InitiateUi()
         {
             if (this.UiInitiated)
