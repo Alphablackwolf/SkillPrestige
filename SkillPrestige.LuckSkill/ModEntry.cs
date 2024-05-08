@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using LuckSkill;
 using Microsoft.Xna.Framework;
-using SkillPrestige.LuckSkill.Framework;
 using SkillPrestige.Mods;
 using SkillPrestige.Professions;
 using SkillPrestige.SkillTypes;
@@ -51,7 +50,6 @@ namespace SkillPrestige.LuckSkill
             yield return new Skill
             {
                 Type = this.SkillType,
-                SkillScreenPosition = 6,
                 SourceRectangleForSkillIcon = new Rectangle(64, 0, 16, 16),
                 Professions = this.GetAddedProfessions(),
                 GetSkillLevel = () => Game1.player.luckLevel.Value,
@@ -92,7 +90,7 @@ namespace SkillPrestige.LuckSkill
 
             var fortunate = Create<TierOneProfession>(api.FortunateProfessionId);
             var popularHelper = Create<TierOneProfession>(api.PopularHelperProfessionId);
-            var lucky = Create<TierTwoProfession>(api.LuckyProfessionId, new SpecialCharmSpecialHandling());
+            var lucky = Create<TierTwoProfession>(api.LuckyProfessionId);
             var unUnlucky = Create<TierTwoProfession>(api.UnUnluckyProfessionId);
             var shootingStar = Create<TierTwoProfession>(api.ShootingStarProfessionId);
             var spiritChild = Create<TierTwoProfession>(api.SpiritChildProfessionId);

@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SkillPrestige.Framework;
 using SkillPrestige.Logging;
+using SpaceCore;
 
 namespace SkillPrestige.Mods
 {
@@ -9,48 +11,80 @@ namespace SkillPrestige.Mods
     public static class ModHandler
     {
         /// <summary>Whether the mod is initialised and ready to register skill mods.</summary>
-        private static bool IsInitialised;
+        private static bool IsInitialized;
 
         /// <summary>The mods to add once the handler is initialised.</summary>
-        private static readonly List<ISkillMod> PendingMods = new List<ISkillMod>();
+        private static readonly List<ISkillMod> PendingMods = new();
+
+        private static readonly List<ISpaceCoreSkillMod> SpaceCoreModsPendingLoad = new();
 
         /// <summary>The registered mods.</summary>
-        private static readonly List<ISkillMod> Mods = new List<ISkillMod>();
+        private static readonly List<ISkillMod> Mods = new();
+
+        public static void RegisterPendingSpaceCoreMods()
+        {
+            if (!SpaceCoreModsPendingLoad.Any()) return;
+            var entriesToRemove = new List<ISpaceCoreSkillMod>();
+            foreach (var entry in SpaceCoreModsPendingLoad.Where(entry => Skills.GetSkillList().Contains(entry.SpaceCoreSkillId)))
+            {
+                Logger.LogDisplay($"Attempting to register {entry.DisplayName}...");
+                RegisterModImplementations(entry);
+                entriesToRemove.Add(entry);
+            }
+
+            foreach (var entry in entriesToRemove)
+            {
+                SpaceCoreModsPendingLoad.Remove(entry);
+            }
+        }
 
         /// <summary>Register a skill mod for the prestige system.</summary>
         /// <param name="mod">The mod you wish to register. the mod and its profession Ids cannot already exist in the system,
         /// and the mod must implement ISkillMod. It is recommended to inherit from SkillPrestige's SkillMod class.</param>
         public static void RegisterMod(ISkillMod mod)
         {
-            if (ModHandler.IsInitialised)
-                ModHandler.RegisterModImpl(mod);
+            Logger.LogDisplay($"Registering skill mod {mod.DisplayName}");
+            if (IsInitialized)
+                RegisterModImplementations(mod);
             else
-                ModHandler.PendingMods.Add(mod);
+                PendingMods.Add(mod);
         }
 
-        /// <summary>Initialise the mod handler and add any pending mods.</summary>
-        internal static void Initialise()
+        /// <summary>Initialize the mod handler and add any pending mods.</summary>
+        internal static void Initialize()
         {
-            IsInitialised = true;
+            IsInitialized = true;
 
             foreach (var mod in PendingMods)
-                RegisterModImpl(mod);
+                RegisterModImplementations(mod);
             PendingMods.Clear();
         }
 
         /// <summary>Register a skill mod for the prestige system.</summary>
         /// <param name="mod">The mod you wish to register. the mod and its profession Ids cannot already exist in the system,
-        /// and the mod must implement ISkillMod. It is recommended to inherit from SkillPrestige's SkillMod class.</param>
-        private static void RegisterModImpl(ISkillMod mod)
+        /// and the mod must implement ISkillMod. </param>
+        private static void RegisterModImplementations(ISkillMod mod)
         {
-            if (!IsInitialised)
+            if (!IsInitialized)
                 throw new InvalidOperationException($"The mod handler is not ready to register skill mods yet.");
+
+            if (mod is ISpaceCoreSkillMod spaceCoreSkillMod)
+            {
+                Logger.LogInformation($"{mod.DisplayName} mod skill not yet loaded, adding to pending space core mods to load.");
+                bool isLoaded = Skills.GetSkillList().Contains(spaceCoreSkillMod.SpaceCoreSkillId);
+                if (!isLoaded )
+                {
+                    if(!SpaceCoreModsPendingLoad.Contains(spaceCoreSkillMod)) SpaceCoreModsPendingLoad.Add(spaceCoreSkillMod);
+                    return;
+                }
+            }
 
             if (!mod.IsFound)
             {
                 Logger.LogInformation($"{mod.DisplayName} Mod not found. Mod not registered.");
                 return;
             }
+
             try
             {
                 Logger.LogInformation($"Registering mod: {mod.DisplayName} ...");
@@ -68,6 +102,8 @@ namespace SkillPrestige.Mods
                     return;
                 }
                 Mods.Add(mod);
+                Skill.InvalidateSkillsList();
+
                 Logger.LogInformation($"Registered mod: {mod.DisplayName}");
             }
             catch (Exception exception)

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -9,8 +10,11 @@ using SkillPrestige.Framework.InputHandling;
 using SkillPrestige.Framework.Menus;
 using SkillPrestige.Framework.Menus.Elements.Buttons;
 using SkillPrestige.Logging;
+using SkillPrestige.Menus;
 using SkillPrestige.Mods;
 using SkillPrestige.Professions;
+using SpaceCore;
+using SpaceCore.Interface;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
@@ -37,9 +41,9 @@ namespace SkillPrestige
 
         public static string PerSaveOptionsDirectory { get; private set; }
 
-        public static Texture2D PrestigeIconTexture { get; private set; }
-
         public static Texture2D CheckmarkTexture { get; private set; }
+
+        private static string PrestigeSaveKey => "SkillPrestigeData";
 
         public static IModRegistry ModRegistry { get; private set; }
 
@@ -62,7 +66,16 @@ namespace SkillPrestige
                 return;
             }
 
+            if (!this.Helper.ModRegistry.IsLoaded("CinderGarde.SkillPrestige.CP"))
+            {
+                Logger.LogCriticalWarning("SkillPrestige [CP] not found, prestige statue will not be added to crafting recipes or textures");
+                Logger.LogDisplay("Skill Prestige Mod: If you wish to use this mod, please include the SkillPrestige [CP] folder from the download.");
+            }
+
             // hook events
+            helper.Events.GameLoop.DayStarted += this.OnDayStarted;
+            helper.Events.GameLoop.Saving += this.OnSaving;
+            helper.Events.GameLoop.Saved += this.OnSaved;
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
             helper.Events.Input.CursorMoved += this.OnCursorMoved;
             helper.Events.Display.RenderedActiveMenu += this.OnRenderedActiveMenu;
@@ -77,15 +90,15 @@ namespace SkillPrestige
         /// <param name="e">The event data.</param>
         private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-            bool isClick = e.Button.IsOneOf(SButton.MouseLeft, SButton.ControllerA);
+
 
             if (Game1.activeClickableMenu is null
                 && this.SaveIsLoaded
-                && isClick)
+                && e.Button.IsOneOf(SButton.MouseRight, SButton.ControllerA))
             {
                 var tileToCheck = e.Button switch
                 {
-                    SButton.MouseLeft => Game1.currentCursorTile,
+                    SButton.MouseRight => Game1.currentCursorTile,
                     SButton.ControllerA => Game1.player.GetGrabTile(),
                     _ => Vector2.Zero
                 };
@@ -93,7 +106,7 @@ namespace SkillPrestige
                     && Game1.currentLocation.objects[tileToCheck].name == "Prestige Statue")
                     this.OpenSelectionMenu();
             }
-
+            bool isClick = e.Button.IsOneOf(SButton.MouseLeft, SButton.ControllerA);
             // ReSharper disable once InvertIf
             if (Game1.activeClickableMenu is not null && Game1.activeClickableMenu is IInputHandler handler)
                     handler.OnButtonPressed(e, isClick);
@@ -128,9 +141,26 @@ namespace SkillPrestige
         /// <param name="e">The event data.</param>
         private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
         {
+#pragma warning disable CS0612 // Type or member is obsolete, required for backwards compatability
             PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
+
+            PrestigeSet.Load();
+            PrestigeSaveData.MigrateData();
+
+#pragma warning restore CS0612 // Type or member is obsolete
+
             PerSaveOptions.Instance.Check();
             Profession.AddMissingProfessions();
+            RecipeHandler.LoadRecipes();
+
+            var currentPrestiges = PrestigeSet.Instance.Prestiges.ToList();
+            foreach (var entry in ModHandler.GetAddedEmptyPrestiges())
+            {
+                if (currentPrestiges.Any(x => x.SkillType.Name == entry.SkillType.Name))
+                    continue;
+                Logger.LogInformation($"Adding empty prestige set for skill {entry.SkillType.Name}");
+                PrestigeSet.Instance.Prestiges = PrestigeSet.Instance.Prestiges.Append(entry);
+            }
             this.SaveIsLoaded = true;
         }
 
@@ -139,11 +169,15 @@ namespace SkillPrestige
         /// <param name="e">The event data.</param>
         private void OnReturnedToTitle(object sender, ReturnedToTitleEventArgs e)
         {
-            PrestigeSaveData.Instance.Read();
+#pragma warning disable CS0612 // Type or member is obsolete, required for backwards compatability
+            PrestigeSaveData.Read();
+#pragma warning restore CS0612 // Type or member is obsolete
             this.SaveIsLoaded = false;
+            PrestigeSet.UnLoad();
             Logger.LogInformation("Return To Title.");
             PerSaveOptions.ClearLoadedPerSaveOptionsFile();
             ExperienceHandler.ResetExperience();
+            RecipeHandler.ResetRecipes();
         }
 
         private bool SelectionMenuPendingReopen;
@@ -163,7 +197,7 @@ namespace SkillPrestige
             {
                 var currentPrestigeMenu = (PrestigeMenu)Game1.activeClickableMenu;
                 var currentPrestigeMenuBounds = new Rectangle(currentPrestigeMenu.xPositionOnScreen, currentPrestigeMenu.yPositionOnScreen, currentPrestigeMenu.width, currentPrestigeMenu.height);
-                var prestige = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == currentPrestigeMenu.Skill.Type);
+                var prestige = PrestigeSet.Instance.Prestiges.Single(x => x.SkillType == currentPrestigeMenu.Skill.Type);
                 Game1.activeClickableMenu = new PrestigeMenu(currentPrestigeMenuBounds, currentPrestigeMenu.Skill, prestige);
                 this.PrestigeMenuPendingReopen = false;
             }
@@ -184,11 +218,6 @@ namespace SkillPrestige
             Button.DefaultButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\DialogBoxGreen");
             MinimalistProfessionButton.ProfessionButtonTexture = Game1.content.Load<Texture2D>(@"LooseSprites\boardGameBorder");
 
-            string prestigeIconFilePath = Path.Combine(ModPath, "assets", "prestige-icon.png");
-            Logger.LogInformation($"Prestige Icon Path: {prestigeIconFilePath}");
-            var prestigeIconFileStream = new FileStream(prestigeIconFilePath, FileMode.Open);
-            PrestigeIconTexture = Texture2D.FromStream(Game1.graphics.GraphicsDevice, prestigeIconFileStream);
-
             string checkmarkFilePath = Path.Combine(ModPath, "assets", "checkmark.png");
             Logger.LogInformation($"Checkmark Path: {checkmarkFilePath}");
             var checkmarkFileStream = new FileStream(checkmarkFilePath, FileMode.Open);
@@ -203,9 +232,12 @@ namespace SkillPrestige
         {
             // init mod
             this.LoadSprites();
-            PrestigeSaveData.Instance.Read();
-            ModHandler.Initialise();
-
+#pragma warning disable CS0612 // Type or member is obsolete - need to interact with obsolete element to ensure backwards compatibility.
+            PrestigeSaveData.Read();
+#pragma warning restore CS0612 // Type or member is obsolete
+            PrestigeSet.Save = () => this.Helper.Data.WriteSaveData(PrestigeSaveKey, PrestigeSet.Instance);
+            PrestigeSet.Read = () => this.Helper.Data.ReadSaveData<PrestigeSet>(PrestigeSaveKey) ?? PrestigeSet.CompleteEmptyPrestigeSet();
+            ModHandler.Initialize();
             // register commands
             if (Config.TestingMode) this.RegisterTestingCommands();
             this.RegisterCommands();
@@ -216,39 +248,70 @@ namespace SkillPrestige
         /// <param name="e">The event data.</param>
         private void OnUpdateTicked(object sender, UpdateTickedEventArgs e)
         {
-            this.CheckForGameSave();
+            if(e.IsMultipleOf(30)) ModHandler.RegisterPendingSpaceCoreMods();
+
             this.CheckForLevelUpMenu();
             if (e.IsOneSecond && this.SaveIsLoaded)
                 ExperienceHandler.UpdateExperience(); //one second tick for this, as the detection of changed experience can happen as infrequently as possible. a 10 second tick would be well within tolerance.
         }
 
-        private void CheckForGameSave()
+        private void OnSaving(object sender, SavingEventArgs e)
         {
-            if (!Game1.newDay || Game1.fadeToBlackAlpha <= 0.95f)
-                return;
-            Logger.LogInformation("New game day detected.");
-            PrestigeSaveData.Instance.Save();
+            PrestigeSet.Save();
         }
+
+        private void OnSaved(object sender, SavedEventArgs e)
+        {
+#pragma warning disable CS0612 // Type or member is obsolete, required for backwards compatability
+            PrestigeSaveData.CleanupDataFile();
+#pragma warning restore CS0612 // Type or member is obsolete
+        }
+
 
         private void CheckForLevelUpMenu()
         {
-            if (Game1.activeClickableMenu == null)
-                return;
-
-            foreach (var skill in Skill.AllSkills)
+            switch (Game1.activeClickableMenu)
             {
-                var levelUpManager = skill.LevelUpManager;
-                if (!levelUpManager.IsMenu(Game1.activeClickableMenu))
-                    continue;
-
-                int currentLevel = levelUpManager.GetLevel.Invoke();
-                if (currentLevel % 5 != 0)
+                case null:
                     return;
+                case LevelUpMenu:
+                    int level = (int)Game1.activeClickableMenu.GetInstanceField("currentLevel");
+                    if (level % 5 != 0) return;
+                    int currentSkillId = (int)Game1.activeClickableMenu.GetInstanceField("currentSkill");
 
-                Logger.LogInformation("Level up menu as profession chooser detected.");
-                Game1.activeClickableMenu = levelUpManager.CreateNewLevelUpMenu.Invoke(skill, currentLevel);
-                Logger.LogInformation("Replaced level up menu with custom menu.");
+                    var skill = Skill.AllSkills.SingleOrDefault(x => x.Type.Ordinal == currentSkillId);
+                    if (skill == null)
+                    {
+                        Logger.LogCritical($"Unable to load skill id {currentSkillId}, skipping level up menu decoration.");
+                    }
+                    Logger.LogInformation("Level up menu as profession chooser detected.");
+                    Game1.activeClickableMenu = new LevelUpMenuDecorator(skill, level, Game1.activeClickableMenu);
+                    Logger.LogInformation("Replaced level up menu with custom menu.");
+                    break;
+                case SkillLevelUpMenu:
+                {
+                    int spaceCoreLevel = (int)Game1.activeClickableMenu.GetInstanceField("currentLevel");
+                    if (spaceCoreLevel % 5 != 0) return;
+                    string currentSkillName = Skills.GetSkill((string)Game1.activeClickableMenu.GetInstanceField("currentSkill")).GetName(); //overwrite name with it's display name
+
+                    var spaceCoreSkill = Skill.AllSkills.SingleOrDefault(x => x.Type.Name == currentSkillName);
+                    if (spaceCoreSkill == null)
+                    {
+                        Logger.LogCritical($"Unable to load skill {currentSkillName}, skipping level up menu decoration.");
+                    }
+                    Logger.LogInformation("Level up menu as profession chooser detected.");
+                    Game1.activeClickableMenu = new LevelUpMenuDecorator(spaceCoreSkill, spaceCoreLevel, Game1.activeClickableMenu);
+                    Logger.LogInformation("Replaced level up menu with custom menu.");
+                    break;
+                }
             }
+        }
+
+        private void OnDayStarted(object sender, DayStartedEventArgs e)
+        {
+            if (!this.SaveIsLoaded) return;
+            PrestigeSet.Load();
+            RecipeHandler.CheckForAndHandleAddedRecipes();
         }
 
         private void RegisterTestingCommands()

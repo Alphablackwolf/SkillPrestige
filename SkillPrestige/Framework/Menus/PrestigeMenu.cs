@@ -7,6 +7,7 @@ using SkillPrestige.Framework.InputHandling;
 using SkillPrestige.Framework.Menus.Elements.Buttons;
 using SkillPrestige.Logging;
 using SkillPrestige.Professions;
+using SpaceCore;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
@@ -153,8 +154,7 @@ namespace SkillPrestige.Framework.Menus
             {
                 if (this.Skill.GetSkillLevel() >= 10)
                 {
-                    bool newLevelForSkillExists = Game1.player.newLevels.Any(point => point.X == this.Skill.Type.Ordinal && point.Y > 0);
-                    if (!newLevelForSkillExists)
+                    if (!this.Skill.NewLevelForSkillExists())
                         prestigeButtonDisabled = false;
                 }
             }

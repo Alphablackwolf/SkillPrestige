@@ -10,11 +10,15 @@ namespace SkillPrestige.SkillTypes
     public partial class SkillType
     {
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local - setter used by deserializer.
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         /// <summary>The ordinal and lookup used to get the skill type from Stardew Valley.</summary>
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local - setter used by deserializer.
-        public int Ordinal { get; private set; }
+        public int Ordinal { get; set; }
+
+
+        //spacecore skill identifier
+        public string SpaceCoreSkillId { get; set; }
 
         public SkillType() { }
 

@@ -6,6 +6,7 @@ using SkillPrestige.Framework.InputHandling;
 using SkillPrestige.Framework.Menus.Elements;
 using SkillPrestige.Framework.Menus.Elements.Buttons;
 using SkillPrestige.Logging;
+using SkillPrestige.Mods;
 using StardewModdingAPI.Events;
 using StardewValley;
 using StardewValley.Menus;
@@ -21,7 +22,7 @@ namespace SkillPrestige.Framework.Menus
         private int DebounceTimer = 10;
         private List<PrestigableSkillButtonSet> PrestigableSkillButtonSets;
         private int ScrollOffset;
-        private const int MaximumDisplayedEntries = 4;
+        private const int MaximumDisplayedEntries = 7;
         private const int IconSize = 16 * Game1.pixelZoom;
         private const int DefaultPadding = 16;
         private TextureButton SettingsButton;
@@ -98,7 +99,6 @@ namespace SkillPrestige.Framework.Menus
             }
 
             this.allClickableComponents = this.GetAllClickableComponents();
-            Logger.LogVerbose($"Clickable components:{this.allClickableComponents.Count}");
         }
         public override void applyMovementKey(int direction)
         {

@@ -5,6 +5,7 @@
     <projectFile>SkillPrestige.CookingSkill/SkillPrestige.CookingSkill.csproj</projectFile>
     <projectFile>SkillPrestige.LuckSkill/SkillPrestige.LuckSkill.csproj</projectFile>
     <projectFile>SkillPrestige.Magic/SkillPrestige.Magic.csproj</projectFile>
+    <projectFile>SkillPrestige.Yacs/SkillPrestige.Yacs.csproj</projectFile>
     <projectFile>SkillPrestige/SkillPrestige.csproj</projectFile>
     <projectFile>UnitTest/UnitTest.csproj</projectFile>
     <projectFile>UnitTests/UnitTests.csproj</projectFile>
@@ -14,86 +15,51 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="94e087a0-5084-48c6-912a-5f3d90bc6c49" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/ExperienceBar.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/PrestigableSkillButtonSet.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/TextureBox.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/VerticalScrollBar.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/SelectionMenu.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SkillPrestige.Yacs/ModEntry.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SkillPrestige.Yacs/SkillPrestige.Yacs.csproj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SkillPrestige.Yacs/manifest.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/AddPrestigePointCommand.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SkillPrestige/Framework/RecipeHandler.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SkillPrestige/Mods/ISpaceCoreSkillMod.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SkillPrestige/Professions/SpaceCoreTierOneProfession.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SkillPrestige/Professions/SpaceCoreTierTwoProfession.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.SkillPrestige/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SkillPrestige/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige.CookingSkill/ModEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige.CookingSkill/ModEntry.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige.CookingSkill/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige.CookingSkill/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige.LuckSkill/Framework/SpecialCharmSpecialHandling.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige.LuckSkill/ModEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige.LuckSkill/ModEntry.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige.LuckSkill/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige.LuckSkill/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige.Magic/Framework/ManaCapSpecialHandling.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige.Magic/Framework/ManaCapSpecialHandling.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige.Magic/Framework/UpgradePointSpecialHandling.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige.Magic/Framework/UpgradePointSpecialHandling.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige.Magic/ModEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige.Magic/ModEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige.Magic/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige.Magic/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/ContentPatcher/assets/PrestigeStatue.png" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/ContentPatcher/assets/PrestigeStatue.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige.Magic/Framework/ManaCapSpecialHandling.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige.Magic/Framework/UpgradePointSpecialHandling.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige.Magic/ModEntry.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige.Magic/SkillPrestige.Magic.csproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige.Magic/assets/icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige.Magic/manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige.sln" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige/ContentPatcher/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/ContentPatcher/manifest.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Extensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Extensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/AddProfessionCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/AddProfessionCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/CheckForModCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/CheckForModCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/ClearAllProfessionsCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/ClearAllProfessionsCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/GetAllProfessionsCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/GetAllProfessionsCommand.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/ResetAllPrestigeCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/ResetAllPrestigeCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/ResetAllProfessionsCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/ResetAllProfessionsCommand.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/ResetPrestigeCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/ResetPrestigeCommand.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/SetExperienceCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/SetExperienceCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/SetMasteryExperienceCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/SetMasteryExperienceCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/SkillPrestigeCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Commands/SkillPrestigeCommand.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/ExperienceHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/ExperienceHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/InputHandling/IInputHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/InputHandling/IInputHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/InputHandling/Mouse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/InputHandling/Mouse.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/JsonNet.PrivateSettersContractResolvers/MemberInfoExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/JsonNet.PrivateSettersContractResolvers/MemberInfoExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/JsonNet.PrivateSettersContractResolvers/PrivateSetterContractResolver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/JsonNet.PrivateSettersContractResolvers/PrivateSetterContractResolver.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Dialogs/LevelUpMessageDialog.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Dialogs/LevelUpMessageDialog.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Dialogs/LevelUpMessageDialogWithProfession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Dialogs/LevelUpMessageDialogWithProfession.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Dialogs/MessageDialog.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Dialogs/MessageDialog.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Dialogs/WarningDialog.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Dialogs/WarningDialog.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/Button.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/Button.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/Checkbox.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/Checkbox.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/IntegerEditor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/IntegerEditor.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/MinimalistProfessionButton.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/MinimalistProfessionButton.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/PrestigeButton.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/PrestigeButton.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/TextureButton.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/TextureButton.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/PrestigableSkillButtonSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/PrestigableSkillButtonSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/VerticalScrollBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/VerticalScrollBar.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/PrestigeMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/PrestigeMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/SettingsMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/SettingsMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/SkillsMenuExtension.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/ModConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/ModConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/PerSaveOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/PerSaveOptions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/PlayerManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/PlayerManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/SelectionMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/SelectionMenu.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/PrestigeSaveData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/PrestigeSaveData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/PrestigeSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/PrestigeSet.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Professions/Registration/CombatRegistration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Professions/Registration/CombatRegistration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Professions/Registration/FarmingRegistration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Professions/Registration/FarmingRegistration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Professions/Registration/FishingRegistration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Professions/Registration/FishingRegistration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Professions/Registration/ForagingRegistration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Professions/Registration/ForagingRegistration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Professions/Registration/IProfessionRegistration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Professions/Registration/IProfessionRegistration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Professions/Registration/MiningRegistration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Professions/Registration/MiningRegistration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Professions/Registration/ProfessionRegistration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Professions/Registration/ProfessionRegistration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/SkillTypes/DefaultSkillTypeRegistration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/SkillTypes/DefaultSkillTypeRegistration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/SkillTypes/ISkillTypeRegistration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/SkillTypes/ISkillTypeRegistration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Logging/Logger.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Logging/Logger.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Menus/LevelUpManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Menus/LevelUpManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Menus/LevelUpMenuDecorator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Menus/LevelUpMenuDecorator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/ModEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/ModEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Mods/ISkillMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Mods/ISkillMod.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Mods/ModHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Mods/ModHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Professions/CombatProfessions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Professions/CombatProfessions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Professions/DefenderSpecialHandling.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Professions/DefenderSpecialHandling.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Professions/FarmingProfessions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Professions/FarmingProfessions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Professions/FighterSpecialHandling.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Professions/FighterSpecialHandling.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Professions/FishingProfessions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Professions/FishingProfessions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Professions/ForagingProfessions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Professions/ForagingProfessions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Professions/IProfessionSpecialHandling.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Professions/IProfessionSpecialHandling.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Professions/MiningProfessions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Professions/MiningProfessions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige/Prestige.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Prestige.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Professions/Profession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Professions/Profession.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Professions/TierOneProfession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Professions/TierOneProfession.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Professions/TierTwoProfession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Professions/TierTwoProfession.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Skill.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Skill.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/SkillTypes/DefaultSkillTypes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/SkillTypes/DefaultSkillTypes.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/SkillTypes/SkillType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/SkillTypes/SkillType.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/assets/checkmark.png" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/assets/checkmark.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/assets/prestige-icon.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/manifest.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -111,7 +77,23 @@
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/189fbbd88d97dd6d65515ba2da05b62eab4e5039/src/libraries/System.Linq/src/System/Linq/ElementAt.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/255150e0f2de405dbb2b2025954bccbf1b3000/17/36b56b30/Rectangle.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2c08be6b16ff413b825010a44271801061a00/eb/feab983d/SkillExtensions.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/40ee992fb4eb4e8babe84bbd9f5f7ec2a24ea0/23/06f1beac/BinaryReader.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/40ee992fb4eb4e8babe84bbd9f5f7ec2a24ea0/40/590b5510/List`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/40ee992fb4eb4e8babe84bbd9f5f7ec2a24ea0/43/7786e335/IDisposable.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/40ee992fb4eb4e8babe84bbd9f5f7ec2a24ea0/6e/9fdb8eb5/DefaultInterpolatedStringHandler.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/40ee992fb4eb4e8babe84bbd9f5f7ec2a24ea0/74/348e83d6/KeyValuePair`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6c4a12a75b1847f7a741ee55e7efed8d5cbe00/02/91047079/AboutMenu.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6c4a12a75b1847f7a741ee55e7efed8d5cbe00/09/88a63a01/AdvancedGameOptions.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6c4a12a75b1847f7a741ee55e7efed8d5cbe00/11/5c090ac8/Game1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6c4a12a75b1847f7a741ee55e7efed8d5cbe00/62/84bb0dc2/Buff.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6c4a12a75b1847f7a741ee55e7efed8d5cbe00/65/8f717a16/ItemGrabMenu.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6c4a12a75b1847f7a741ee55e7efed8d5cbe00/b9/9791ab9e/LevelUpMenu.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6c4a12a75b1847f7a741ee55e7efed8d5cbe00/f8/417c1258/IClickableMenu.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7cf519a2b0ae46df984080f1926406ccf1000/1e/60822a9d/IDataHelper.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7cf519a2b0ae46df984080f1926406ccf1000/74/7e67628b/IGameLoopEvents.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/0a/89ec153a/CollectionsPage.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/12/2c385fad/GameStateQuery.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/1c/9806eb3b/NetDictionary`5.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/23/eafc4fdb/AnimalHouse.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/25/577b5be2/DebugCommands.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/2d/625e7dd2/Farmer.cs" root0="SKIP_HIGHLIGHTING" />
@@ -122,16 +104,37 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/65/6ca28a58/Horse.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/66/2dabba9e/Event.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/8f/0b644f0b/GameLocation.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/92/e88e279c/NetStringDictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/9a/87c458ff/CraftingRecipe.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/c3/9a3fb289/NetFieldDictionary`5.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/cd/f5587db0/Debris.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/d2/9e2e9f7b/Game1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/d5/891793a3/IClickableMenu.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/dc/8812148a/ClickableComponent.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/f0/760cc48e/NetInt.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c4a4efb11b0b4a49a819073a9d6f8c7b62a00/16/9b42d7c5/NewSkillsPage.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c4a4efb11b0b4a49a819073a9d6f8c7b62a00/29/f8b36694/Skills.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c4a4efb11b0b4a49a819073a9d6f8c7b62a00/67/710cb9a2/Commands.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c4a4efb11b0b4a49a819073a9d6f8c7b62a00/6e/f08b745c/Api.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c4a4efb11b0b4a49a819073a9d6f8c7b62a00/b1/7aede846/SkillLevelUpMenu.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d2613a505246492a976b1b47bb0b801e74518/f4/eedc8378/DirectoryInfo.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e9aeb8ec5d9e455291bcaf38ca19b0aa25e00/e5/9f0343ca/ILuckSkillApi.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e9aeb8ec5d9e455291bcaf38ca19b0aa25e00/ea/0dcd5036/IProfession.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/06ed8502e37fc9e2b5b1a5a5a3919b56be0bcbc8f4a2dc18b961f890146aca/SavingEventArgs.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5aa0fa19a7a99026a7218dd934db36dbf6f4812a2e947d37306495b3c77e1fe/KeyedProfession.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/6bec6d8b1f9b62ba291f7d86d5162c982d8117fd9d0a5b0165f8f8d7693f1f5/Cooking_Skill.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/745a1e7e9d1675218ea32f13565ea6c249d06d437751b8f6b3de90916b1742/DayEndingEventArgs.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/a8fbd12ab519a6977fafa0a6309cc32651674538e4648c723d2248eef776a/IInputEvents.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/cc6c1dd343bf10341d7c7da58645c167b9ebfe8e5a5e153ab2c49167c27460c9/CursorMovedEventArgs.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/cfbeeb39a777c4c6e378a0df759ddbcb9781e93b3712c2cb2602152e2cda9f4/Constants.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/eaa42b3cb2d88113ab9ff708388d51ef3d86fdf935e97975a3f6e07e9cd28/ICursorPosition.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec6029537cbc327f47827de167ec547dea6f438f7c17d7158ad1dd426f7f910/DayStartedEventArgs.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige.CookingSkill/ModEntry.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige.LuckSkill/ModEntry.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige.LuckSkill/manifest.json" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige.Magic/ModEntry.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige.Magic/manifest.json" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige.Yacs/manifest.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/ContentPatcher/content.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/ContentPatcher/manifest.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/Button.cs" root0="FORCE_HIGHLIGHTING" />
@@ -274,6 +277,24 @@
         <option name="Build" />
       </method>
     </configuration>
+    <configuration name="SkillPrestige.Yacs" type="DotNetProject" factoryName=".NET Project">
+      <option name="EXE_PATH" value="" />
+      <option name="PROGRAM_PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <option name="USE_MONO" value="0" />
+      <option name="RUNTIME_ARGUMENTS" value="" />
+      <option name="PROJECT_PATH" value="$PROJECT_DIR$/SkillPrestige.Yacs/SkillPrestige.Yacs.csproj" />
+      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+      <option name="PROJECT_KIND" value="Console" />
+      <option name="PROJECT_TFM" value="" />
+      <method v="2">
+        <option name="Build" />
+      </method>
+    </configuration>
     <configuration name="UnitTest" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -331,7 +352,12 @@
       <workItem from="1714159094441" duration="21468000" />
       <workItem from="1714279428940" duration="18734000" />
       <workItem from="1714337198597" duration="16059000" />
-      <workItem from="1714402937685" duration="20508000" />
+      <workItem from="1714402937685" duration="39741000" />
+      <workItem from="1714517798150" duration="47329000" />
+      <workItem from="1714852501158" duration="17224000" />
+      <workItem from="1715010446467" duration="11677000" />
+      <workItem from="1715024345758" duration="37532000" />
+      <workItem from="1715119068381" duration="10192000" />
     </task>
     <servers />
   </component>

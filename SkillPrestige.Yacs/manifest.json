@@ -1,0 +1,21 @@
+{
+    "Name": "Skill Prestige for Yet Another Cooking Skill",
+    "Author": "CinderGarde",
+    "Version": "1.4.0",
+    "Description": "Extends Skill Prestige to support the Yet Another Cooking Skill mod.",
+    "UniqueID": "CinderGarde.YetAnotherCookingSkillPrestigeAdapter",
+    "EntryDll": "SkillPrestige.Yacs.dll",
+    "MinimumApiVersion": "4.0.0",
+    "Dependencies": [
+        {
+            "UniqueID": "alphablackwolf.skillPrestige"
+        },
+        {
+            "UniqueID": "spacechase0.SpaceCore"
+        },
+        {
+            "UniqueID": "moonslime.CookingSkill"
+        }
+    ],
+    "UpdateKeys": [ "Nexus:569" ]
+}

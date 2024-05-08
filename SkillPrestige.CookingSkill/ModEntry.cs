@@ -66,7 +66,6 @@ namespace SkillPrestige.CookingSkill
             yield return new Skill
             {
                 Type = this.SkillType,
-                SkillScreenPosition = this.IsLuckSkillModLoaded ? 7 : 6, // fix potential conflict with order due to luck skill mod
                 SourceRectangleForSkillIcon = new Rectangle(0, 0, 16, 16),
                 SkillIconTexture = this.IconTexture,
                 Professions = this.GetAddedProfessions(),

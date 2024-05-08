@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SkillPrestige.Logging;
 using SkillPrestige.Mods;
 using SkillPrestige.SkillTypes;
 
@@ -10,6 +11,27 @@ namespace SkillPrestige.Framework
     [Serializable]
     internal class PrestigeSet
     {
+        // ReSharper disable once InconsistentNaming
+        private static PrestigeSet _instance;
+
+        public static PrestigeSet Instance
+        {
+            get {
+                if (_instance is null && Read is not null) _instance = Read();
+                return _instance;
+            }
+        }
+        public static Action Save;
+        public static Func<PrestigeSet> Read;
+
+        public static void Load()
+        {
+            _instance ??= Read();
+        }
+        public static void UnLoad()
+        {
+            _instance = null;
+        }
         public IEnumerable<Prestige> Prestiges { get; set; }
 
         /// <summary>the default prestige set that contains prestiges for each of the skills in the unmodded version Stardew Valley.</summary>
@@ -39,10 +61,8 @@ namespace SkillPrestige.Framework
             };
 
         /// <summary>Returns all prestige set loaded and registered into this mod, default and mod.</summary>
-        public static PrestigeSet CompleteEmptyPrestigeSet
+        public static PrestigeSet CompleteEmptyPrestigeSet()
         {
-            get
-            {
                 var prestiges = DefaultPrestiges;
                 var addedPrestiges = ModHandler.GetAddedEmptyPrestiges().ToList();
                 if (addedPrestiges.Any())
@@ -51,8 +71,6 @@ namespace SkillPrestige.Framework
                 {
                     Prestiges = prestiges
                 };
-
-            }
         }
     }
 }

@@ -40,11 +40,12 @@ public class VerticalScrollBar
     {
         this.Bounds = bounds;
         this.MaximumScrollOffset = totalListCount - maximumDisplayableEntries;
+        if (this.MaximumScrollOffset < 0) this.MaximumScrollOffset = 0;
         this.OnScroll = onScroll;
         this.Drawn = false;
         this.LoadArrows();
         this.LoadRunner();
-        this.LoadPuck(this.DeterminePuckHeight());
+        if(this.MaximumScrollOffset > 0) this.LoadPuck(this.DeterminePuckHeight());
     }
 
     private void LoadArrows()
@@ -105,7 +106,11 @@ public class VerticalScrollBar
             }
             this.ScrollBarPositions.Add(offset, this.ScrollBarRunner.Bounds.Y + this.ScrollBarRunner.Bounds.Height / this.MaximumScrollOffset * offset - puckHeight / 2);
         }
-        var scrollBarBounds = new Rectangle(this.ScrollBarRunner.Bounds.X, this.ScrollBarPositions[this.ScrollOffset], this.ScrollBarRunner.Bounds.Width, puckHeight);
+
+        int yPosition = this.ScrollBarPositions.Any()
+            ? this.ScrollBarPositions[this.ScrollOffset]
+            : this.ScrollBarRunner.Bounds.Y;
+        var scrollBarBounds = new Rectangle(this.ScrollBarRunner.Bounds.X, yPosition, this.ScrollBarRunner.Bounds.Width, puckHeight);
         this.ScrollBarPuck = new TextureBox(scrollBarBounds, Game1.mouseCursors, this.PuckSourceRectangle)
         {
             Scale = this.DrawScale

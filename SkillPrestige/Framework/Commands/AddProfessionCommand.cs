@@ -5,7 +5,7 @@ using StardewValley;
 
 namespace SkillPrestige.Framework.Commands
 {
-    /// <summary>A command that clears all professions from a player's game.</summary>
+    /// <summary>A command that adds a profession to a player's profession list</summary>
     // ReSharper disable once UnusedMember.Global - referenced via reflection
     internal class AddProfessionCommand : SkillPrestigeCommand
     {

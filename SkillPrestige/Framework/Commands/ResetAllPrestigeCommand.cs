@@ -36,12 +36,13 @@ namespace SkillPrestige.Framework.Commands
                 return;
             }
             Logger.LogInformation($"Resetting all skill prestiges...");
-            foreach (var prestige in PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges)
+            foreach (var prestige in PrestigeSet.Instance.Prestiges)
             {
                 prestige.PrestigePoints = 0;
                 prestige.PrestigeProfessionsSelected = new List<int>();
             }
-            PrestigeSaveData.Instance.Save();
+
+            PrestigeSet.Save();
             Logger.LogInformation("Prestiges reset.");
         }
     }

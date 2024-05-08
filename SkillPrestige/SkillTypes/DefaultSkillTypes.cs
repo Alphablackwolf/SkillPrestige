@@ -1,3 +1,5 @@
+using System;
+
 namespace SkillPrestige.SkillTypes
 {
     public partial class SkillType

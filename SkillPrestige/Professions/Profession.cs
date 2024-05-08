@@ -55,7 +55,7 @@ namespace SkillPrestige.Professions
         {
             Logger.LogInformation("Adding professions that should be loaded.");
             var professions = Game1.player.professions;
-            foreach (var profession in Skill.AllSkills.SelectMany(x => x.Professions).Where(x => PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.SelectMany(y => y.PrestigeProfessionsSelected).Contains(x.Id)))
+            foreach (var profession in Skill.AllSkills.SelectMany(x => x.Professions).Where(x => PrestigeSet.Instance.Prestiges.SelectMany(y => y.PrestigeProfessionsSelected).Contains(x.Id)))
             {
                 if (professions.Add(profession.Id))
                 {

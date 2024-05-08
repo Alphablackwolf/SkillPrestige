@@ -56,7 +56,7 @@ namespace SkillPrestige.Framework
                 int lastExperienceDetected = LastExperiencePoints[skillIndex];
                 int currentExperience = Game1.player.experiencePoints[skillIndex];
                 int gainedExperience = currentExperience - lastExperienceDetected;
-                decimal skillExperienceFactor = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType.Ordinal == skillIndex).PrestigePoints * PerSaveOptions.Instance.ExperienceMultiplier;
+                decimal skillExperienceFactor = PrestigeSet.Instance.Prestiges.Single(x => x.SkillType.Ordinal == skillIndex).PrestigePoints * PerSaveOptions.Instance.ExperienceMultiplier;
                 if (gainedExperience <= 0 || skillExperienceFactor <= 0)
                     continue;
                 Logger.LogVerbose($"Detected {gainedExperience} experience gained in {Skill.AllSkills.Single(x => x.Type.Ordinal == skillIndex).Type.Name} skill.");

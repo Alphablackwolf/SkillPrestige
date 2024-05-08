@@ -71,14 +71,13 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
                 {
                     return
                         $"Click to prestige your {this.Skill?.Type?.Name} skill.\n"
-                        + $"{(PerSaveOptions.Instance.UseExperienceMultiplier ? $"Next XP Bonus: {((PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == this.Skill?.Type).PrestigePoints + PerSaveOptions.Instance.PointsPerPrestige) * PerSaveOptions.Instance.ExperienceMultiplier * 100).Floor()}%" : string.Empty)}";
+                        + $"{(PerSaveOptions.Instance.UseExperienceMultiplier ? $"Next XP Bonus: {((PrestigeSet.Instance.Prestiges.Single(x => x.SkillType == this.Skill?.Type).PrestigePoints + PerSaveOptions.Instance.PointsPerPrestige) * PerSaveOptions.Instance.ExperienceMultiplier * 100).Floor()}%" : string.Empty)}";
                 }
-                bool newLevelForSkillExists = Game1.player.newLevels.Any(point => point.X == this.Skill.Type.Ordinal && point.Y > 0);
                 if (!PerSaveOptions.Instance.PainlessPrestigeMode)
                 {
                     if (this.Skill.GetSkillLevel() < 10)
                         return "You must reach level 10 in this skill and then\nsleep at least once in order to prestige this skill.";
-                    if (newLevelForSkillExists)
+                    if (this.Skill.NewLevelForSkillExists())
                     {
                         return "You must sleep and make a profession selection before prestiging this skill.";
                     }

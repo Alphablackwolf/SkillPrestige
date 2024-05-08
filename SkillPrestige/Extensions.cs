@@ -61,6 +61,12 @@ namespace SkillPrestige
             }
         }
 
+        public static TReturn GetStaticField<TReturn>(this Type type, string fieldName)
+        {
+            const BindingFlags bindingAttributes = BindingFlags.Static | BindingFlags.NonPublic;
+            return (TReturn)type.GetField(fieldName, bindingAttributes)?.GetValue(null);
+        }
+
         /// <summary>sets the field of a base class of an object through reflection, even if it is a private field.</summary>
         /// <typeparam name="T">The type that directly inherits from the type contains the parameter member</typeparam>
         /// <typeparam name="TMember">The type of the parameter member</typeparam>

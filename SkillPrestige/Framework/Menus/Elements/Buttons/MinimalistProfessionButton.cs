@@ -94,13 +94,23 @@ namespace SkillPrestige.Framework.Menus.Elements.Buttons
             this.DrawTitleText(spriteBatch, locationOfTextRelativeToButton);
         }
 
+        private bool CheckmarkTextureMissingLogged;
+
         private void DrawCheckmark(SpriteBatch spriteBatch)
         {
             if (!this.Selected)
                 return;
+            if (ModEntry.CheckmarkTexture == null)
+            {
+                if (this.CheckmarkTextureMissingLogged) return;
+                Logger.LogWarning("ProfessionButton - Checkmark texture not loaded, skipping checkmark draw action.");
+                this.CheckmarkTextureMissingLogged = true;
+                return;
+            }
             var locationOfCheckmarkRelativeToButton = new Vector2(this.Bounds.Width - this.CheckmarkSourceRectangle.Width * Game1.pixelZoom / 8, 0);
             var buttonLocation = new Vector2(this.Bounds.X, this.Bounds.Y);
             var checkmarkLocation = buttonLocation + locationOfCheckmarkRelativeToButton;
+
             spriteBatch.Draw(ModEntry.CheckmarkTexture, checkmarkLocation, this.CheckmarkSourceRectangle, Color.White, 0f, Vector2.Zero, Game1.pixelZoom / 2f, SpriteEffects.None, 1f);
         }
 

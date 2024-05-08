@@ -53,7 +53,8 @@ namespace SkillPrestige.Framework.Menus.Elements;
                 this.Position = position;
                 this.TotalWidth = width;
                 this.ParentMenu = parentMenu;
-                var prestige = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges
+
+                var prestige = PrestigeSet.Instance.Prestiges
                     .Single(x => x.SkillType == skill.Type);
                 this.PrestigePoints = prestige.PrestigePoints;
                 this.Done = prestige.PrestigeProfessionsSelected.Count >= 6;
@@ -112,7 +113,7 @@ namespace SkillPrestige.Framework.Menus.Elements;
                 var bounds = new Rectangle(screenXCenter - menuXCenter, screenYCenter - menuYCenter, menuWidth + IClickableMenu.borderWidth * 2, menuHeight + IClickableMenu.borderWidth * 2);
                 Game1.playSound("bigSelect");
                 Logger.LogVerbose("Getting currently loaded prestige data...");
-                var prestige = PrestigeSaveData.CurrentlyLoadedPrestigeSet.Prestiges.Single(x => x.SkillType == this.Skill.Type);
+                var prestige = PrestigeSet.Instance.Prestiges.Single(x => x.SkillType == this.Skill.Type);
                 Logger.LogVerbose($"Opening prestige menu for skill {this.Skill.Type.Name}");
                 Game1.activeClickableMenu = new PrestigeMenu(bounds, this.Skill, prestige);
                 Game1.nextClickableMenu.Add(this.ParentMenu);
@@ -120,7 +121,7 @@ namespace SkillPrestige.Framework.Menus.Elements;
                 Logger.LogVerbose("Selection Menu - Loaded Prestige Menu.");
             }
 
-
+            private bool CheckmarkTextureMissingLogged;
             public void Draw(SpriteBatch spriteBatch)
             {
                 if (!this.ShouldBeDrawn) return;
@@ -131,12 +132,17 @@ namespace SkillPrestige.Framework.Menus.Elements;
                 string prestigePointText = this.PrestigePoints.ToString();
                 if (this.CanPrestige) prestigePointText += "+";
                 spriteBatch.DrawString(Game1.dialogueFont, prestigePointText, this.PrestigePointDisplayLocation, Color.Black);
-                if (this.Done)
+                if (!this.Done) return;
+                if (ModEntry.CheckmarkTexture == null)
                 {
-                    var checkmarkSourceRectangle = new Rectangle(0, 0, 32, 32);
-                    var checkmarkDrawLocation = new Vector2(this._drawLocation.X + this.TotalWidth - ModEntry.CheckmarkTexture.Width, this._drawLocation.Y + (this.IconHeight / 2f).Floor() - (ModEntry.CheckmarkTexture.Height / 2f).Floor());
-                    spriteBatch.Draw(ModEntry.CheckmarkTexture, checkmarkDrawLocation, checkmarkSourceRectangle, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
+                    if (this.CheckmarkTextureMissingLogged) return;
+                    Logger.LogWarning("Selection Menu - Checkmark texture not loaded, skipping checkmark draw action.");
+                    this.CheckmarkTextureMissingLogged = true;
+                    return;
                 }
+                var checkmarkSourceRectangle = new Rectangle(0, 0, 32, 32);
+                var checkmarkDrawLocation = new Vector2(this._drawLocation.X + this.TotalWidth - ModEntry.CheckmarkTexture.Width, this._drawLocation.Y + (this.IconHeight / 2f).Floor() - (ModEntry.CheckmarkTexture.Height / 2f).Floor());
+                spriteBatch.Draw(ModEntry.CheckmarkTexture, checkmarkDrawLocation, checkmarkSourceRectangle, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 1f);
             }
 
             public void DrawHover(SpriteBatch spriteBatch)
