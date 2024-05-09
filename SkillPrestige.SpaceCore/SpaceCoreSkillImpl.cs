@@ -29,9 +29,10 @@ namespace SkillPrestige.SpaceCore{
 
         public SpaceCoreSkillImpl(string SpaceCoreSkillId, string DisplayName, string skillTypeName, int skillOrdinal){
             this.SkillType = new (skillTypeName, skillOrdinal);
-            
             this.SpaceCoreSkillId = SpaceCoreSkillId;
+            this.DisplayName = DisplayName;
             this.IsFound = true;
+            
             ModHandler.RegisterMod(this);
         }
 
