@@ -82,6 +82,7 @@ namespace SkillPrestige.Framework
             if (Instance.PrestigeSaveFiles.Count <= 0
                 || CurrentlyLoadedSaveFileUniqueId != Game1.uniqueIDForThisGame) return;
             var queuedPrestigeEntriesToAdd = new List<Prestige>();
+            if (!Instance.PrestigeSaveFiles.ContainsKey(CurrentlyLoadedSaveFileUniqueId)) return;
             Logger.LogInformation($"Beginning data migration for game id: {Game1.uniqueIDForThisGame}");
             foreach (var entry in CurrentlyLoadedPrestigeSet.Prestiges)
             {

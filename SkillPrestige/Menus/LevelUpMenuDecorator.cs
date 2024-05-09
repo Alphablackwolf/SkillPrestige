@@ -4,7 +4,6 @@ using System.Linq;
 using Force.DeepCloner;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using SkillPrestige.Framework;
 using SkillPrestige.Framework.InputHandling;
 using SkillPrestige.Framework.Menus.Dialogs;
@@ -92,7 +91,18 @@ namespace SkillPrestige.Menus
         public override void draw(SpriteBatch spriteBatch)
         {
             this.InternalMenu.draw(spriteBatch);
-            if (!this.UiInitiated) this.InitiateUi();
+            if (!this.UiInitiated)
+            {
+                try
+                {
+                    this.InitiateUi();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError($"Error initiating UI for level up menu decorator, reverting to internal menu. {Environment.NewLine} error: {ex.Message} {Environment.NewLine} stack trace {ex.StackTrace}");
+                    Game1.activeClickableMenu = this.InternalMenu;
+                }
+            }
             this.DecorateUi(spriteBatch);
             this.drawMouse(spriteBatch);
         }
