@@ -86,12 +86,19 @@ namespace SkillPrestige
             return appDomain.GetAssemblies().Where(x => !x.FullName.StartsWithOneOf("mscorlib", "System", "Microsoft", "Windows", "Newtonsoft"));
         }
 
+
+        private static readonly List<string> AssemblyNamesToSkip = new() { "Steamworks.NET" };
         /// <summary>Gets types from an assembly as long as those types can safely be retrieved.</summary>
         /// <param name="assembly">Assembly you wish to obtain types from.</param>
         public static IEnumerable<Type> GetTypesSafely(this Assembly assembly)
         {
             try
             {
+                if (AssemblyNamesToSkip.Contains(assembly.GetName().Name))
+                {
+                    Logger.LogVerbose($"Skipping {assembly.FullName}...");
+                    return new List<Type>();
+                }
                 Logger.LogVerbose($"Attempting to obtain types of assembly {assembly.FullName} safely...");
                 return assembly.GetTypes();
             }
