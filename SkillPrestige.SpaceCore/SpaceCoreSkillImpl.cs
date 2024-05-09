@@ -1,27 +1,22 @@
-using Microsoft.Xna.Framework;
 using SkillPrestige.Mods;
 using SkillPrestige.Professions;
 using SkillPrestige.SkillTypes;
+using Microsoft.Xna.Framework;
 using SpaceCore;
 using StardewModdingAPI;
 using StardewValley;
 
-namespace SkillPrestige.Yacs
-{
-    /// <summary>The mod entry class.</summary>
-    internal class ModEntry : Mod, ISpaceCoreSkillMod
+namespace SkillPrestige.SpaceCore{
+    internal class SpaceCoreSkillImpl : ISpaceCoreSkillMod
     {
-        /// <summary>The cooking skill type.</summary>
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable. - there isn't another solution that doesn't break everything.
+        /// <summary>The skill type.</summary>
         private SkillType SkillType;
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-        /// <summary>The unique ID for the Cooking Skill mod.</summary>
-        private const string TargetModId = "moonslime.CookingSkill";
-        public string SpaceCoreSkillId => "moonslime.Cooking";
+        /// <summary>The unique ID for the Skill mod.</summary>
+        public string SpaceCoreSkillId { get; private set; }
 
         /// <summary>The name to display for the mod in the log.</summary>
-        public string DisplayName { get; } = "Yet Another Cooking Skill";
+        public string DisplayName { get; private set; }
 
         /// <summary>Whether the mod is found in SMAPI.</summary>
         public bool IsFound { get; private set; }
@@ -32,25 +27,17 @@ namespace SkillPrestige.Yacs
         /// <summary>The prestiges added by this mod.</summary>
         public IEnumerable<Prestige> AdditionalPrestiges => this.GetAddedPrestiges();
 
-        /// <summary>The mod entry point, called after the mod is first loaded.</summary>
-        /// <param name="helper">Provides simplified APIs for writing mods.</param>
-        public override void Entry(IModHelper helper)
-        {
-            this.SkillType = new SkillType("Cooking", 6)
-            {
-                SpaceCoreSkillId = this.SpaceCoreSkillId
-            };
-
-            this.IsFound = helper.ModRegistry.IsLoaded(TargetModId);
+        public SpaceCoreSkillImpl(string SpaceCoreSkillId, string DisplayName, string skillTypeName, int skillOrdinal){
+            this.SkillType = new (skillTypeName, skillOrdinal);
+            
+            this.SpaceCoreSkillId = SpaceCoreSkillId;
+            this.IsFound = true;
             ModHandler.RegisterMod(this);
         }
 
         /// <summary>Get the skills added by this mod.</summary>
         private IEnumerable<Skill> GetAddedSkills()
         {
-            if (!this.IsFound)
-                yield break;
-
             yield return new Skill
             {
                 Type = this.SkillType,
@@ -67,9 +54,6 @@ namespace SkillPrestige.Yacs
         /// <summary>Get the prestiges added by this mod.</summary>
         private IEnumerable<Prestige> GetAddedPrestiges()
         {
-            if (!this.IsFound)
-                yield break;
-
             yield return new Prestige
             {
                 SkillType = this.SkillType
@@ -130,5 +114,6 @@ namespace SkillPrestige.Yacs
             int addedExperience = amount - Game1.player.GetCustomSkillExperience(this.SpaceCoreSkillId);
             Game1.player.AddCustomSkillExperience(this.SpaceCoreSkillId, addedExperience);
         }
+    
     }
 }

@@ -1,0 +1,18 @@
+{
+    "Name": "Skill Prestige for SpaceCore Skills",
+    "Author": "CinderGarde",
+    "Version": "1.4.0",
+    "Description": "Extends Skill Prestige to support all SpaceCore based Skill mods.",
+    "UniqueID": "CinderGarde.SpaceCoreSkillPrestigeAdapter",
+    "EntryDll": "SkillPrestige.SpaceCore.dll",
+    "MinimumApiVersion": "4.0.0",
+    "Dependencies": [
+        {
+            "UniqueID": "alphablackwolf.skillPrestige"
+        },
+        {
+            "UniqueID": "spacechase0.SpaceCore"
+        }
+    ],
+    "UpdateKeys": [ "Nexus:569" ]
+}

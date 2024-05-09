@@ -4,7 +4,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>SkillPrestige.Yacs</RootNamespace>
+        <RootNamespace>SkillPrestige.SpaceCore</RootNamespace>
     </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="CookingSkill" HintPath="$(GameModsPath)\CookingSkill\CookingSkillCode\CookingSkillCode.dll" Private="False" />
     <Reference Include="SpaceCore" HintPath="$(GameModsPath)\SpaceCore\SpaceCore.dll" />
   </ItemGroup>
 

@@ -16,7 +16,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkillPrestige.LuckSkill", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{A8401C62-2051-4C3C-B97B-5281EBB04753}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillPrestige.Yacs", "SkillPrestige.Yacs\SkillPrestige.Yacs.csproj", "{7915B95A-604B-408E-8A37-218267739375}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillPrestige.SpaceCore", "SkillPrestige.SpaceCore\SkillPrestige.SpaceCore.csproj", "{7915B95A-604B-408E-8A37-218267739375}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
