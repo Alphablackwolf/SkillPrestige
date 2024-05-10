@@ -283,6 +283,7 @@ namespace SkillPrestige
                     if (skill == null)
                     {
                         Logger.LogCritical($"Unable to load skill id {currentSkillId}, skipping level up menu decoration.");
+                        return;
                     }
                     Logger.LogInformation("Level up menu as profession chooser detected.");
                     Game1.activeClickableMenu = new LevelUpMenuDecorator(skill, level, Game1.activeClickableMenu);
@@ -298,6 +299,7 @@ namespace SkillPrestige
                     if (spaceCoreSkill == null)
                     {
                         Logger.LogCritical($"Unable to load skill {currentSkillName}, skipping level up menu decoration.");
+                        return;
                     }
                     Logger.LogInformation("Level up menu as profession chooser detected.");
                     Game1.activeClickableMenu = new LevelUpMenuDecorator(spaceCoreSkill, spaceCoreLevel, Game1.activeClickableMenu);
