@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -25,8 +25,8 @@ using StardewValley.Menus;
 namespace SkillPrestige
 {
     /// <summary>The mod entry class.</summary>
-    // ReSharper disable once ClassNeverInstantiated.Global
     [SuppressMessage("Performance", "CA1822:Mark members as static")]
+    // ReSharper disable once ClassNeverInstantiated.Global
     internal class ModEntry : Mod
     {
         private bool SaveIsLoaded { get; set; }
@@ -43,7 +43,10 @@ namespace SkillPrestige
 
         public static Texture2D CheckmarkTexture { get; private set; }
 
+        private static bool ShouldUseLegacySaveMethod { get; set; }
+
         private static string PrestigeSaveKey => "SkillPrestigeData";
+        private static string NewPrestigeSaveKey => "SkillPrestigeDataByFarmer";
 
         public static IModRegistry ModRegistry { get; private set; }
 
@@ -83,6 +86,9 @@ namespace SkillPrestige
             helper.Events.GameLoop.UpdateTicked += this.OnUpdateTicked;
             helper.Events.GameLoop.SaveLoaded += this.OnSaveLoaded;
             helper.Events.GameLoop.ReturnedToTitle += this.OnReturnedToTitle;
+            helper.Events.Multiplayer.PeerConnected += this.OnPeerConnected;
+            helper.Events.Multiplayer.ModMessageReceived += this.OnModMessageReceived;
+            helper.Events.GameLoop.DayEnding += this.OnDayEnding;
         }
 
         /// <summary>Raised after the player presses a button on the keyboard, controller, or mouse.</summary>
@@ -90,8 +96,6 @@ namespace SkillPrestige
         /// <param name="e">The event data.</param>
         private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-
-
             if (Game1.activeClickableMenu is null
                 && this.SaveIsLoaded
                 && e.Button.IsOneOf(SButton.MouseRight, SButton.ControllerA))
@@ -141,13 +145,96 @@ namespace SkillPrestige
         /// <param name="e">The event data.</param>
         private void OnSaveLoaded(object sender, SaveLoadedEventArgs e)
         {
+            //first migrate any data.json files to local instance of the prestige set.
 #pragma warning disable CS0612 // Type or member is obsolete, required for backwards compatability
             PrestigeSaveData.Instance.UpdateCurrentSaveFileInformation();
-
-            PrestigeSet.Load();
             PrestigeSaveData.MigrateData();
-
 #pragma warning restore CS0612 // Type or member is obsolete
+
+            if (Context.IsMainPlayer && PrestigeSet.TryLoad())
+            {
+                Logger.LogInformation($"Loaded 1.4.0-1.4.1 data structure, migrating to multiplayer capable data storage.");
+                SaveInformation.MigrateLoadedPrestigeSet();
+                Logger.LogInformation($"setting local prestige instance data from save information...");
+                PrestigeSet.Instance = SaveInformation.Instance[Game1.player.UniqueMultiplayerID];
+            }
+            else
+            {
+                if (Context.IsMainPlayer && SaveInformation.TryLoad())
+                {
+                    Logger.LogInformation("Loaded save information successfully.");
+                    if (SaveInformation.Instance is null)
+                    {
+                        Logger.LogInformation("Save information instance that was loaded was null, creating new instance.");
+                        SaveInformation.Instance = new SaveInformation();
+                    }
+                    Logger.LogInformation($"setting local prestige instance data from save information...");
+                    PrestigeSet.Instance = SaveInformation.Instance.TryGetValue(Game1.player.UniqueMultiplayerID, out var value) ? value : PrestigeSet.CompleteEmptyPrestigeSet();
+                }
+                else
+                {
+
+                    //prestige set couldn't load, save information couldn't load, or user is not main player
+
+
+                    //then if the user is a client to a hosted multiplayer game...
+                    if (Context.IsMultiplayer && !Context.IsMainPlayer)
+                    {
+                        var hostPlayer = this.Helper.Multiplayer.GetConnectedPlayers().FirstOrDefault(x => x.IsHost);
+                        if (hostPlayer is not null
+                            && hostPlayer.Mods.Any(x => x.ID == this.ModManifest.UniqueID))
+                        {
+                            var hostPlayerSkillPrestigeMod =
+                                hostPlayer.Mods.FirstOrDefault(x => x.ID == this.ModManifest.UniqueID);
+                            if (hostPlayerSkillPrestigeMod is not null
+                                && hostPlayerSkillPrestigeMod.Version != this.ModManifest.Version)
+                                Logger.LogWarning(
+                                    $"Host is using Skill Prestige mod version {hostPlayerSkillPrestigeMod.Version} while this client is using {this.ModManifest.Version}." +
+                                    $"{Environment.NewLine} Data might not save correctly unless all users are on the same version of the mod.");
+                            if(hostPlayerSkillPrestigeMod is null
+                               || hostPlayerSkillPrestigeMod.Version.IsOlderThan(new SemanticVersion(1, 4, 2)))
+                            {
+                                Logger.LogWarning("Host either does not have the Skill Prestige mod or is using a version prior to 1.4.2, reverting to legacy data save. Please note this means your data will still depend on data.json and will thus be unstable.");
+                                ShouldUseLegacySaveMethod = true;
+                            }
+                        }
+                        else
+                        {
+                            Logger.LogWarning("Host either does not have the Skill Prestige mod or is using a version prior to 1.4.2, reverting to legacy data save. Please note this means your data will still depend on data.json and will thus be unstable.");
+                            ShouldUseLegacySaveMethod = true;
+                        }
+
+                        Logger.LogInformation("client player, checking loaded data...");
+                        if (PrestigeSet.Instance is null)
+                        {
+                            Logger.LogInformation($"Client with no instance yet, using empty set while awaiting host data.");
+                            PrestigeSet.Instance ??= PrestigeSet.CompleteEmptyPrestigeSet();
+                        }
+
+                        if (ShouldUseLegacySaveMethod)
+                        {
+                            Logger.LogInformation("Setting up legacy save methods...");
+                            PrestigeSet.Save = () =>
+                            {
+                                Logger.LogVerbose("Client called internal prestige set save, using legacy save method adjustment");
+#pragma warning disable CS0612 // Type or member is obsolete intentionally using legacy save method to keep legacy situations functional.
+                                PrestigeSaveData.Instance.PrestigeSaveFiles[Game1.uniqueIDForThisGame] = PrestigeSet.Instance;
+                                PrestigeSaveData.Instance.Save();
+#pragma warning restore CS0612 // Type or member is obsolete
+                            };
+                            PrestigeSet.Read = () => {
+                                Logger.LogVerbose("Client attempting prestige set read, using legacy read...");
+#pragma warning disable CS0612 // Type or member is obsolete used intentionally to keep legacy situations functional.
+                                PrestigeSaveData.Read();
+                                return PrestigeSaveData.CurrentlyLoadedPrestigeSet;
+#pragma warning restore CS0612 // Type or member is obsolete
+                            };
+                        }
+
+                        Logger.LogInformation("client save loaded.");
+                    }
+                }
+            }
 
             PerSaveOptions.Instance.Check();
             Profession.AddMissingProfessions();
@@ -174,7 +261,8 @@ namespace SkillPrestige
 #pragma warning restore CS0612 // Type or member is obsolete
             this.SaveIsLoaded = false;
             PrestigeSet.UnLoad();
-            Logger.LogInformation("Return To Title.");
+            SaveInformation.UnLoad();
+            Logger.LogInformation("Returned To Title.");
             PerSaveOptions.ClearLoadedPerSaveOptionsFile();
             ExperienceHandler.ResetExperience();
             RecipeHandler.ResetRecipes();
@@ -235,8 +323,54 @@ namespace SkillPrestige
 #pragma warning disable CS0612 // Type or member is obsolete - need to interact with obsolete element to ensure backwards compatibility.
             PrestigeSaveData.Read();
 #pragma warning restore CS0612 // Type or member is obsolete
-            PrestigeSet.Save = () => this.Helper.Data.WriteSaveData(PrestigeSaveKey, PrestigeSet.Instance);
-            PrestigeSet.Read = () => this.Helper.Data.ReadSaveData<PrestigeSet>(PrestigeSaveKey) ?? PrestigeSet.CompleteEmptyPrestigeSet();
+            if (Context.IsMainPlayer)
+            {
+                PrestigeSet.Save = () => this.Helper.Data.WriteSaveData(PrestigeSaveKey, (PrestigeSet)null);
+                PrestigeSet.Read = () => this.Helper.Data.ReadSaveData<PrestigeSet>(PrestigeSaveKey);
+                SaveInformation.Save = () => this.Helper.Data.WriteSaveData(NewPrestigeSaveKey, SaveInformation.Instance);
+                SaveInformation.Read = () => this.Helper.Data.ReadSaveData<SaveInformation>(NewPrestigeSaveKey);
+            }
+            else
+            {
+                if (ShouldUseLegacySaveMethod)
+                {
+                    Logger.LogInformation("Setting up legacy save methods...");
+                    PrestigeSet.Save = () =>
+                    {
+                        Logger.LogVerbose("Client called internal prestige set save, using legacy save method adjustment");
+#pragma warning disable CS0612 // Type or member is obsolete intentionally using legacy save method to keep legacy situations functional.
+                        PrestigeSaveData.Instance.PrestigeSaveFiles[Game1.uniqueIDForThisGame] = PrestigeSet.Instance;
+                        PrestigeSaveData.Instance.Save();
+#pragma warning restore CS0612 // Type or member is obsolete
+                    };
+                    PrestigeSet.Read = () => {
+                        Logger.LogVerbose("Client attempting prestige set read, using legacy read...");
+#pragma warning disable CS0612 // Type or member is obsolete used intentionally to keep legacy situations functional.
+                        PrestigeSaveData.Read();
+                        return PrestigeSaveData.CurrentlyLoadedPrestigeSet;
+#pragma warning restore CS0612 // Type or member is obsolete
+                    };
+                    SaveInformation.Save = () => Logger.LogVerbose("Client called internal save information save");
+                    SaveInformation.Read = () => {
+                        Logger.LogVerbose("Client attempting save information read, returning null");
+                        return null;
+                    };
+                }
+                else
+                {
+                    PrestigeSet.Save = () => Logger.LogVerbose("Client called internal prestige set save");
+                    PrestigeSet.Read = () => {
+                        Logger.LogVerbose("Client attempting prestige set read, returning null");
+                        return null;
+                    };
+                    SaveInformation.Save = () => Logger.LogVerbose("Client called internal save information save");
+                    SaveInformation.Read = () => {
+                        Logger.LogVerbose("Client attempting save information read, returning null");
+                        return null;
+                    };
+                }
+
+            }
             ModHandler.Initialize();
             // register commands
             if (Config.TestingMode) this.RegisterTestingCommands();
@@ -252,19 +386,25 @@ namespace SkillPrestige
 
             this.CheckForLevelUpMenu();
             if (e.IsOneSecond && this.SaveIsLoaded)
-                ExperienceHandler.UpdateExperience(); //one second tick for this, as the detection of changed experience can happen as infrequently as possible. a 10 second tick would be well within tolerance.
+                ExperienceHandler.UpdateExperience(); //one second tick for this, as the detection of changed experience can happen as infrequently as possible. a 10-second tick would be well within tolerance.
         }
 
         private void OnSaving(object sender, SavingEventArgs e)
         {
-            PrestigeSet.Save();
+            if (PrestigeSet.TryRead() || ShouldUseLegacySaveMethod) PrestigeSet.Save();
+            if (!Context.IsMainPlayer) return;
+            SaveInformation.Instance[Game1.player.UniqueMultiplayerID] = PrestigeSet.Instance;
+            SaveInformation.Save();
         }
 
         private void OnSaved(object sender, SavedEventArgs e)
         {
+            if (!ShouldUseLegacySaveMethod)
+            {
 #pragma warning disable CS0612 // Type or member is obsolete, required for backwards compatability
-            PrestigeSaveData.CleanupDataFile();
+                PrestigeSaveData.CleanupDataFile();
 #pragma warning restore CS0612 // Type or member is obsolete
+            }
         }
 
 
@@ -293,7 +433,7 @@ namespace SkillPrestige
                 {
                     int spaceCoreLevel = (int)Game1.activeClickableMenu.GetInstanceField("currentLevel");
                     if (spaceCoreLevel % 5 != 0) return;
-                    string currentSkillName = Skills.GetSkill((string)Game1.activeClickableMenu.GetInstanceField("currentSkill")).GetName(); //overwrite name with it's display name
+                    string currentSkillName = Skills.GetSkill((string)Game1.activeClickableMenu.GetInstanceField("currentSkill")).GetName(); //overwrite name with its display name
 
                     var spaceCoreSkill = Skill.AllSkills.SingleOrDefault(x => x.Type.Name == currentSkillName);
                     if (spaceCoreSkill == null)
@@ -312,7 +452,33 @@ namespace SkillPrestige
         private void OnDayStarted(object sender, DayStartedEventArgs e)
         {
             if (!this.SaveIsLoaded) return;
-            PrestigeSet.Load();
+            if (Context.IsMainPlayer)
+            {
+                Logger.LogInformation("Host reading save information..");
+                SaveInformation.Read();
+                foreach (var farmer in Game1.getOnlineFarmers().Where(x => !x.IsMainPlayer))
+                {
+                    if (SaveInformation.Instance.TryGetValue(farmer.UniqueMultiplayerID, out var value))
+                    {
+                        Logger.LogInformation($"sending located save data to player: {farmer.UniqueMultiplayerID}");
+                        this.Helper.Multiplayer.SendMessage(value,
+                            DataFromHostType, new[] { this.ModManifest.UniqueID }, new[]{farmer.UniqueMultiplayerID});
+                    }
+                    else
+                    {
+                        Logger.LogInformation($"sending a null save data indication to player: {farmer.UniqueMultiplayerID}");
+                        this.Helper.Multiplayer.SendMessage(new PrestigeSetNull(), NullDataFromHostType,
+                            new[] { this.ModManifest.UniqueID }, new[]{farmer.UniqueMultiplayerID});
+                    }
+                }
+                Logger.LogVerbose($"Setting save data for host...");
+                PrestigeSet.Instance = SaveInformation.Instance.TryGetValue(Game1.player.UniqueMultiplayerID, out var saveInfoValue) ? saveInfoValue : PrestigeSet.CompleteEmptyPrestigeSet();
+            }
+
+            if (ShouldUseLegacySaveMethod)
+            {
+                PrestigeSet.TryRead();
+            }
             RecipeHandler.CheckForAndHandleAddedRecipes();
         }
 
@@ -328,6 +494,84 @@ namespace SkillPrestige
             Logger.LogInformation("Registering commands...");
             SkillPrestigeCommand.RegisterCommands(this.Helper.ConsoleCommands, false);
             Logger.LogInformation("Commands registered.");
+        }
+
+        private void OnPeerConnected(object sender, PeerConnectedEventArgs e)
+        {
+            if (!Context.IsMainPlayer) return;
+            if (e.Peer.Mods.Any(x => x.ID == this.ModManifest.UniqueID))
+            {
+                var peerOwnedSkillPrestigeMod = e.Peer.Mods.SingleOrDefault(x => x.ID == this.ModManifest.UniqueID);
+                if (peerOwnedSkillPrestigeMod is not null && peerOwnedSkillPrestigeMod.Version != this.ModManifest.Version)
+                    Logger.LogWarning($"Peer id: {e.Peer.PlayerID} is using version {peerOwnedSkillPrestigeMod.Version} while host is using {this.ModManifest.Version}. " +
+                                      $"{Environment.NewLine} The mod is not guaranteed to save all data correctly unless all users are on the same version of the mod.");
+            }
+            if (SaveInformation.Instance.ContainsKey(e.Peer.PlayerID))
+            {
+                Logger.LogInformation($"host sending loaded client prestige data to player: {e.Peer.PlayerID}");
+                var messageToSend = SaveInformation.Instance.SingleOrDefault(x => x.Key == e.Peer.PlayerID).Value;
+                this.Helper.Multiplayer.SendMessage(messageToSend, DataFromHostType,
+                    new[] { this.ModManifest.UniqueID }, new[] { e.Peer.PlayerID });
+            }
+            else
+            {
+                Logger.LogInformation($"host sending indication client prestige data not found for player: {e.Peer.PlayerID}");
+                this.Helper.Multiplayer.SendMessage(new PrestigeSetNull(), NullDataFromHostType,
+                    new[] { this.ModManifest.UniqueID }, new[] { e.Peer.PlayerID });
+            }
+        }
+
+        const string DataFromClientType = "UpdatedClientData";
+        const string DataFromHostType = "ClientSavedData";
+        private const string NullDataFromHostType = "nullClientData";
+        private void OnModMessageReceived(object sender, ModMessageReceivedEventArgs e)
+        {
+            if (e.FromModID != this.ModManifest.UniqueID || !e.Type.IsOneOf(DataFromClientType, DataFromHostType, NullDataFromHostType)) return;
+            Logger.LogVerbose("Mod message received...");
+            if (Context.IsMainPlayer && e.Type == DataFromClientType)
+            {
+                Logger.LogInformation($"Host received other player data from id: {e.FromPlayerID}");
+                if (SaveInformation.Instance.ContainsKey(e.FromPlayerID)) SaveInformation.Instance[e.FromPlayerID] = e.ReadAs<PrestigeSet>();
+                else SaveInformation.Instance.Add(e.FromPlayerID, e.ReadAs<PrestigeSet>());
+                Logger.LogInformation($"Host saved data for player id: {e.FromPlayerID}");
+            }
+            else
+            {
+                Logger.LogVerbose("client received message...");
+                switch (e.Type)
+                {
+                    case NullDataFromHostType:
+                    {
+                        Logger.LogInformation("received prestige data... but it's empty.");
+                        if (PrestigeSet.Instance is null)
+                        {
+                            Logger.LogInformation("Local values are null, creating new empty set.");
+                            PrestigeSet.Instance = PrestigeSet.CompleteEmptyPrestigeSet();
+                        }
+                        else Logger.LogInformation("Prestige data exists locally, ignoring null data...");
+
+                        break;
+                    }
+                    case DataFromHostType:
+                    {
+                        var hostSaveData = e.ReadAs<PrestigeSet>();
+                        if (hostSaveData is null) Logger.LogInformation("Incoming save data is null");
+                        PrestigeSet.Instance = hostSaveData;
+                        Logger.LogInformation("player save data loaded from host.");
+                        break;
+                    }
+                }
+            }
+
+        }
+
+        private void OnDayEnding(object sender, DayEndingEventArgs e)
+        {
+            if (Context.IsMainPlayer) return;
+            Logger.LogInformation("Day end: Client sending prestige data to be saved");
+            long? hostId = this.Helper.Multiplayer.GetConnectedPlayers().SingleOrDefault(x => x.IsHost)?.PlayerID;
+            long[] sendToPlayerIds = hostId.HasValue ? new[] { hostId.Value } : null;
+            this.Helper.Multiplayer.SendMessage(PrestigeSet.Instance, DataFromClientType, new[] { this.ModManifest.UniqueID }, sendToPlayerIds);
         }
     }
 }

@@ -83,6 +83,7 @@ namespace SkillPrestige.Framework
                 || CurrentlyLoadedSaveFileUniqueId != Game1.uniqueIDForThisGame) return;
             var queuedPrestigeEntriesToAdd = new List<Prestige>();
             if (!Instance.PrestigeSaveFiles.ContainsKey(CurrentlyLoadedSaveFileUniqueId)) return;
+            PrestigeSet.Instance ??= PrestigeSet.CompleteEmptyPrestigeSet();
             Logger.LogInformation($"Beginning data migration for game id: {Game1.uniqueIDForThisGame}");
             foreach (var entry in CurrentlyLoadedPrestigeSet.Prestiges)
             {
@@ -128,8 +129,6 @@ namespace SkillPrestige.Framework
                 newPrestigeList.AddRange(queuedPrestigeEntriesToAdd);
                 PrestigeSet.Instance.Prestiges = newPrestigeList;
             }
-
-            PrestigeSet.Save();
             MigrationCompleted = true;
         }
 

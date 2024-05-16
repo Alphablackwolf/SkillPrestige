@@ -1,7 +1,7 @@
 {
     "Name": "Skill Prestige for Luck Skill",
     "Author": "CinderGarde",
-    "Version": "1.4.0",
+    "Version": "1.4.2",
     "Description": "Extends Skill Prestige to support the Luck Skill mod.",
     "UniqueID": "alphablackwolf.LuckSkillPrestigeAdapter",
     "EntryDll": "SkillPrestige.LuckSkill.dll",

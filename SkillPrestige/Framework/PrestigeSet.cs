@@ -11,26 +11,45 @@ namespace SkillPrestige.Framework
     [Serializable]
     internal class PrestigeSet
     {
-        // ReSharper disable once InconsistentNaming
-        private static PrestigeSet _instance;
+        public static PrestigeSet Instance { get; set; }
 
-        public static PrestigeSet Instance
-        {
-            get {
-                if (_instance is null && Read is not null) _instance = Read();
-                return _instance;
-            }
-        }
         public static Action Save;
         public static Func<PrestigeSet> Read;
 
         public static void Load()
         {
-            _instance ??= Read();
+            Instance ??= Read();
+        }
+        public static bool TryLoad()
+        {
+            try
+            {
+                Instance ??= Read();
+                return Instance is not null;
+            }
+            catch(Exception exception)
+            {
+                Logger.LogInformation($"attempted data read for singular data, read failed: {Environment.NewLine} {exception.Message} {Environment.NewLine} {exception.StackTrace}");
+                return false;
+            }
+
+        }
+
+        public static bool TryRead()
+        {
+            try
+            {
+                Read();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
         public static void UnLoad()
         {
-            _instance = null;
+            Instance = null;
         }
         public IEnumerable<Prestige> Prestiges { get; set; }
 

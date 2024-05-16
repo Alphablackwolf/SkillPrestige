@@ -16,7 +16,15 @@
   <component name="ChangeListManager">
     <list default="true" id="94e087a0-5084-48c6-912a-5f3d90bc6c49" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.SkillPrestige/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SkillPrestige/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige.LuckSkill/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige.LuckSkill/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige.Yacs/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige.Yacs/manifest.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SkillPrestige/Extensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Extensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/PrestigeMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/PrestigeMenu.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/PrestigeSaveData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/PrestigeSaveData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/PrestigeSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/PrestigeSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige/ModEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/ModEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige/Prestige.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Prestige.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/manifest.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +55,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6c4a12a75b1847f7a741ee55e7efed8d5cbe00/b9/9791ab9e/LevelUpMenu.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6c4a12a75b1847f7a741ee55e7efed8d5cbe00/f8/417c1258/IClickableMenu.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7cf519a2b0ae46df984080f1926406ccf1000/1e/60822a9d/IDataHelper.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7cf519a2b0ae46df984080f1926406ccf1000/66/4ce8cfc7/ModMessageReceivedEventArgs.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7cf519a2b0ae46df984080f1926406ccf1000/74/7e67628b/IGameLoopEvents.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/0a/89ec153a/CollectionsPage.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/12/2c385fad/GameStateQuery.cs" root0="SKIP_HIGHLIGHTING" />
@@ -71,6 +80,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b08fa5c66dbf4037b77c6576d7aed0955c1c00/f0/760cc48e/NetInt.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c4a4efb11b0b4a49a819073a9d6f8c7b62a00/16/9b42d7c5/NewSkillsPage.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c4a4efb11b0b4a49a819073a9d6f8c7b62a00/29/f8b36694/Skills.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c4a4efb11b0b4a49a819073a9d6f8c7b62a00/3b/c5981a0a/SkillExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c4a4efb11b0b4a49a819073a9d6f8c7b62a00/67/710cb9a2/Commands.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c4a4efb11b0b4a49a819073a9d6f8c7b62a00/6e/f08b745c/Api.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c4a4efb11b0b4a49a819073a9d6f8c7b62a00/b1/7aede846/SkillLevelUpMenu.cs" root0="SKIP_HIGHLIGHTING" />
@@ -92,10 +102,19 @@
     <setting file="file://$PROJECT_DIR$/SkillPrestige.Yacs/manifest.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/ContentPatcher/content.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/ContentPatcher/manifest.json" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Commands/AddProfessionCommand.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Commands/CheckForModCommand.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Commands/ClearAllProfessionsCommand.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Commands/GetAllProfessionsCommand.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Commands/ResetAllProfessionsCommand.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Commands/ResetPrestigeCommand.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Commands/RestorePrestigedProfessionsCommand.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Commands/SetExperienceCommand.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/Button.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/MinimalistProfessionButton.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/TextureButton.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Menus/PrestigeMenu.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/PrestigeSet.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/ModEntry.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/Prestige.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/manifest.json" root0="FORCE_HIGHLIGHTING" />
@@ -124,7 +143,7 @@
     &quot;.NET Project.SkillPrestige.executor&quot;: &quot;Run&quot;,
     &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;multiplayer-fix&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -312,7 +331,9 @@
       <workItem from="1714852501158" duration="17224000" />
       <workItem from="1715010446467" duration="11677000" />
       <workItem from="1715024345758" duration="37532000" />
-      <workItem from="1715119068381" duration="23746000" />
+      <workItem from="1715119068381" duration="60609000" />
+      <workItem from="1715705667891" duration="3978000" />
+      <workItem from="1715830383692" duration="24277000" />
     </task>
     <servers />
   </component>
