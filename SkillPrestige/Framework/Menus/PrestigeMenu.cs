@@ -173,10 +173,6 @@ namespace SkillPrestige.Framework.Menus
             this.InitiateLevelFiveProfessionButtons();
             this.InitiateLevelTenProfessionButtons();
             this.allClickableComponents = this.GetAllClickableComponents();
-            foreach (var entry in this.allClickableComponents)
-            {
-                Logger.LogVerbose($"myID: {entry.myID} leftID: {entry.leftNeighborID} rightID: {entry.rightNeighborID} upID: {entry.upNeighborID} downID: {entry.downNeighborID}");
-            }
             Logger.LogVerbose("Prestige menu - Profession button initiated.");
         }
 

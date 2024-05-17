@@ -146,8 +146,12 @@ namespace SkillPrestige
                 var recipe in
                 CraftingRecipe.cookingRecipes.Where(
                     x =>
-                        x.Value.Split('/')[3].Contains(skillType.Name) &&
-                        Game1.player.cookingRecipes.ContainsKey(x.Key)))
+                    {
+                        string[] recipePieces = x.Value.Split('/');
+                        return recipePieces.Length >=4
+                               && recipePieces[3].Contains(skillType.Name)
+                               && Game1.player.cookingRecipes.ContainsKey(x.Key);
+                    }))
             {
                 Logger.LogVerbose($"Removing {skillType.Name} cooking recipe {recipe.Key}");
                     cookingAmountsToStore.Add(recipe.Key, Game1.player.cookingRecipes[recipe.Key]);
