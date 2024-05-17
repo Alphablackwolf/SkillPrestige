@@ -5,6 +5,7 @@
     <projectFile>SkillPrestige.CookingSkill/SkillPrestige.CookingSkill.csproj</projectFile>
     <projectFile>SkillPrestige.LuckSkill/SkillPrestige.LuckSkill.csproj</projectFile>
     <projectFile>SkillPrestige.Magic/SkillPrestige.Magic.csproj</projectFile>
+    <projectFile>SkillPrestige.SpaceCore/SkillPrestige.SpaceCore.csproj</projectFile>
     <projectFile>SkillPrestige.Yacs/SkillPrestige.Yacs.csproj</projectFile>
     <projectFile>SkillPrestige/SkillPrestige.csproj</projectFile>
     <projectFile>UnitTest/UnitTest.csproj</projectFile>
@@ -15,16 +16,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="94e087a0-5084-48c6-912a-5f3d90bc6c49" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/SkillPrestige.SpaceCore/ModEntry.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SkillPrestige.SpaceCore/SkillPrestige.SpaceCore.csproj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SkillPrestige.SpaceCore/SpaceCoreSkill.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SkillPrestige.SpaceCore/SpaceCoreSkillRegistrations.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SkillPrestige.SpaceCore/manifest.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.SkillPrestige/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.SkillPrestige/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige.LuckSkill/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige.LuckSkill/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige.Yacs/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige.Yacs/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Extensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Extensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/PrestigeMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/Menus/PrestigeMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/PrestigeSaveData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/PrestigeSaveData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Framework/PrestigeSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Framework/PrestigeSet.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/ModEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/ModEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/Prestige.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/Prestige.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SkillPrestige/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige.LuckSkill/ModEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige.LuckSkill/ModEntry.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SkillPrestige.sln" beforeDir="false" afterPath="$PROJECT_DIR$/SkillPrestige.sln" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,7 +98,8 @@
     <setting file="file://$PROJECT_DIR$/SkillPrestige.CookingSkill/ModEntry.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige.LuckSkill/ModEntry.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige.LuckSkill/manifest.json" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/SkillPrestige.Yacs/manifest.json" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige.Yacs/ModEntry.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/SkillPrestige.Yacs/manifest.json" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/ContentPatcher/content.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/ContentPatcher/manifest.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Commands/AddProfessionCommand.cs" root0="FORCE_HIGHLIGHTING" />
@@ -108,7 +108,6 @@
     <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Commands/GetAllProfessionsCommand.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Commands/ResetAllProfessionsCommand.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Commands/ResetPrestigeCommand.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Commands/RestorePrestigedProfessionsCommand.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Commands/SetExperienceCommand.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/Button.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/SkillPrestige/Framework/Menus/Elements/Buttons/MinimalistProfessionButton.cs" root0="FORCE_HIGHLIGHTING" />
@@ -138,28 +137,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Project.SkillPrestige.executor&quot;: &quot;Run&quot;,
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;multiplayer-fix&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.C#&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Project.SkillPrestige.executor": "Run",
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.sourceCode.C#",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\Chris\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\Chris\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\Chris\\AppData\\Local\\Symbols\\src&quot;
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\Chris\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache",
+      "C:\\Users\\Chris\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache",
+      "C:\\Users\\Chris\\AppData\\Local\\Symbols\\src"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected=".NET Project.SkillPrestige">
     <configuration name="SkillPrestige" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using LuckSkill;
 using Microsoft.Xna.Framework;
+using SkillPrestige.Logging;
 using SkillPrestige.Mods;
 using SkillPrestige.Professions;
 using SkillPrestige.SkillTypes;
@@ -37,7 +38,11 @@ namespace SkillPrestige.LuckSkill
         {
             this.SkillType = new SkillType("Luck", 5);
             this.IsFound = helper.ModRegistry.IsLoaded(TargetModId);
-
+            if (helper.ModRegistry.IsLoaded("moonslime.LuckSkill"))
+            {
+                Logger.LogWarning($"Moonslime luck skill found, disabling skill adapter for {TargetModId}");
+                return;
+            }
             ModHandler.RegisterMod(this);
         }
 
